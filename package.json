@@ -22,7 +22,9 @@
     "files": [
         "package.json",
         "README.md",
-        "dist/index.js"
+        "dist/index.js",
+        "dist/index.d.ts",
+        "dist/mtoon-material.d.ts"
     ],
     "typings": "dist/index.d.ts",
     "main": "dist/index.js",
@@ -31,7 +33,9 @@
     },
     "devDependencies": {
         "@types/node": "^12.0.0",
+        "cz-conventional-changelog": "2.1.0",
         "raw-loader": "^2.0.0",
+        "semantic-release": "^15.13.3",
         "ts-loader": "^6.0.0",
         "tslint": "^5.16.0",
         "typescript": "^3.4.5",
@@ -40,6 +44,22 @@
     },
     "scripts": {
         "build": "webpack",
-        "lint": "tslint -p ."
+        "lint": "tslint -p .",
+        "release": "semantic-release"
+    },
+    "config": {
+        "commitizen": {
+            "path": "./node_modules/cz-conventional-changelog"
+        }
+    },
+    "release": {
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            "@semantic-release/changelog",
+            "@semantic-release/github",
+            "@semantic-release/npm",
+            "@semantic-release/git"
+        ]
     }
 }

@@ -11,6 +11,12 @@ workflows:
       - lint:
           requires:
             - build
+      - release:
+          requires:
+            - lint
+          filters:
+            branches:
+              only: master
 
 jobs:
   build:
@@ -55,3 +61,17 @@ jobs:
           path: ~/reports
       - store_artifacts:
           path: ~/reports
+
+  release:
+    docker:
+      - image: circleci/node:8
+    working_directory: ~/repo
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run: yarn build
+      - run: yarn release
