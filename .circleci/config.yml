@@ -49,7 +49,7 @@ jobs:
       - run:
           command: |
             mkdir -p ~/reports
-            yarn --silent lint --format junit --no-color --output-file ~/reports/lint.xml
+            yarn --silent lint --format junit --out ~/reports/lint.xml
           when: always
       - store_test_results:
           path: ~/reports
