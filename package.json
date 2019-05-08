@@ -30,7 +30,7 @@
         "@babylonjs/core": "^4.0.3"
     },
     "devDependencies": {
-        "@types/node": "^11.12.2",
+        "@types/node": "^12.0.0",
         "raw-loader": "^2.0.0",
         "ts-loader": "^6.0.0",
         "tslint": "^5.16.0",
