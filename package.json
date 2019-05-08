@@ -1,0 +1,45 @@
+{
+    "name": "babylon-mtoon-material",
+    "version": "1.0.0",
+    "description": "Unity MToon Shader WebGL porting with babylon.js",
+    "license": "MIT",
+    "author": {
+        "email": "yamagishi.iloop@gmail.com",
+        "name": "Masaru Yamagishi",
+        "url": "https://github.com/il-m-yamagishi"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/virtual-cast/babylon-mtoon-material.git"
+    },
+    "keywords": [
+        "babylon.js",
+        "VRM",
+        "MToon",
+        "WebGL",
+        "Material"
+    ],
+    "files": [
+        "package.json",
+        "README.md",
+        "dist/index.js"
+    ],
+    "typings": "dist/index.d.ts",
+    "main": "dist/index.js",
+    "dependencies": {
+        "@babylonjs/core": "^4.0.3"
+    },
+    "devDependencies": {
+        "@types/node": "^11.12.2",
+        "raw-loader": "^2.0.0",
+        "ts-loader": "^6.0.0",
+        "tslint": "^5.16.0",
+        "typescript": "^3.4.5",
+        "webpack": "^4.30.0",
+        "webpack-cli": "^3.3.2"
+    },
+    "scripts": {
+        "build": "webpack",
+        "lint": "tslint -p ."
+    }
+}
