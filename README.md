@@ -1,5 +1,8 @@
 # babylon-mtoon-material
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/virtual-cast/babylon-mtoon-material.svg)](https://greenkeeper.io/)
+
+
 Unity MToon Shader WebGL porting to babylon.js.
 
 This is Work In Progress. Some settings will be ignored or generates inconsistent lighting.
