@@ -4,7 +4,7 @@
 
 Unity MToon Shader WebGL porting to babylon.js.
 
-This is Work In Progress. Some settings will be ignored or generates inconsistent lighting.
+This is **Work In Progress**. Some settings will be ignored or generates inconsistent lighting.
 
 [About MToon](https://vrm.dev/en/univrm/shaders/mtoon/)([ja](https://vrm.dev/univrm/shaders/mtoon/))
 
