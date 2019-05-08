@@ -40,8 +40,6 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 $ yarn build
 ```
 
-It generates production file to `./dist/index.js`.
-
 ### Debugging MToonMaterial
 
 TBD
