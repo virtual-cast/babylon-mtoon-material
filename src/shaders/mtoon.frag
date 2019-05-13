@@ -155,7 +155,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
     // lighting intensity
     float _lightIntensity = dot(lightDirection, worldNormal);
     _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]
-    _lightIntensity = _lightIntensity * (_receiveShadow * shadow); // receive shadow
+    _lightIntensity = _lightIntensity * (1.0 - _receiveShadow * (1.0 - (shadow * 0.5 + 0.5))); // receive shadow
     _lightIntensity = _lightIntensity * _shadingGrade; // darker
     _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]
     _lightIntensity = smoothstep(shadeShift, shadeShift + (1.0 - shadeToony), _lightIntensity); // shade & tooned

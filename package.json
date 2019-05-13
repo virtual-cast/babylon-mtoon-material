@@ -32,6 +32,7 @@
         "@babylonjs/core": "^4.0.3"
     },
     "devDependencies": {
+        "@babylonjs/inspector": "^4.0.3",
         "@semantic-release/commit-analyzer": "^6.1.0",
         "@semantic-release/git": "^7.0.8",
         "@semantic-release/github": "^5.2.10",
@@ -45,11 +46,13 @@
         "tslint": "^5.16.0",
         "typescript": "^3.4.5",
         "webpack": "^4.30.0",
-        "webpack-cli": "^3.3.2"
+        "webpack-cli": "^3.3.2",
+        "webpack-dev-server": "^3.3.1"
     },
     "scripts": {
         "build": "webpack",
         "lint": "tslint -p .",
+        "debug": "webpack-dev-server --config webpack.test.config.js",
         "release": "semantic-release"
     },
     "config": {

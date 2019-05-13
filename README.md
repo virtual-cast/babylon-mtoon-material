@@ -1,6 +1,8 @@
 # babylon-mtoon-material
 
-[![npm version](https://badge.fury.io/js/babylon-mtoon-material.svg)](https://badge.fury.io/js/babylon-mtoon-material) [![Greenkeeper badge](https://badges.greenkeeper.io/virtual-cast/babylon-mtoon-material.svg)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/virtual-cast/babylon-mtoon-material.svg?style=svg)](https://circleci.com/gh/virtual-cast/babylon-mtoon-material)
+[![npm version](https://badge.fury.io/js/babylon-mtoon-material.svg)](https://badge.fury.io/js/babylon-mtoon-material) [![Greenkeeper badge](https://badges.greenkeeper.io/virtual-cast/babylon-mtoon-material.svg)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/virtual-cast/babylon-mtoon-material.svg?style=svg)](https://circleci.com/gh/virtual-cast/babylon-mtoon-material) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+
+![](mtoon.png)
 
 Unity MToon Shader WebGL porting to babylon.js.
 
@@ -19,16 +21,40 @@ This is **Work In Progress**. Some settings will be ignored or generates inconsi
     - Fog
     - Bones in shader
     - MorphTargets in shader
-    - Vertex Alpha
     - Shadow
     - EffectFallback
     - Instances
     - ClipPlane
     - AmbientColor
+    - Alpha CutOff
+- Textures & Color values
+    - Diffuse
+    - Emissive
+    - Bump
+    - Shade(shaded diffuse)
+    - Receive Shadow(received shadow rate texture alpha)
+    - Shading Grade
+    - MatCap
+    - Outline Width
+    - Todo: Rim
+
+These are not covered.
+
+- Specular
+- Vertex Color
+- TODO: Serialize Support
 
 ## Usage
 
 This material will be automatically assined to VRM/VCI model within [babylon-vrm-loader](https://github.com/virtual-cast/babylon-vrm-loader).
+
+You can explicitly assign MToonMaterial to some meshes.
+
+```ts
+const sphere = BABYLON.Mesh.CreateSphere('Sphere', 16, 1, scene);
+const material = new MToonMaterial('MtoonMaterial', scene);
+sphere.material = material;
+```
 
 ## Contributing
 
@@ -42,7 +68,11 @@ $ yarn build
 
 ### Debugging MToonMaterial
 
-TBD
+```s
+$ yarn debug
+```
+
+You can see inspector on http://localhost:8080/
 
 ## Related Links
 

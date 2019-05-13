@@ -114,7 +114,6 @@ export declare class MToonMaterial extends PushMaterial {
     matCapTexture: Nullable<BaseTexture>;
     /**
      * アウトラインの幅の調整テクスチャ
-     * @todo 現在は適用されていない
      */
     outlineWidthTexture: Nullable<BaseTexture>;
     /**
@@ -178,6 +177,7 @@ export declare class MToonMaterial extends PushMaterial {
     /**
      * シーンの AmbientColor と掛け合わせた後の色
      * @see bindForSubMesh
+     * @hidden
      */
     protected globalAmbientColor: Color3;
     /**
@@ -312,7 +312,7 @@ export declare class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    clone(_: string): Nullable<MToonMaterial>;
+    clone(name: string): Nullable<MToonMaterial>;
     /**
      * @inheritdoc
      */
@@ -320,6 +320,6 @@ export declare class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    static Parse(_: any, __: Scene, ___: string): MToonMaterial;
+    static Parse(parsedMaterial: any, scene: Scene, rootUrl: string): MToonMaterial;
 }
 export {};

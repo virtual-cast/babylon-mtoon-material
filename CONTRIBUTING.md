@@ -35,3 +35,9 @@ Issues about babylon.js-specific or MToon original-specific will be ignored.
 ## Pull requests
 
 TBA
+
+## Releases
+
+This repository uses [semantic-release](https://semantic-release.gitbook.io/semantic-release/).
+
+When some `feat:` or `fix:`-prefixed commits pushed to master, CircleCI automatically releases new version to GitHub Releases and npm.

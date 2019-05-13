@@ -142,7 +142,6 @@ export class MToonMaterial extends PushMaterial {
     public matCapTexture: Nullable<BaseTexture> = null;
     /**
      * アウトラインの幅の調整テクスチャ
-     * @todo 現在は適用されていない
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public outlineWidthTexture: Nullable<BaseTexture> = null;
@@ -235,6 +234,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * シーンの AmbientColor と掛け合わせた後の色
      * @see bindForSubMesh
+     * @hidden
      */
     protected globalAmbientColor = new Color3(0.0, 0.0, 0.0);
     /**
@@ -420,7 +420,7 @@ export class MToonMaterial extends PushMaterial {
         super(name, scene);
 
         // 裏面描画モードになることがあるのでここで右手座標系に強制する
-        this.sideOrientation = Material.ClockWiseSideOrientation;
+        // this.sideOrientation = Material.ClockWiseSideOrientation;
 
         // シェーダストアに登録する
         if (!Effect.IncludesShadersStore.mtoonUboDeclaration) {
@@ -766,15 +766,6 @@ export class MToonMaterial extends PushMaterial {
 
             MaterialHelper.BindEyePosition(effect, scene);
             effect.setVector3('vEyeUp', scene.activeCamera!.upVector);
-
-            // アウトライン設定
-            if (this.outlineWidthMode !== OutlineWidthMode.None) {
-                // TODO: 暫定的に OutlineRenderer を利用する
-                // mesh.renderOutline = true;
-                // mesh.outlineColor = this.outlineColor.clone();
-                // アウトラインサイズが肥大化する時があるので調整する
-                // mesh.outlineWidth = this.outlineWidth >= 0.1 ? 0.00001 : this.outlineWidth / 100;
-            }
         }
 
         if (mustRebind || !this.isFrozen) {
@@ -1045,7 +1036,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    public clone(_: string): Nullable<MToonMaterial> {
+    public clone(name: string): Nullable<MToonMaterial> {
         throw new Error(`MToonMaterial cannot be cloned.`);
     }
 
@@ -1059,7 +1050,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    public static Parse(_: any, __: Scene, ___: string): MToonMaterial {
+    public static Parse(parsedMaterial: any, scene: Scene, rootUrl: string): MToonMaterial {
         throw new Error(`MToonMaterial cannot be parsed`);
     }
 //#endregion
