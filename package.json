@@ -56,7 +56,7 @@
         "lint": "tslint -p .",
         "debug": "webpack-dev-server --config webpack.test.config.js",
         "release": "semantic-release",
-        "release:gh-pages": "gh-pages -d test -m 'chore(test): update gh-pages [skip ci]'"
+        "release:gh-pages": "gh-pages -d test -m \"ci(gh-pages): update gh-pages [skip ci]\""
     },
     "config": {
         "commitizen": {
