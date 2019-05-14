@@ -107,10 +107,12 @@ async function main() {
         sphere.material = mat;
     });
 
-    await scene.debugLayer.show({
-        globalRoot: document.getElementById('wrapper') as HTMLMainElement,
-        handleResize: true,
-    });
+    if (debugProperties.inspector) {
+       await scene.debugLayer.show({
+            globalRoot: document.getElementById('wrapper') as HTMLMainElement,
+            handleResize: true,
+        });
+    }
 
     engine.runRenderLoop(() => {
         scene.render();
@@ -124,6 +126,7 @@ async function main() {
 interface DebugProperties {
     webgl1: boolean;
     shadow: boolean;
+    inspector: boolean;
 }
 
 function getDebugProperties(): DebugProperties {
@@ -132,6 +135,7 @@ function getDebugProperties(): DebugProperties {
     return {
         webgl1: href.includes('webgl1'),
         shadow: href.includes('shadow'),
+        inspector: href.includes('inspector'),
     };
 }
 
