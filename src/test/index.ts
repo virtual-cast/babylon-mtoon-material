@@ -95,6 +95,14 @@ async function main() {
         mat.alphaBlend = true;
         mtoonMaterials.push(mat);
     }
+    {
+        const mat = new MToonMaterial('MtoonMaterialRim', scene);
+        mat.outlineWidthMode = 1;
+        mat.diffuseColor = new Color3(0, 0, 0);
+        mat.shadeColor = new Color3(0, 0, 0);
+        mat.rimColor = new Color3(1, 1, 1);
+        mtoonMaterials.push(mat);
+    }
 
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる

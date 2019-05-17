@@ -76,6 +76,9 @@ varying vec3 vNormalW;
 #if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0
     varying vec2 vShadingGradeUV;
 #endif
+#if defined(RIM) && RIMDIRECTUV == 0
+    varying vec2 vRimUV;
+#endif
 #if defined(MATCAP) && MATCAPDIRECTUV == 0
     varying vec2 vMatCapUV;
 #endif
@@ -189,6 +192,13 @@ void main(void) {
         vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv, 1.0, 0.0));
     } else {
         vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv2, 1.0, 0.0));
+    }
+#endif
+#if defined(RIM) && RIMDIRECTUV == 0
+    if (vRimInfos.x == 0.) {
+        vRimUV = vec2(rimMatrix * vec4(uv, 1.0, 0.0));
+    } else {
+        vRimUV = vec2(rimMatrix * vec4(uv2, 1.0, 0.0));
     }
 #endif
 #if defined(MATCAP) && MATCAPDIRECTUV == 0

@@ -20,6 +20,9 @@ uniform Material
     mat4 receiveShadowMatrix;
     vec2 vShadingGradeInfos;
     mat4 shadingGradeMatrix;
+    vec3 vRimColor;
+    vec2 vRimInfos;
+    mat4 rimMatrix;
     vec2 vMatCapInfos;
     mat4 matCapMatrix;
     vec4 vOutlineColor;
@@ -34,6 +37,9 @@ uniform Material
     float shadeToony;
     float lightColorAttenuation;
     float indirectLightIntensity;
+    float rimLightingMix;
+    float rimFresnelPower;
+    float rimLift;
     float outlineWidth;
     float outlineScaledMaxDistance;
     float outlineLightingMix;

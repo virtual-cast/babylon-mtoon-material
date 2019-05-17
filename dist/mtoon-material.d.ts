@@ -64,6 +64,10 @@ declare enum CullMode {
  * @property shadeToony = _ShadeToony
  * @property lightColorAttenuation = _LightColorAttenuation
  * @property indirectLightIntensity = _IndirectLightIntensity
+ * @property rimTexture = _RimTexture
+ * @property rimLightingMix = _RimLightingMix
+ * @property rimFresnelPower = _RimFresnelPower
+ * @property rimLift = _RimLift
  * @property matCapTexture = _SphereAdd
  * @property emissiveColor = _EmissionColor
  * @property emissiveTexture = _EmissionMap
@@ -109,7 +113,11 @@ export declare class MToonMaterial extends PushMaterial {
      */
     shadingGradeTexture: Nullable<BaseTexture>;
     /**
-     * MatCap, Rim ライティングテクスチャ
+     * Parametric Rim Lighting テクスチャ
+     */
+    rimTexture: Nullable<BaseTexture>;
+    /**
+     * MatCap ライティングテクスチャ
      */
     matCapTexture: Nullable<BaseTexture>;
     /**
@@ -189,6 +197,10 @@ export declare class MToonMaterial extends PushMaterial {
      */
     shadeColor: Color3;
     /**
+     * Rim の色
+     */
+    rimColor: Color3;
+    /**
      * アウトラインの色
      */
     outlineColor: Color3;
@@ -206,6 +218,12 @@ export declare class MToonMaterial extends PushMaterial {
     lightColorAttenuation: number;
     private _indirectLightIntensity;
     indirectLightIntensity: number;
+    private _rimLightingMix;
+    rimLightingMix: number;
+    private _rimFresnelPower;
+    rimFresnelPower: number;
+    private _rimLift;
+    rimLift: number;
     private _outlineWidth;
     outlineWidth: number;
     private _outlineScaledMaxDistance;

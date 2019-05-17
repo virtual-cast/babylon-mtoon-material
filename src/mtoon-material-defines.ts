@@ -34,6 +34,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     public RECEIVE_SHADOWDIRECTUV = 0;
     public SHADING_GRADE = false;
     public SHADING_GRADEDIRECTUV = 0;
+    public RIM = false;
+    public RIMDIRECTUV = 0;
     public MATCAP = false;
     public MATCAPDIRECTUV = 0;
     public OUTLINE_WIDTH = false;
