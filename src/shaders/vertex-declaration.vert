@@ -32,6 +32,11 @@ uniform vec2 vShadingGradeInfos;
 uniform mat4 shadingGradeMatrix;
 #endif
 
+#ifdef RIM
+uniform vec2 vRimInfos;
+uniform mat4 rimMatrix;
+#endif
+
 #ifdef MATCAP
 uniform vec2 vMatCapInfos;
 uniform mat4 matCapMatrix;

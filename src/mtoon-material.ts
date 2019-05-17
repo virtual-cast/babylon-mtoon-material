@@ -84,6 +84,10 @@ enum CullMode {
  * @property shadeToony = _ShadeToony
  * @property lightColorAttenuation = _LightColorAttenuation
  * @property indirectLightIntensity = _IndirectLightIntensity
+ * @property rimTexture = _RimTexture
+ * @property rimLightingMix = _RimLightingMix
+ * @property rimFresnelPower = _RimFresnelPower
+ * @property rimLift = _RimLift
  * @property matCapTexture = _SphereAdd
  * @property emissiveColor = _EmissionColor
  * @property emissiveTexture = _EmissionMap
@@ -136,7 +140,12 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public shadingGradeTexture: Nullable<BaseTexture> = null;
     /**
-     * MatCap, Rim ライティングテクスチャ
+     * Parametric Rim Lighting テクスチャ
+     */
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
+    public rimTexture: Nullable<BaseTexture> = null;
+    /**
+     * MatCap ライティングテクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public matCapTexture: Nullable<BaseTexture> = null;
@@ -248,6 +257,11 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public shadeColor = new Color3(0.97, 0.81, 0.86);
     /**
+     * Rim の色
+     */
+    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    public rimColor = new Color3(0.0, 0.0, 0.0);
+    /**
      * アウトラインの色
      */
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
@@ -307,6 +321,30 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set indirectLightIntensity(value: number) {
         this._indirectLightIntensity = Math.max(0.0, Math.min(1.0, value));
+    }
+    private _rimLightingMix = 0;
+    public get rimLightingMix() {
+        return this._rimLightingMix;
+    }
+    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    public set rimLightingMix(value: number) {
+        this._rimLightingMix = Math.max(0.0, Math.min(1.0, value));
+    }
+    private _rimFresnelPower = 1;
+    public get rimFresnelPower() {
+        return this._rimFresnelPower;
+    }
+    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    public set rimFresnelPower(value: number) {
+        this._rimFresnelPower = Math.max(0.0, Math.min(100.0, value));
+    }
+    private _rimLift = 0;
+    public get rimLift() {
+        return this._rimLift;
+    }
+    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    public set rimLift(value: number) {
+        this._rimLift = Math.max(0.0, Math.min(1.0, value));
     }
     private _outlineWidth = 0.5;
     public get outlineWidth() {
@@ -486,6 +524,7 @@ export class MToonMaterial extends PushMaterial {
                     || !this.isReadyForTexture(this.shadeTexture, defines, 'SHADE')
                     || !this.isReadyForTexture(this.receiveShadowTexture, defines, 'RECEIVE_SHADOW')
                     || !this.isReadyForTexture(this.shadingGradeTexture, defines, 'SHADING_GRADE')
+                    || !this.isReadyForTexture(this.rimTexture, defines, 'RIM')
                     || !this.isReadyForTexture(this.matCapTexture, defines, 'MATCAP')
                     || !this.isReadyForTexture(this.outlineWidthTexture, defines, 'OUTLINE_WIDTH')) {
                     return false;
@@ -507,6 +546,7 @@ export class MToonMaterial extends PushMaterial {
                 defines.SHADE = false;
                 defines.RECEIVE_SHADOW = false;
                 defines.SHADING_GRADE = false;
+                defines.RIM = false;
                 defines.MATCAP = false;
                 defines.OUTLINE_WIDTH = false;
                 defines.BUMP = false;
@@ -611,10 +651,12 @@ export class MToonMaterial extends PushMaterial {
                 'vShadeColor', 'vShadeInfos', 'shadeMatrix',
                 'vReceiveShadowInfos', 'receiveShadowMatrix',
                 'vShadingGradeInfos', 'shadingGradeMatrix',
+                'vRimColor', 'vRimInfos', 'RimMatrix',
                 'vMatCapInfos', 'MatCapMatrix',
                 'vOutlineColor', 'vOutlineWidthInfos', 'outlineWidthMatrix',
 
                 'shadingGradeRate', 'receiveShadowRate', 'shadeShift', 'shadeToony',
+                'rimLightingMix', 'rimFresnelPower', 'rimLift',
                 'lightColorAttenuation', 'indirectLightIntensity',
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
 
@@ -623,7 +665,7 @@ export class MToonMaterial extends PushMaterial {
 
             const samplers = [
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
-                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler', 'matCapSampler', 'outlineWidthSampler',
+                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler', 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
             ];
 
             const uniformBuffers = ['Material', 'Scene'];
@@ -730,6 +772,7 @@ export class MToonMaterial extends PushMaterial {
                     this.bindTexture(this.shadeTexture, effect, 'shade', 'vShadeInfos');
                     this.bindTexture(this.receiveShadowTexture, effect, 'receiveShadow', 'vReceiveShadowInfos');
                     this.bindTexture(this.shadingGradeTexture, effect, 'shadingGrade', 'vShadingGradeInfos');
+                    this.bindTexture(this.rimTexture, effect, 'rim', 'vRimInfos');
                     this.bindTexture(this.matCapTexture, effect, 'matCap', 'vMatCapInfos');
                     this.bindTexture(this.outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
                 }
@@ -749,6 +792,9 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateFloat('shadeToony', this.shadeToony);
             this._uniformBuffer.updateFloat('lightColorAttenuation', this.lightColorAttenuation);
             this._uniformBuffer.updateFloat('indirectLightIntensity', this.indirectLightIntensity);
+            this._uniformBuffer.updateFloat('rimLightingMix', this.rimLightingMix);
+            this._uniformBuffer.updateFloat('rimFresnelPower', this.rimFresnelPower);
+            this._uniformBuffer.updateFloat('rimLift', this.rimLift);
             this._uniformBuffer.updateFloat('outlineWidth', this.outlineWidth);
             this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this.outlineScaledMaxDistance);
             this._uniformBuffer.updateFloat('outlineLightingMix', this.outlineLightingMix);
@@ -762,6 +808,7 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateColor4('vDiffuseColor', this.diffuseColor, this.alpha);
             this._uniformBuffer.updateColor3('vEmissiveColor', this.emissiveColor);
             this._uniformBuffer.updateColor3('vShadeColor', this.shadeColor);
+            this._uniformBuffer.updateColor3('vRimColor', this.rimColor);
             this._uniformBuffer.updateColor3('vOutlineColor', this.outlineColor);
 
             MaterialHelper.BindEyePosition(effect, scene);
@@ -872,6 +919,10 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('vShadingGradeInfos', 2);
         this._uniformBuffer.addUniform('shadingGradeMatrix', 16);
 
+        this._uniformBuffer.addUniform('vRimColor', 3);
+        this._uniformBuffer.addUniform('vRimInfos', 2);
+        this._uniformBuffer.addUniform('rimMatrix', 16);
+
         this._uniformBuffer.addUniform('vMatCapInfos', 2);
         this._uniformBuffer.addUniform('matCapMatrix', 16);
 
@@ -889,6 +940,9 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('shadeToony', 1);
         this._uniformBuffer.addUniform('lightColorAttenuation', 1);
         this._uniformBuffer.addUniform('indirectLightIntensity', 1);
+        this._uniformBuffer.addUniform('rimLightingMix', 1);
+        this._uniformBuffer.addUniform('rimFresnelPower', 1);
+        this._uniformBuffer.addUniform('rimLift', 1);
         this._uniformBuffer.addUniform('outlineWidth', 1);
         this._uniformBuffer.addUniform('outlineScaledMaxDistance', 1);
         this._uniformBuffer.addUniform('outlineLightingMix', 1);

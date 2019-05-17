@@ -28,6 +28,8 @@ export declare class MToonMaterialDefines extends MaterialDefines {
     RECEIVE_SHADOWDIRECTUV: number;
     SHADING_GRADE: boolean;
     SHADING_GRADEDIRECTUV: number;
+    RIM: boolean;
+    RIMDIRECTUV: number;
     MATCAP: boolean;
     MATCAPDIRECTUV: number;
     OUTLINE_WIDTH: boolean;

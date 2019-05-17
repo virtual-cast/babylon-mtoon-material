@@ -3,6 +3,7 @@ uniform mat4 view;
 uniform vec4 vDiffuseColor;
 uniform vec3 vEmissiveColor;
 uniform vec3 vShadeColor;
+uniform vec3 vRimColor;
 uniform vec3 vOutlineColor;
 
 uniform float visibility;
@@ -33,6 +34,10 @@ uniform vec2 vReceiveShadowInfos;
 uniform vec2 vShadingGradeInfos;
 #endif
 
+#ifdef RIM
+uniform vec2 vRimInfos;
+#endif
+
 #ifdef MATCAP
 uniform vec2 vMatCapInfos;
 #endif
@@ -47,6 +52,9 @@ uniform float shadeShift;
 uniform float shadeToony;
 uniform float lightColorAttenuation;
 uniform float indirectLightIntensity;
+uniform float rimLightingMix;
+uniform float rimFresnelPower;
+uniform float rimLift;
 uniform float outlineWidth;
 uniform float outlineScaledMaxDistance;
 uniform float outlineLightingMix;

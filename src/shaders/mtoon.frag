@@ -96,6 +96,16 @@ varying vec3 vNormalW;
         varying vec2 vShadingGradeUV;
     #endif
 #endif
+#ifdef RIM
+    uniform sampler2D rimSampler;
+    #if RIMDIRECTUV == 1
+        #define vRimUV vMainUV1
+    #elif RIMDIRECTUV == 2
+        #define vRimUV vMainUV2
+    #else
+        varying vec2 vRimUV;
+    #endif
+#endif
 #ifdef MATCAP
     uniform sampler2D matCapSampler;
     #if MATCAPDIRECTUV == 1
@@ -182,6 +192,22 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
 
     vec3 _result = mix(_shade.rgb, _lit.rgb, _lightIntensity);
     _result = _result * _lighting + _indirectLighting * _lit.rgb;
+
+    // pure light
+    vec3 _pureLight = _lighting * _lightIntensity * _indirectLighting;
+    _pureLight = mix(_pureLight, vec3(max(_pureLight.x, max(_pureLight.y, _pureLight.z))), lightColorAttenuation);
+
+    // parametric rim lighting
+#ifdef MTOON_FORWARD_ADD
+#else
+    vec3 _rimColor = vRimColor.rgb;
+#ifdef RIM
+    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + uvoffset).rgb;
+#endif
+    vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;
+    _rim *= mix(vec3(1.0), _pureLight, rimLightingMix);
+    _result += _rim;
+#endif
 
     // additive matcap
 #ifdef MTOON_FORWARD_ADD
