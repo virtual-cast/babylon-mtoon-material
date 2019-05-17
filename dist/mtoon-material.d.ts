@@ -64,6 +64,7 @@ declare enum CullMode {
  * @property shadeToony = _ShadeToony
  * @property lightColorAttenuation = _LightColorAttenuation
  * @property indirectLightIntensity = _IndirectLightIntensity
+ * @property rimColor = _RimColor
  * @property rimTexture = _RimTexture
  * @property rimLightingMix = _RimLightingMix
  * @property rimFresnelPower = _RimFresnelPower
