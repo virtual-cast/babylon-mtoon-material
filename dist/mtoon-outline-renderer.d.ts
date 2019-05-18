@@ -8,13 +8,12 @@ import { MToonMaterial } from './mtoon-material';
 export declare class MToonOutlineRenderer implements ISceneComponent {
     scene: Scene;
     material: MToonMaterial;
+    static rendererId: number;
     /**
      * @inheritdoc
      */
     readonly name: string;
     private _engine;
-    private _effect?;
-    private _defines?;
     private _savedDepthWrite;
     /**
      * @inheritdoc
@@ -38,14 +37,6 @@ export declare class MToonOutlineRenderer implements ISceneComponent {
      * アウトラインを描画する
      */
     private render;
-    /**
-     * Effect の状態を確認する
-     */
-    private isReady;
-    /**
-     * アウトラインの描画に必要な変数を設定
-     */
-    private bind;
     /**
      * このメッシュを描画する前に実行されるコールバック
      */
