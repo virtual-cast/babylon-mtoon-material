@@ -64,7 +64,6 @@ declare enum CullMode {
  * @property shadeToony = _ShadeToony
  * @property lightColorAttenuation = _LightColorAttenuation
  * @property indirectLightIntensity = _IndirectLightIntensity
- * @property rimColor = _RimColor
  * @property rimTexture = _RimTexture
  * @property rimLightingMix = _RimLightingMix
  * @property rimFresnelPower = _RimFresnelPower
@@ -82,45 +81,49 @@ declare enum CullMode {
  * @property outlineColorMode = _OutlineColorMode
  */
 export declare class MToonMaterial extends PushMaterial {
-    /**
-     * @inheritdoc
-     * シリアライズを受け付けない
-     */
-    readonly doNotSerialize = true;
+    private _diffuseTexture;
     /**
      * 通常色テクスチャ
      */
     diffuseTexture: Nullable<BaseTexture>;
+    private _emissiveTexture;
     /**
      * 発光テクスチャ
      */
     emissiveTexture: Nullable<BaseTexture>;
+    private _bumpTexture;
     /**
      * バンプマップテクスチャ
      */
     bumpTexture: Nullable<BaseTexture>;
+    private _shadeTexture;
     /**
      * 陰になる部分の色テクスチャ
      */
     shadeTexture: Nullable<BaseTexture>;
+    private _receiveShadowTexture;
     /**
      * どれだけ影を受け付けるかのテクスチャ
      * receiveShadowRate * texture.a
      */
     receiveShadowTexture: Nullable<BaseTexture>;
+    private _shadingGradeTexture;
     /**
      * 陰部分の暗さテクスチャ
      * shadingGradeRate * (1.0 - texture.r))
      */
     shadingGradeTexture: Nullable<BaseTexture>;
+    private _rimTexture;
     /**
      * Parametric Rim Lighting テクスチャ
      */
     rimTexture: Nullable<BaseTexture>;
+    private _matCapTexture;
     /**
      * MatCap ライティングテクスチャ
      */
     matCapTexture: Nullable<BaseTexture>;
+    private _outlineWidthTexture;
     /**
      * アウトラインの幅の調整テクスチャ
      */
@@ -157,20 +160,23 @@ export declare class MToonMaterial extends PushMaterial {
      * 頂点アルファは非対応
      */
     readonly useVertexAlpha = false;
+    private _useLogarithmicDepth;
     /**
      * Logarithmic depth
      * @link http://doc.babylonjs.com/how_to/using_logarithmic_depth_buffer
      */
-    private _useLogarithmicDepth;
     useLogarithmicDepth: boolean;
+    private _disableLighting;
     /**
      * ライティングを無効にするかどうか
      */
     disableLighting: boolean;
+    private _twoSidedLighting;
     /**
      * 両面ライティングを行うかどうか
      */
     twoSidedLighting: boolean;
+    private _alphaCutOff;
     /**
      * アルファテスト時のカットしきい値
      */
@@ -231,9 +237,11 @@ export declare class MToonMaterial extends PushMaterial {
     outlineScaledMaxDistance: number;
     private _outlineLightingMix;
     outlineLightingMix: number;
+    private _alphaTest;
     alphaTest: boolean;
     private _alphaBlend;
     alphaBlend: boolean;
+    private _debugMode;
     /** @hidden */
     debugMode: DebugMode;
     private outlineRenderer?;
@@ -242,6 +250,7 @@ export declare class MToonMaterial extends PushMaterial {
     outlineColorMode: OutlineColorMode;
     private _cullMode;
     cullMode: CullMode;
+    private _outlineCullMode;
     outlineCullMode: CullMode;
     private storedCullMode;
     /**
@@ -254,6 +263,10 @@ export declare class MToonMaterial extends PushMaterial {
      * @hidden
      */
     restoreOutlineCullMode(): void;
+    /**
+     * @hidden
+     */
+    getOutlineRendererName(): string;
     /**
      * @inheritdoc
      */
@@ -331,7 +344,7 @@ export declare class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    clone(name: string): Nullable<MToonMaterial>;
+    clone(name: string): MToonMaterial;
     /**
      * @inheritdoc
      */

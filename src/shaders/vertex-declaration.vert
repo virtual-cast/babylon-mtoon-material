@@ -1,6 +1,9 @@
 // Uniforms
 uniform mat4 viewProjection;
 uniform mat4 view;
+uniform float outlineWidth;
+uniform float outlineScaledMaxDistance;
+uniform float outlineLightingMix;
 
 #ifdef DIFFUSE
 uniform mat4 diffuseMatrix;

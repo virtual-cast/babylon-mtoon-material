@@ -14,6 +14,8 @@
 uniform vec3 vEyePosition;
 uniform vec3 vEyeUp;
 uniform vec3 vAmbientColor;
+uniform float aspect;
+uniform float isOutline;
 
 // Input
 varying vec3 vPositionW;
@@ -145,7 +147,7 @@ vec3 computeSpotLightDirection(vec4 lightData) {
 * HemisphericLight の角度を計算
 */
 vec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {
-     return normalize(-lightData.xyz);
+     return normalize(lightData.xyz);
 }
 
 /**
@@ -222,7 +224,12 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
 #endif
 #endif
 
-    // TODO outline
+#ifdef MTOON_OUTLINE_COLOR_FIXED
+    _result = mix(_result, vOutlineColor.rgb, isOutline);
+#elif defined(MTOON_OUTLINE_COLOR_MIXED)
+    _result = mix(_result, vOutlineColor.rgb * mix(vec3(1.0), _result, outlineLightingMix), isOutline);
+#else
+#endif
 
     // debug
 #ifdef MTOON_DEBUG_NORMAL
@@ -239,7 +246,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
     #endif
 #endif
 
-    return vec4(_result, _lit.a);
+    return vec4(_result, _lit.a * vOutlineColor.a);
 }
 
 #include<bumpFragmentFunctions>

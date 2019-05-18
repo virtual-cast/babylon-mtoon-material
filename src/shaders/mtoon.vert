@@ -85,6 +85,12 @@ varying vec3 vNormalW;
 #if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0
     varying vec2 vOutlineWidthUV;
 #endif
+#ifdef OUTLINE_WIDTH
+    uniform sampler2D outlineWidthSampler;
+#endif
+
+uniform float aspect;
+uniform float isOutline;
 
 void main(void) {
 
@@ -101,29 +107,6 @@ void main(void) {
 #include<instancesVertex>
 #include<bonesVertex>
 
-#ifdef MULTIVIEW
-    if (gl_ViewID_OVR == 0u) {
-        gl_Position = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
-    } else {
-        gl_Position = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);
-    }
-#else
-    gl_Position = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
-#endif
-
-    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);
-    vPositionW = vec3(worldPos);
-
-#ifdef NORMAL
-    mat3 normalWorld = mat3(finalWorld);
-
-    #ifdef NONUNIFORMSCALING
-        normalWorld = transposeMat3(inverseMat3(normalWorld));
-    #endif
-
-    vNormalW = normalize(normalWorld * normalUpdated);
-#endif
-
     // Texture coordinates
 #ifndef UV1
     vec2 uv = vec2(0., 0.);
@@ -138,6 +121,61 @@ void main(void) {
 
 #ifdef MAINUV2
     vMainUV2 = uv2;
+#endif
+
+    float outlineTex = 1.0;
+    if (isOutline == 1.0) {
+#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0
+        if (vOutlineWidthInfos.x == 0.) {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));
+        } else {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));
+        }
+#endif
+#ifdef OUTLINE_WIDTH
+        outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
+#endif
+
+#ifdef MTOON_OUTLINE_WIDTH_WORLD
+        // ワールド座標の normal 分だけ移動する
+        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
+        positionUpdated.xyz += outlineOffset;
+#endif
+    }
+
+    vec4 vertex = vec4(1.0);
+#ifdef MULTIVIEW
+    if (gl_ViewID_OVR == 0u) {
+        vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
+    } else {
+        vertex = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);
+    }
+#else
+    vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
+#endif
+
+#ifdef MTOON_OUTLINE_WIDTH_SCREEN
+    if (isOutline == 1.0) {
+        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
+        projectedNormal *= min(vertex.w, outlineScaledMaxDistance);
+        projectedNormal.x *= aspect;
+        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy;
+    }
+#endif
+
+    gl_Position = vertex;
+
+    vec4 worldPos = finalWorld * vec4(vertex.xyz, 1.0);
+    vPositionW = vec3(worldPos);
+
+#ifdef NORMAL
+    mat3 normalWorld = mat3(finalWorld);
+
+    #ifdef NONUNIFORMSCALING
+        normalWorld = transposeMat3(inverseMat3(normalWorld));
+    #endif
+
+    vNormalW = normalize(normalWorld * normalUpdated);
 #endif
 
 #if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0
@@ -206,13 +244,6 @@ void main(void) {
         vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));
     } else {
         vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
-#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0
-    if (vOutlineWidthInfos.x == 0.) {
-        vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));
     }
 #endif
 
