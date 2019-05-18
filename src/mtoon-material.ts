@@ -9,7 +9,7 @@ import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
-import { expandToProperty } from '@babylonjs/core/Misc/decorators';
+import { expandToProperty, SerializationHelper, serializeAsTexture, serialize, serializeAsColor3 } from '@babylonjs/core/Misc/decorators';
 import { IAnimatable } from '@babylonjs/core/Misc/tools';
 import { Scene } from '@babylonjs/core/scene';
 import { Nullable } from '@babylonjs/core/types';
@@ -102,71 +102,85 @@ enum CullMode {
  */
 export class MToonMaterial extends PushMaterial {
 //#region Properties
-    /**
-     * @inheritdoc
-     * シリアライズを受け付けない
-     */
-    public readonly doNotSerialize = true;
+    @serializeAsTexture('diffuseTexture')
+    private _diffuseTexture: Nullable<BaseTexture> = null;
     /**
      * 通常色テクスチャ
      */
-    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
+    @expandToProperty('_markAllSubMeshesAsTexturesAndMiscDirty')
     public diffuseTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('emissiveTexture')
+    private _emissiveTexture: Nullable<BaseTexture> = null;
     /**
      * 発光テクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public emissiveTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('bumpTexture')
+    private _bumpTexture: Nullable<BaseTexture> = null;
     /**
      * バンプマップテクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public bumpTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('shadeTexture')
+    private _shadeTexture: Nullable<BaseTexture> = null;
     /**
      * 陰になる部分の色テクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public shadeTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('receiveShadowTexture')
+    private _receiveShadowTexture: Nullable<BaseTexture> = null;
     /**
      * どれだけ影を受け付けるかのテクスチャ
      * receiveShadowRate * texture.a
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public receiveShadowTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('shadingGradeTexture')
+    private _shadingGradeTexture: Nullable<BaseTexture> = null;
     /**
      * 陰部分の暗さテクスチャ
      * shadingGradeRate * (1.0 - texture.r))
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public shadingGradeTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('rimTexture')
+    private _rimTexture: Nullable<BaseTexture> = null;
     /**
      * Parametric Rim Lighting テクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public rimTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('matCapTexture')
+    private _matCapTexture: Nullable<BaseTexture> = null;
     /**
      * MatCap ライティングテクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public matCapTexture: Nullable<BaseTexture> = null;
+    @serializeAsTexture('outlineWidthTexture')
+    private _outlineWidthTexture: Nullable<BaseTexture> = null;
     /**
      * アウトラインの幅の調整テクスチャ
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public outlineWidthTexture: Nullable<BaseTexture> = null;
+
     /**
      * テクスチャ参照の一覧
      */
     protected get appendedTextures(): Array<Nullable<BaseTexture>> {
         return [
-            this.diffuseTexture,
-            this.emissiveTexture,
-            this.bumpTexture,
-            this.shadeTexture,
-            this.receiveShadowTexture,
-            this.shadingGradeTexture,
-            this.matCapTexture,
-            this.outlineWidthTexture,
+            this._diffuseTexture,
+            this._emissiveTexture,
+            this._bumpTexture,
+            this._shadeTexture,
+            this._receiveShadowTexture,
+            this._shadingGradeTexture,
+            this._matCapTexture,
+            this._outlineWidthTexture,
         ];
     }
     /**
@@ -200,11 +214,12 @@ export class MToonMaterial extends PushMaterial {
      * 頂点アルファは非対応
      */
     public readonly useVertexAlpha = false;
+    private _useLogarithmicDepth = false;
     /**
      * Logarithmic depth
      * @link http://doc.babylonjs.com/how_to/using_logarithmic_depth_buffer
      */
-    private _useLogarithmicDepth = false;
+    @serialize()
     public get useLogarithmicDepth(): boolean {
         return this._useLogarithmicDepth;
     }
@@ -215,16 +230,22 @@ export class MToonMaterial extends PushMaterial {
             this._markAllSubMeshesAsMiscDirty();
         }
     }
+    @serialize('disableLighting')
+    private _disableLighting = false;
     /**
      * ライティングを無効にするかどうか
      */
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public disableLighting = false;
+    @serialize('twoSidedLighting')
+    private _twoSidedLighting = false;
     /**
      * 両面ライティングを行うかどうか
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public twoSidedLighting = false;
+    @serialize('alphaCutOff')
+    private _alphaCutOff = 0.5;
     /**
      * アルファテスト時のカットしきい値
      */
@@ -233,12 +254,12 @@ export class MToonMaterial extends PushMaterial {
     /**
      * diffuseTexture に乗算される色
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serializeAsColor3('diffuse')
     public diffuseColor = new Color3(1.0, 1.0, 1.0);
     /**
      * 環境光
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serialize('ambient')
     public ambientColor = new Color3(0.1, 0.1, 0.1);
     /**
      * シーンの AmbientColor と掛け合わせた後の色
@@ -249,25 +270,26 @@ export class MToonMaterial extends PushMaterial {
     /**
      * 純粋加算される発光色
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serialize('emissive')
     public emissiveColor = new Color3(0.0, 0.0, 0.0);
     /**
      * shadeTexture に乗算される色
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serialize('shade')
     public shadeColor = new Color3(0.97, 0.81, 0.86);
     /**
      * Rim の色
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serialize('rim')
     public rimColor = new Color3(0.0, 0.0, 0.0);
     /**
      * アウトラインの色
      */
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
+    @serialize('outline')
     public outlineColor = new Color3(0.0, 0.0, 0.0);
 
     private _bumpScale = 1.0;
+    @serialize()
     public get bumpScale() {
         return this._bumpScale;
     }
@@ -275,114 +297,131 @@ export class MToonMaterial extends PushMaterial {
         this._bumpScale = value;
     }
     private _receiveShadowRate = 1.0;
+    @serialize()
     public get receiveShadowRate() {
         return this._receiveShadowRate;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set receiveShadowRate(value: number) {
         this._receiveShadowRate = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _shadingGradeRate = 1.0;
+    @serialize()
     public get shadingGradeRate() {
         return this._shadingGradeRate;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set shadingGradeRate(value: number) {
         this._shadingGradeRate = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _shadeShift = 0.0;
+    @serialize()
     public get shadeShift() {
         return this._shadeShift;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set shadeShift(value: number) {
         this._shadeShift = Math.max(-1.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _shadeToony = 0.9;
+    @serialize()
     public get shadeToony() {
         return this._shadeToony;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set shadeToony(value: number) {
         this._shadeToony = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _lightColorAttenuation = 0.0;
+    @serialize()
     public get lightColorAttenuation() {
         return this._lightColorAttenuation;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set lightColorAttenuation(value: number) {
         this._lightColorAttenuation = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _indirectLightIntensity = 0.1;
+    @serialize()
     public get indirectLightIntensity() {
         return this._indirectLightIntensity;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set indirectLightIntensity(value: number) {
         this._indirectLightIntensity = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _rimLightingMix = 0;
+    @serialize()
     public get rimLightingMix() {
         return this._rimLightingMix;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set rimLightingMix(value: number) {
         this._rimLightingMix = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _rimFresnelPower = 1;
+    @serialize()
     public get rimFresnelPower() {
         return this._rimFresnelPower;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set rimFresnelPower(value: number) {
         this._rimFresnelPower = Math.max(0.0, Math.min(100.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _rimLift = 0;
+    @serialize()
     public get rimLift() {
         return this._rimLift;
     }
-    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public set rimLift(value: number) {
         this._rimLift = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsLightsDirty();
     }
     private _outlineWidth = 0.5;
+    @serialize()
     public get outlineWidth() {
         return this._outlineWidth;
     }
-    @expandToProperty('_markAllSubMeshesAsAttributesDirty')
     public set outlineWidth(value: number) {
         this._outlineWidth = Math.max(0.01, Math.min(1.0, value));
+        this._markAllSubMeshesAsAttributesDirty();
     }
     private _outlineScaledMaxDistance = 1.0;
+    @serialize()
     public get outlineScaledMaxDistance() {
         return this._outlineScaledMaxDistance;
     }
-    @expandToProperty('_markAllSubMeshesAsAttributesDirty')
     public set outlineScaledMaxDistance(value: number) {
         this._outlineScaledMaxDistance = Math.max(1.0, Math.min(10.0, value));
+        this._markAllSubMeshesAsAttributesDirty();
     }
     private _outlineLightingMix = 1.0;
+    @serialize()
     public get outlineLightingMix() {
         return this._outlineLightingMix;
     }
-    @expandToProperty('_markAllSubMeshesAsAttributesDirty')
     public set outlineLightingMix(value: number) {
         this._outlineLightingMix = Math.max(0.0, Math.min(1.0, value));
+        this._markAllSubMeshesAsAttributesDirty();
     }
+    @serialize('alphaTest')
+    private _alphaTest = false;
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public alphaTest = false;
     private _alphaBlend = false;
+    @serialize()
     public get alphaBlend() {
         return this._alphaBlend;
     }
-    @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public set alphaBlend(value: boolean) {
         this._alphaBlend = value;
         if (value) {
             this.backFaceCulling = true;
         }
+        this._markAllSubMeshesAsMiscDirty();
     }
+    @serialize('debugMode')
+    private _debugMode = DebugMode.None;
     /** @hidden */
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public debugMode: DebugMode = DebugMode.None;
@@ -391,7 +430,6 @@ export class MToonMaterial extends PushMaterial {
     public get outlineWidthMode() {
         return this._outlineWidthMode;
     }
-    @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public set outlineWidthMode(value: OutlineWidthMode) {
         this._outlineWidthMode = value;
         if (value !== OutlineWidthMode.None && !this.outlineRenderer) {
@@ -400,14 +438,15 @@ export class MToonMaterial extends PushMaterial {
              */
             this.outlineRenderer = new MToonOutlineRenderer(this.getScene(), this);
         }
+        this._markAllSubMeshesAsMiscDirty();
     }
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineColorMode: OutlineColorMode = OutlineColorMode.MixedLighting;
     private _cullMode: CullMode = CullMode.Back;
+    @serialize()
     public get cullMode() {
       return this._cullMode;
     }
-    @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public set cullMode(value: CullMode) {
         this._cullMode = value;
         switch (this._cullMode) {
@@ -430,7 +469,10 @@ export class MToonMaterial extends PushMaterial {
                 this.twoSidedLighting = false;
                 break;
         }
+        this._markAllSubMeshesAsMiscDirty();
     }
+    @serialize()
+    private _outlineCullMode = CullMode.Front;
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineCullMode: CullMode = CullMode.Front;
     private storedCullMode = CullMode.Back;
@@ -440,7 +482,7 @@ export class MToonMaterial extends PushMaterial {
      */
     public applyOutlineCullMode(): void {
         this.storedCullMode = this.cullMode;
-        this.cullMode = this.outlineCullMode;
+        this.cullMode = this._outlineCullMode;
     }
     /**
      * CullMode をリストア
@@ -512,7 +554,7 @@ export class MToonMaterial extends PushMaterial {
             defines,
             this.specularSupported,
             this.maxSimultaneousLights,
-            this.disableLighting,
+            this._disableLighting,
         );
 
         if (this.outlineWidthMode !== OutlineWidthMode.None) {
@@ -535,27 +577,27 @@ export class MToonMaterial extends PushMaterial {
 
             if (scene.texturesEnabled) {
                 // 追加テクスチャの用意を確認する
-                if (!this.isReadyForTexture(this.diffuseTexture, defines, 'DIFFUSE')
-                    || !this.isReadyForTexture(this.emissiveTexture, defines, 'EMISSIVE')
-                    || !this.isReadyForTexture(this.shadeTexture, defines, 'SHADE')
-                    || !this.isReadyForTexture(this.receiveShadowTexture, defines, 'RECEIVE_SHADOW')
-                    || !this.isReadyForTexture(this.shadingGradeTexture, defines, 'SHADING_GRADE')
-                    || !this.isReadyForTexture(this.rimTexture, defines, 'RIM')
-                    || !this.isReadyForTexture(this.matCapTexture, defines, 'MATCAP')
-                    || !this.isReadyForTexture(this.outlineWidthTexture, defines, 'OUTLINE_WIDTH')) {
+                if (!this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE')
+                    || !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE')
+                    || !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE')
+                    || !this.isReadyForTexture(this._receiveShadowTexture, defines, 'RECEIVE_SHADOW')
+                    || !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE')
+                    || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
+                    || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
+                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')) {
                     return false;
                 }
-                if (scene.getEngine().getCaps().standardDerivatives && this.bumpTexture) {
+                if (scene.getEngine().getCaps().standardDerivatives && this._bumpTexture) {
                     // Bump texure can not be not blocking.
-                    if (!this.bumpTexture.isReady()) {
+                    if (!this._bumpTexture.isReady()) {
                         return false;
                     }
-                    MaterialHelper.PrepareDefinesForMergedUV(this.bumpTexture, defines, 'BUMP');
+                    MaterialHelper.PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
                 } else {
                     defines.BUMP = false;
                 }
 
-                defines.TWOSIDEDLIGHTING = !this._backFaceCulling && this.twoSidedLighting;
+                defines.TWOSIDEDLIGHTING = !this._backFaceCulling && this._twoSidedLighting;
             } else {
                 defines.DIFFUSE = false;
                 defines.EMISSIVE = false;
@@ -575,7 +617,7 @@ export class MToonMaterial extends PushMaterial {
         MaterialHelper.PrepareDefinesForMisc(
             mesh,
             scene,
-            this.useLogarithmicDepth,
+            this._useLogarithmicDepth,
             this.pointsCloud,
             this.fogEnabled,
             this._shouldTurnAlphaTestOn(mesh),
@@ -763,21 +805,21 @@ export class MToonMaterial extends PushMaterial {
 
             if (!this._uniformBuffer.useUbo || !this.isFrozen || !this._uniformBuffer.isSync) {
                 if (scene.texturesEnabled) {
-                    this.bindTexture(this.diffuseTexture, effect, 'diffuse', 'vDiffuseInfos');
-                    effect.setFloat('alphaCutOff', this.alphaCutOff);
-                    this.bindTexture(this.emissiveTexture, effect, 'emissive', 'vEmissiveInfos');
-                    if (this.bumpTexture) {
+                    this.bindTexture(this._diffuseTexture, effect, 'diffuse', 'vDiffuseInfos');
+                    effect.setFloat('alphaCutOff', this._alphaCutOff);
+                    this.bindTexture(this._emissiveTexture, effect, 'emissive', 'vEmissiveInfos');
+                    if (this._bumpTexture) {
                         this._uniformBuffer.updateFloat3(
                             'vBumpInfos',
-                            this.bumpTexture.coordinatesIndex,
-                            1.0 / this.bumpTexture.level,
-                            this.bumpScale,
+                            this._bumpTexture.coordinatesIndex,
+                            1.0 / this._bumpTexture.level,
+                            this._bumpScale,
                         );
-                        const matrix = this.bumpTexture.getTextureMatrix();
+                        const matrix = this._bumpTexture.getTextureMatrix();
                         if (!matrix.isIdentityAs3x2()) {
                             this._uniformBuffer.updateMatrix(`bumpMatrix`, matrix);
                         }
-                        effect.setTexture(`bumpSampler`, this.bumpTexture);
+                        effect.setTexture(`bumpSampler`, this._bumpTexture);
                         // bumpTexture は babylon.js のデフォルトと反対の状態である
                         if (scene._mirroredCameraPosition) {
                             this._uniformBuffer.updateFloat2('vTangentSpaceParams', 1.0, 1.0);
@@ -785,12 +827,12 @@ export class MToonMaterial extends PushMaterial {
                             this._uniformBuffer.updateFloat2('vTangentSpaceParams', -1.0, -1.0);
                         }
                     }
-                    this.bindTexture(this.shadeTexture, effect, 'shade', 'vShadeInfos');
-                    this.bindTexture(this.receiveShadowTexture, effect, 'receiveShadow', 'vReceiveShadowInfos');
-                    this.bindTexture(this.shadingGradeTexture, effect, 'shadingGrade', 'vShadingGradeInfos');
-                    this.bindTexture(this.rimTexture, effect, 'rim', 'vRimInfos');
-                    this.bindTexture(this.matCapTexture, effect, 'matCap', 'vMatCapInfos');
-                    this.bindTexture(this.outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
+                    this.bindTexture(this._shadeTexture, effect, 'shade', 'vShadeInfos');
+                    this.bindTexture(this._receiveShadowTexture, effect, 'receiveShadow', 'vReceiveShadowInfos');
+                    this.bindTexture(this._shadingGradeTexture, effect, 'shadingGrade', 'vShadingGradeInfos');
+                    this.bindTexture(this._rimTexture, effect, 'rim', 'vRimInfos');
+                    this.bindTexture(this._matCapTexture, effect, 'matCap', 'vMatCapInfos');
+                    this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
                 }
             }
 
@@ -802,18 +844,18 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateFloat('visibility', mesh.visibility);
 
             // MToon uniforms
-            this._uniformBuffer.updateFloat('receiveShadowRate', this.receiveShadowRate);
-            this._uniformBuffer.updateFloat('shadingGradeRate', this.shadingGradeRate);
-            this._uniformBuffer.updateFloat('shadeShift', this.shadeShift);
-            this._uniformBuffer.updateFloat('shadeToony', this.shadeToony);
-            this._uniformBuffer.updateFloat('lightColorAttenuation', this.lightColorAttenuation);
-            this._uniformBuffer.updateFloat('indirectLightIntensity', this.indirectLightIntensity);
-            this._uniformBuffer.updateFloat('rimLightingMix', this.rimLightingMix);
-            this._uniformBuffer.updateFloat('rimFresnelPower', this.rimFresnelPower);
-            this._uniformBuffer.updateFloat('rimLift', this.rimLift);
-            this._uniformBuffer.updateFloat('outlineWidth', this.outlineWidth);
-            this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this.outlineScaledMaxDistance);
-            this._uniformBuffer.updateFloat('outlineLightingMix', this.outlineLightingMix);
+            this._uniformBuffer.updateFloat('receiveShadowRate', this._receiveShadowRate);
+            this._uniformBuffer.updateFloat('shadingGradeRate', this._shadingGradeRate);
+            this._uniformBuffer.updateFloat('shadeShift', this._shadeShift);
+            this._uniformBuffer.updateFloat('shadeToony', this._shadeToony);
+            this._uniformBuffer.updateFloat('lightColorAttenuation', this._lightColorAttenuation);
+            this._uniformBuffer.updateFloat('indirectLightIntensity', this._indirectLightIntensity);
+            this._uniformBuffer.updateFloat('rimLightingMix', this._rimLightingMix);
+            this._uniformBuffer.updateFloat('rimFresnelPower', this._rimFresnelPower);
+            this._uniformBuffer.updateFloat('rimLift', this._rimLift);
+            this._uniformBuffer.updateFloat('outlineWidth', this._outlineWidth);
+            this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
+            this._uniformBuffer.updateFloat('outlineLightingMix', this._outlineLightingMix);
 
             // Clip plane
             MaterialHelper.BindClipPlane(effect, scene);
@@ -1009,7 +1051,7 @@ export class MToonMaterial extends PushMaterial {
      * 定数を設定する
      */
     private applyDefines(defines: any): void {
-        switch (this.debugMode) {
+        switch (this._debugMode) {
             case DebugMode.Normal:
                 if (defines.MTOON_DEBUG_NORMAL !== true) {
                     defines.MTOON_DEBUG_NORMAL = true;
@@ -1095,35 +1137,40 @@ export class MToonMaterial extends PushMaterial {
      * @inheritdoc
      */
     public needAlphaBlending() {
-        return this.alphaBlend;
+        return this._alphaBlend;
     }
 
     /**
      * @inheritdoc
      */
     public needAlphaTesting() {
-        return this.alphaTest;
+        return this._alphaTest;
     }
 
     /**
      * @inheritdoc
      */
-    public clone(name: string): Nullable<MToonMaterial> {
-        throw new Error(`MToonMaterial cannot be cloned.`);
+    public clone(name: string): MToonMaterial {
+        const result = SerializationHelper.Clone(() => new MToonMaterial(name, this.getScene()), this);
+
+        result.name = name;
+        result.id = name;
+
+        return result;
     }
 
     /**
      * @inheritdoc
      */
     public serialize(): any {
-        throw new Error(`MToonMaterial cannot be serialized`);
+        return SerializationHelper.Serialize(this);
     }
 
     /**
      * @inheritdoc
      */
     public static Parse(parsedMaterial: any, scene: Scene, rootUrl: string): MToonMaterial {
-        throw new Error(`MToonMaterial cannot be parsed`);
+        return SerializationHelper.Parse(() => new MToonMaterial(parsedMaterial.name, scene), parsedMaterial, scene, rootUrl);
     }
 //#endregion
 }
