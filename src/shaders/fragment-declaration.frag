@@ -4,7 +4,7 @@ uniform vec4 vDiffuseColor;
 uniform vec3 vEmissiveColor;
 uniform vec3 vShadeColor;
 uniform vec3 vRimColor;
-uniform vec3 vOutlineColor;
+uniform vec4 vOutlineColor;
 
 uniform float visibility;
 

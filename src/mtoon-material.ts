@@ -449,6 +449,15 @@ export class MToonMaterial extends PushMaterial {
     public restoreOutlineCullMode(): void {
         this.cullMode = this.storedCullMode;
     }
+    /**
+     * @hidden
+     */
+    public getOutlineRendererName(): string {
+        if (!this.outlineRenderer) {
+            return '';
+        }
+        return this.outlineRenderer.name;
+    }
 //#endregion
 
     /**
@@ -505,6 +514,13 @@ export class MToonMaterial extends PushMaterial {
             this.maxSimultaneousLights,
             this.disableLighting,
         );
+
+        if (this.outlineWidthMode !== OutlineWidthMode.None) {
+            // アウトライン描画のためには normal が必要
+            defines._needNormals = true;
+        }
+
+        this.applyDefines(defines);
 
         // Multiview
         MaterialHelper.PrepareDefinesForMultiview(scene, defines);
@@ -654,6 +670,7 @@ export class MToonMaterial extends PushMaterial {
                 'vRimColor', 'vRimInfos', 'RimMatrix',
                 'vMatCapInfos', 'MatCapMatrix',
                 'vOutlineColor', 'vOutlineWidthInfos', 'outlineWidthMatrix',
+                'aspect', 'isOutline',
 
                 'shadingGradeRate', 'receiveShadowRate', 'shadeShift', 'shadeToony',
                 'rimLightingMix', 'rimFresnelPower', 'rimLift',
@@ -736,7 +753,6 @@ export class MToonMaterial extends PushMaterial {
         this._activeEffect = effect;
 
         this.bindOnlyWorldMatrix(world);
-        this.applyDefines(defines);
         MaterialHelper.BindBonesParameters(mesh, effect);
 
         const mustRebind = scene.isCachedMaterialInvalid(this, effect, mesh.visibility);
@@ -809,7 +825,7 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateColor3('vEmissiveColor', this.emissiveColor);
             this._uniformBuffer.updateColor3('vShadeColor', this.shadeColor);
             this._uniformBuffer.updateColor3('vRimColor', this.rimColor);
-            this._uniformBuffer.updateColor3('vOutlineColor', this.outlineColor);
+            this._uniformBuffer.updateColor4('vOutlineColor', this.outlineColor, 1.0);
 
             MaterialHelper.BindEyePosition(effect, scene);
             effect.setVector3('vEyeUp', scene.activeCamera!.upVector);
@@ -837,6 +853,8 @@ export class MToonMaterial extends PushMaterial {
             // Log. depth
             MaterialHelper.BindLogDepth(defines, effect, scene);
         }
+        effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera!));
+        effect.setFloat('isOutline', 0.0);
 
         this._uniformBuffer.update();
         this._afterBind(mesh, this._activeEffect);
