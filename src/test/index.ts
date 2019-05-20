@@ -9,12 +9,12 @@ import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Scene } from '@babylonjs/core/scene';
 import { MToonMaterial } from '../mtoon-material';
-import { addInspectableCustomProperties } from './inspectable-custom-properties';
 
 import '@babylonjs/core/Helpers/sceneHelpers';
 import '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
 import '@babylonjs/inspector';
+import { Material } from '@babylonjs/core/Materials/material';
 
 async function main() {
     const debugProperties = getDebugProperties();
@@ -29,10 +29,12 @@ async function main() {
     );
 
     const scene = new Scene(engine);
-    const camera = new ArcRotateCamera('MainCamera1', 0, 0, 3, new Vector3(0, 1.2, 0), scene, true);
+    const camera = new ArcRotateCamera('MainCamera1', 0, 0, 3, new Vector3(0, 1.5, 0), scene, true);
     camera.lowerRadiusLimit = 0.1;
     camera.upperRadiusLimit = 20;
     camera.wheelDeltaPercentage = 0.01;
+    camera.setPosition(new Vector3(0, 1.5, -3));
+    camera.setTarget(new Vector3(0, 1.5, 0));
     camera.attachControl(canvas);
 
     scene.createDefaultEnvironment({
@@ -103,12 +105,20 @@ async function main() {
         mat.rimColor = new Color3(1, 1, 1);
         mtoonMaterials.push(mat);
     }
+    {
+        const mat = new MToonMaterial('MtoonMaterialMatCap', scene);
+        // Textures from https://www.outworldz.com/cgi/free-seamless-textures.plx?c=UV%20Checker
+        mat.matCapTexture = new Texture('resources/matcap.png', scene, true, false);
+        mat.diffuseColor = new Color3(0, 0, 0);
+        mat.shadeColor = new Color3(0, 0, 0);
+        mtoonMaterials.push(mat);
+    }
 
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
+        mat.sideOrientation = Material.CounterClockWiseSideOrientation;
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
-        addInspectableCustomProperties(mat);
         const sphere = Mesh.CreateSphere(`${mat.name}_Sphere`, 16, 1, scene);
         sphere.position = new Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;

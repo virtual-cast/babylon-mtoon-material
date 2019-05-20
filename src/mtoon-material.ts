@@ -19,6 +19,7 @@ import { MToonOutlineRenderer } from './mtoon-outline-renderer';
 // side-effect
 import '@babylonjs/core/Rendering/edgesRenderer';
 import '@babylonjs/core/Rendering/outlineRenderer';
+import { getInspectableCustomProperties } from './inspectable-custom-properties';
 
 // シェーダ文字列を取得
 const UboDeclaration = require('./shaders/ubo-declaration.vert').default;
@@ -520,6 +521,10 @@ export class MToonMaterial extends PushMaterial {
             Effect.ShadersStore.mtoonVertexShader = VertexShader;
             Effect.ShadersStore.mtoonFragmentShader = FragmentShader;
         }
+
+        // Inspector にプロパティを追加
+        this.inspectableCustomProperties = this.inspectableCustomProperties || [];
+        this.inspectableCustomProperties.push(...getInspectableCustomProperties());
     }
 
     /**
