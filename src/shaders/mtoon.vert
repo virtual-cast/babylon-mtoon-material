@@ -125,15 +125,21 @@ void main(void) {
 
     float outlineTex = 1.0;
     if (isOutline == 1.0) {
-#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0
+#ifdef OUTLINE_WIDTH
+    #if OUTLINE_WIDTHDIRECTUV == 0
         if (vOutlineWidthInfos.x == 0.) {
             vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));
         } else {
             vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));
         }
-#endif
-#ifdef OUTLINE_WIDTH
-        outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
+    #elif defined(MAINUV1)
+        vec2 vOutlineWidthUV = vMainUV1;
+    #elif defined(MAINUV2)
+        vec2 vOutlineWidthUV = vMainUV2;
+    #else
+        vec2 vOutlineWidthUV = vec2(0., 0.);
+    #endif
+    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
 #endif
 
 #ifdef MTOON_OUTLINE_WIDTH_WORLD
