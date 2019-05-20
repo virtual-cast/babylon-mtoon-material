@@ -164,6 +164,205 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/inspectable-custom-properties.ts":
+/*!**********************************************!*\
+  !*** ./src/inspectable-custom-properties.ts ***!
+  \**********************************************/
+/*! exports provided: getInspectableCustomProperties */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getInspectableCustomProperties", function() { return getInspectableCustomProperties; });
+/* harmony import */ var _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Misc/iInspectable */ "./node_modules/@babylonjs/core/Misc/iInspectable.js");
+
+/**
+ * MToonMaterial に Inspector 上で調整可能なパラメータを設定する
+ * @param material
+ * @link https://doc.babylonjs.com/how_to/debug_layer#extensibility
+ */
+function getInspectableCustomProperties() {
+    return [
+        {
+            label: 'DiffuseColor',
+            propertyName: 'diffuseColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'AmbientColor',
+            propertyName: 'ambientColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'EmissiveColor',
+            propertyName: 'emissiveColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'ShadeColor',
+            propertyName: 'shadeColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'RimColor',
+            propertyName: 'rimColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'OutlineColor',
+            propertyName: 'outlineColor',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
+        },
+        {
+            label: 'ReceiveShadowRate',
+            propertyName: 'receiveShadowRate',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'ShadingGradeRate',
+            propertyName: 'shadingGradeRate',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'ShadeShift',
+            propertyName: 'shadeShift',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: -1,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'ShadeToony',
+            propertyName: 'shadeToony',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'LightColorAttenuation',
+            propertyName: 'lightColorAttenuation',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'IndirectLightIntensity',
+            propertyName: 'indirectLightIntensity',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'RimLightingMix',
+            propertyName: 'rimLightingMix',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'RimFresnelPower',
+            propertyName: 'rimFresnelPower',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0.01,
+            max: 100,
+            step: 4,
+        },
+        {
+            label: 'RimLift',
+            propertyName: 'rimLift',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0.0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'OutlineWidth',
+            propertyName: 'outlineWidth',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0.01,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'OutlineScaledMaxDistance',
+            propertyName: 'outlineScaledMaxDistance',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 1.0,
+            max: 10.0,
+            step: 0.01,
+        },
+        {
+            label: 'OutlineLightingMix',
+            propertyName: 'outlineLightingMix',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+        {
+            label: 'DebugMode',
+            propertyName: 'debugMode',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 2,
+            step: 1,
+        },
+        {
+            label: 'OutlineWidthMode',
+            propertyName: 'outlineWidthMode',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 2,
+            step: 1,
+        },
+        {
+            label: 'OutlineColorMode',
+            propertyName: 'outlineColorMode',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 1,
+        },
+        {
+            label: 'CullMode',
+            propertyName: 'cullMode',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 2,
+            step: 1,
+        },
+        {
+            label: 'OutlineCullMode',
+            propertyName: 'outlineCullMode',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 2,
+            step: 1,
+        },
+        {
+            label: 'AlphaCutOff',
+            propertyName: 'alphaCutOff',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 1,
+            step: 0.01,
+        },
+    ];
+}
+
+
+/***/ }),
+
 /***/ "./src/mtoon-material-defines.ts":
 /*!***************************************!*\
   !*** ./src/mtoon-material-defines.ts ***!
@@ -279,6 +478,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
 /* harmony import */ var _babylonjs_core_Rendering_edgesRenderer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Rendering/edgesRenderer */ "./node_modules/@babylonjs/core/Rendering/edgesRenderer.js");
 /* harmony import */ var _babylonjs_core_Rendering_outlineRenderer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Rendering/outlineRenderer */ "./node_modules/@babylonjs/core/Rendering/outlineRenderer.js");
+/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
 
 
 
@@ -292,6 +492,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 // side-effect
+
 
 
 // シェーダ文字列を取得
@@ -383,6 +584,7 @@ var MToonMaterial = /** @class */ (function (_super) {
      * @inheritdoc
      */
     function MToonMaterial(name, scene) {
+        var _a;
         var _this = _super.call(this, name, scene) || this;
         //#region Properties
         _this._diffuseTexture = null;
@@ -538,6 +740,9 @@ var MToonMaterial = /** @class */ (function (_super) {
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
         }
+        // Inspector にプロパティを追加
+        _this.inspectableCustomProperties = _this.inspectableCustomProperties || [];
+        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_14__["getInspectableCustomProperties"])());
         return _this;
     }
     Object.defineProperty(MToonMaterial.prototype, "appendedTextures", {
@@ -1743,12 +1948,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Meshes_mesh__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Meshes/mesh */ "./node_modules/@babylonjs/core/Meshes/mesh.js");
 /* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
 /* harmony import */ var _mtoon_material__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ../mtoon-material */ "./src/mtoon-material.ts");
-/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/test/inspectable-custom-properties.ts");
-/* harmony import */ var _babylonjs_core_Helpers_sceneHelpers__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Helpers/sceneHelpers */ "./node_modules/@babylonjs/core/Helpers/sceneHelpers.js");
-/* harmony import */ var _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/sphereBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/sphereBuilder.js");
-/* harmony import */ var _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/torusKnotBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/torusKnotBuilder.js");
-/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @babylonjs/inspector */ "./node_modules/@babylonjs/inspector/babylon.inspector.bundle.max.js");
-/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_16___default = /*#__PURE__*/__webpack_require__.n(_babylonjs_inspector__WEBPACK_IMPORTED_MODULE_16__);
+/* harmony import */ var _babylonjs_core_Helpers_sceneHelpers__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Helpers/sceneHelpers */ "./node_modules/@babylonjs/core/Helpers/sceneHelpers.js");
+/* harmony import */ var _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/sphereBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/sphereBuilder.js");
+/* harmony import */ var _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/torusKnotBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/torusKnotBuilder.js");
+/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/inspector */ "./node_modules/@babylonjs/inspector/babylon.inspector.bundle.max.js");
+/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15__);
+/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
 
 
 
@@ -1768,7 +1973,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function main() {
     return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat;
+        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat;
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1779,10 +1984,12 @@ function main() {
                         disableWebGL2Support: debugProperties.webgl1,
                     });
                     scene = new _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__["Scene"](engine);
-                    camera = new _babylonjs_core_Cameras_arcRotateCamera__WEBPACK_IMPORTED_MODULE_1__["ArcRotateCamera"]('MainCamera1', 0, 0, 3, new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Vector3"](0, 1.2, 0), scene, true);
+                    camera = new _babylonjs_core_Cameras_arcRotateCamera__WEBPACK_IMPORTED_MODULE_1__["ArcRotateCamera"]('MainCamera1', 0, 0, 3, new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Vector3"](0, 1.5, 0), scene, true);
                     camera.lowerRadiusLimit = 0.1;
                     camera.upperRadiusLimit = 20;
                     camera.wheelDeltaPercentage = 0.01;
+                    camera.setPosition(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Vector3"](0, 1.5, -3));
+                    camera.setTarget(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Vector3"](0, 1.5, 0));
                     camera.attachControl(canvas);
                     scene.createDefaultEnvironment({
                         createGround: true,
@@ -1845,11 +2052,19 @@ function main() {
                         mat.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](1, 1, 1);
                         mtoonMaterials.push(mat);
                     }
+                    {
+                        mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_11__["MToonMaterial"]('MtoonMaterialMatCap', scene);
+                        // Textures from https://www.outworldz.com/cgi/free-seamless-textures.plx?c=UV%20Checker
+                        mat.matCapTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('resources/matcap.png', scene, true, false);
+                        mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](0, 0, 0);
+                        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](0, 0, 0);
+                        mtoonMaterials.push(mat);
+                    }
                     mtoonMaterials.forEach(function (mat, index) {
                         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
+                        mat.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_16__["Material"].CounterClockWiseSideOrientation;
                         mat.cullMode = 1;
                         mat.outlineCullMode = 2;
-                        Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_12__["addInspectableCustomProperties"])(mat);
                         var sphere = _babylonjs_core_Meshes_mesh__WEBPACK_IMPORTED_MODULE_9__["Mesh"].CreateSphere(mat.name + "_Sphere", 16, 1, scene);
                         sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Vector3"](-1.2 * index, 1.2, 0);
                         sphere.receiveShadows = true;
@@ -1887,205 +2102,6 @@ function getDebugProperties() {
 main().catch(function (reason) {
     console.error(reason);
 });
-
-
-/***/ }),
-
-/***/ "./src/test/inspectable-custom-properties.ts":
-/*!***************************************************!*\
-  !*** ./src/test/inspectable-custom-properties.ts ***!
-  \***************************************************/
-/*! exports provided: addInspectableCustomProperties */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "addInspectableCustomProperties", function() { return addInspectableCustomProperties; });
-/* harmony import */ var _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Misc/iInspectable */ "./node_modules/@babylonjs/core/Misc/iInspectable.js");
-
-/**
- * MToonMaterial に Inspector 上で調整可能なパラメータを設定する
- * @param material
- * @link https://doc.babylonjs.com/how_to/debug_layer#extensibility
- */
-function addInspectableCustomProperties(material) {
-    material.inspectableCustomProperties = [
-        {
-            label: 'DiffuseColor',
-            propertyName: 'diffuseColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'AmbientColor',
-            propertyName: 'ambientColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'EmissiveColor',
-            propertyName: 'emissiveColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'ShadeColor',
-            propertyName: 'shadeColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'RimColor',
-            propertyName: 'rimColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'OutlineColor',
-            propertyName: 'outlineColor',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Color3,
-        },
-        {
-            label: 'ReceiveShadowRate',
-            propertyName: 'receiveShadowRate',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'ShadingGradeRate',
-            propertyName: 'shadingGradeRate',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'ShadeShift',
-            propertyName: 'shadeShift',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: -1,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'ShadeToony',
-            propertyName: 'shadeToony',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'LightColorAttenuation',
-            propertyName: 'lightColorAttenuation',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'IndirectLightIntensity',
-            propertyName: 'indirectLightIntensity',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'RimLightingMix',
-            propertyName: 'rimLightingMix',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'RimFresnelPower',
-            propertyName: 'rimFresnelPower',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0.01,
-            max: 100,
-            step: 4,
-        },
-        {
-            label: 'RimLift',
-            propertyName: 'rimLift',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0.0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'OutlineWidth',
-            propertyName: 'outlineWidth',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0.01,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'OutlineScaledMaxDistance',
-            propertyName: 'outlineScaledMaxDistance',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 1.0,
-            max: 10.0,
-            step: 0.01,
-        },
-        {
-            label: 'OutlineLightingMix',
-            propertyName: 'outlineLightingMix',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-        {
-            label: 'DebugMode',
-            propertyName: 'debugMode',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 2,
-            step: 1,
-        },
-        {
-            label: 'OutlineWidthMode',
-            propertyName: 'outlineWidthMode',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 2,
-            step: 1,
-        },
-        {
-            label: 'OutlineColorMode',
-            propertyName: 'outlineColorMode',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 1,
-        },
-        {
-            label: 'CullMode',
-            propertyName: 'cullMode',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 2,
-            step: 1,
-        },
-        {
-            label: 'OutlineCullMode',
-            propertyName: 'outlineCullMode',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 2,
-            step: 1,
-        },
-        {
-            label: 'AlphaCutOff',
-            propertyName: 'alphaCutOff',
-            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
-            min: 0,
-            max: 1,
-            step: 0.01,
-        },
-    ];
-}
 
 
 /***/ })
