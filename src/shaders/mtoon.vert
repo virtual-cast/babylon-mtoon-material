@@ -171,7 +171,7 @@ void main(void) {
 
     gl_Position = vertex;
 
-    vec4 worldPos = finalWorld * vec4(vertex.xyz, 1.0);
+    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);
     vPositionW = vec3(worldPos);
 
 #ifdef NORMAL
