@@ -9,7 +9,6 @@ import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { Scene } from '@babylonjs/core/scene';
 import { MToonMaterial } from '../mtoon-material';
-import { addInspectableCustomProperties } from './inspectable-custom-properties';
 
 import '@babylonjs/core/Helpers/sceneHelpers';
 import '@babylonjs/core/Meshes/Builders/sphereBuilder';
@@ -108,7 +107,6 @@ async function main() {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
-        addInspectableCustomProperties(mat);
         const sphere = Mesh.CreateSphere(`${mat.name}_Sphere`, 16, 1, scene);
         sphere.position = new Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;
