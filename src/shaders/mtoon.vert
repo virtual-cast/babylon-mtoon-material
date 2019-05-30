@@ -88,6 +88,12 @@ varying vec3 vNormalW;
 #ifdef OUTLINE_WIDTH
     uniform sampler2D outlineWidthSampler;
 #endif
+#if defined(UV_OFFSET_NORMAL) && UV_OFFSET_NORMALDIRECTUV == 0
+    varying vec2 vUvOffsetNormalUV;
+#endif
+#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0
+    varying vec2 vUvAnimationMaskUV;
+#endif
 
 uniform float aspect;
 uniform float isOutline;
@@ -165,7 +171,7 @@ void main(void) {
         vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
         projectedNormal *= min(vertex.w, outlineScaledMaxDistance);
         projectedNormal.x *= aspect;
-        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy;
+        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1 - abs(normalize(view * vec4(normalUpdated, 1.0).z)), 0.0, 1.0); // ignore offset when normal toward camera
     }
 #endif
 
@@ -250,6 +256,20 @@ void main(void) {
         vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));
     } else {
         vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));
+    }
+#endif
+#if defined(UV_OFFSET_NORMAL) && UV_OFFSET_NORMALDIRECTUV == 0
+    if (vUvOffsetNormalInfos.x == 0.) {
+        vUvOffsetNormalUV = vec2(uvOffsetNormalMatrix * vec4(uv, 1.0, 0.0));
+    } else {
+        vUvOffsetNormalUV = vec2(uvOffsetNormalMatrix * vec4(uv2, 1.0, 0.0));
+    }
+#endif
+#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0
+    if (vUvAnimationMaskInfos.x == 0.) {
+        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv, 1.0, 0.0));
+    } else {
+        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv2, 1.0, 0.0));
     }
 #endif
 

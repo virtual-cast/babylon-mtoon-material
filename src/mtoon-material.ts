@@ -4,27 +4,24 @@ import { Material } from '@babylonjs/core/Materials/material';
 import { MaterialHelper } from '@babylonjs/core/Materials/materialHelper';
 import { PushMaterial } from '@babylonjs/core/Materials/pushMaterial';
 import { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
-import { Color3, Matrix } from '@babylonjs/core/Maths/math';
+import { Color3, Matrix, Vector4 } from '@babylonjs/core/Maths/math';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
-import { expandToProperty, SerializationHelper, serializeAsTexture, serialize, serializeAsColor3 } from '@babylonjs/core/Misc/decorators';
+import { expandToProperty, SerializationHelper, serialize, serializeAsColor3, serializeAsTexture } from '@babylonjs/core/Misc/decorators';
 import { IAnimatable } from '@babylonjs/core/Misc/tools';
 import { Scene } from '@babylonjs/core/scene';
 import { Nullable } from '@babylonjs/core/types';
+import { getInspectableCustomProperties } from './inspectable-custom-properties';
 import { MToonMaterialDefines } from './mtoon-material-defines';
 import { MToonOutlineRenderer } from './mtoon-outline-renderer';
-
-// side-effect
-import '@babylonjs/core/Rendering/edgesRenderer';
-import '@babylonjs/core/Rendering/outlineRenderer';
-import { getInspectableCustomProperties } from './inspectable-custom-properties';
 
 // シェーダ文字列を取得
 const UboDeclaration = require('./shaders/ubo-declaration.vert').default;
 const VertexDeclaration = require('./shaders/vertex-declaration.vert').default;
 const FragmentDeclaration = require('./shaders/fragment-declaration.frag').default;
+const BumpFragment = require('./shaders/bump-fragment.frag').default;
 const LightFragment = require('./shaders/light-fragment.frag').default;
 const VertexShader = require('./shaders/mtoon.vert').default;
 const FragmentShader = require('./shaders/mtoon.frag').default;
@@ -32,31 +29,31 @@ const FragmentShader = require('./shaders/mtoon.frag').default;
 /**
  * デバッグモード
  */
-enum DebugMode {
-    None,
+export enum DebugMode {
+    None = 0,
     Normal,
     LitShadeRate,
 }
 /**
  * アウトラインカラーモード
  */
-enum OutlineColorMode {
-    FixedColor,
+export enum OutlineColorMode {
+    FixedColor = 0,
     MixedLighting,
 }
 /**
  * アウトライン幅モード
  */
-enum OutlineWidthMode {
-    None,
+export enum OutlineWidthMode {
+    None = 0,
     WorldCorrdinates,
     ScreenCoordinates,
 }
 /**
  * Cull モード
  */
-enum CullMode {
-    Off,
+export enum CullMode {
+    Off = 0,
     Front,
     Back,
 }
@@ -69,40 +66,11 @@ enum CullMode {
  * VRM での出力パラメータとプロパティのマッピングは下記となります。
  *
  * @link https://github.com/Santarh/MToon/
- * @link https://dwango.github.io/vrm/univrm/shaders/mtoon/
- * @property alphaCutOut = _Cutoff
- * @property diffuseColor = _Color
- * @property shadeColor = _ShadeColor
- * @property diffuseTexture = _MainTex
- * @property shadeTexture = _ShadeTexture
- * @property parallaxScaleBias = _BumpScale
- * @property bumpTexture = _BumpMap
- * @property receiveShadowTexture = _ReceiveShadowTexture
- * @property receiveShadowRate = _ReceiveShadowRate
- * @property shadingGradeRate = _ShadingGradeRate
- * @property shadingGradeTexture = _ShadingGradeTexture
- * @property shadeShift = _ShadeShift
- * @property shadeToony = _ShadeToony
- * @property lightColorAttenuation = _LightColorAttenuation
- * @property indirectLightIntensity = _IndirectLightIntensity
- * @property rimTexture = _RimTexture
- * @property rimLightingMix = _RimLightingMix
- * @property rimFresnelPower = _RimFresnelPower
- * @property rimLift = _RimLift
- * @property matCapTexture = _SphereAdd
- * @property emissiveColor = _EmissionColor
- * @property emissiveTexture = _EmissionMap
- * @property outlineWidthTexture = _OutlineWidthTexture
- * @property outlineWidth = _OutlineWidth
- * @property outlineScaledMaxDistance = _OutlineScaledMaxDistance
- * @property outlineColor = _OutlineColor
- * @property outlineLightingMix = _OutlineLightingMix
- * @property debugMode = _DebugMode
- * @property outlineWidthMode = _OutlineWidthMode
- * @property outlineColorMode = _OutlineColorMode
+ * @link https://vrm.dev/univrm/shaders/mtoon/
  */
 export class MToonMaterial extends PushMaterial {
 //#region Properties
+//#region Textures
     @serializeAsTexture('diffuseTexture')
     private _diffuseTexture: Nullable<BaseTexture> = null;
     /**
@@ -110,6 +78,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesAndMiscDirty')
     public diffuseTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('emissiveTexture')
     private _emissiveTexture: Nullable<BaseTexture> = null;
     /**
@@ -117,6 +86,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public emissiveTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('bumpTexture')
     private _bumpTexture: Nullable<BaseTexture> = null;
     /**
@@ -124,6 +94,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public bumpTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('shadeTexture')
     private _shadeTexture: Nullable<BaseTexture> = null;
     /**
@@ -131,6 +102,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public shadeTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('receiveShadowTexture')
     private _receiveShadowTexture: Nullable<BaseTexture> = null;
     /**
@@ -139,6 +111,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public receiveShadowTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('shadingGradeTexture')
     private _shadingGradeTexture: Nullable<BaseTexture> = null;
     /**
@@ -147,6 +120,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public shadingGradeTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('rimTexture')
     private _rimTexture: Nullable<BaseTexture> = null;
     /**
@@ -154,6 +128,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public rimTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('matCapTexture')
     private _matCapTexture: Nullable<BaseTexture> = null;
     /**
@@ -161,6 +136,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public matCapTexture: Nullable<BaseTexture> = null;
+
     @serializeAsTexture('outlineWidthTexture')
     private _outlineWidthTexture: Nullable<BaseTexture> = null;
     /**
@@ -168,6 +144,22 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public outlineWidthTexture: Nullable<BaseTexture> = null;
+
+    @serializeAsTexture('outlineWidthTexture')
+    private _uvOffsetNormalTexture: Nullable<BaseTexture> = null;
+    /**
+     * UV オフセット法線テクスチャ
+     */
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
+    public uvOffsetNormalTexture: Nullable<BaseTexture> = null;
+
+    @serializeAsTexture('outlineWidthTexture')
+    private _uvAnimationMaskTexture: Nullable<BaseTexture> = null;
+    /**
+     * UV アニメーションマスクテクスチャ
+     */
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
+    public uvAnimationMaskTexture: Nullable<BaseTexture> = null;
 
     /**
      * テクスチャ参照の一覧
@@ -180,8 +172,11 @@ export class MToonMaterial extends PushMaterial {
             this._shadeTexture,
             this._receiveShadowTexture,
             this._shadingGradeTexture,
+            this._rimTexture,
             this._matCapTexture,
             this._outlineWidthTexture,
+            this._uvOffsetNormalTexture,
+            this._uvAnimationMaskTexture,
         ];
     }
     /**
@@ -190,11 +185,13 @@ export class MToonMaterial extends PushMaterial {
     protected get appendedActiveTextures(): BaseTexture[] {
         return this.appendedTextures.filter((t) => t !== null) as BaseTexture[];
     }
+//#endregion
 
+//#region babylon parameters
     /**
-     * 現状 MToon は 1 ライトのみ考慮する
+     * 対応最大ライト数
      */
-    public readonly maxSimultaneousLights = 1;
+    public readonly maxSimultaneousLights = 16;
     /**
      * Specular 非対応
      */
@@ -252,6 +249,9 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public alphaCutOff = 0.5;
+//#endregion
+
+//#region Colors
     /**
      * diffuseTexture に乗算される色
      */
@@ -288,7 +288,9 @@ export class MToonMaterial extends PushMaterial {
      */
     @serialize('outline')
     public outlineColor = new Color3(0.0, 0.0, 0.0);
+//#endregion
 
+//#region MToon parameters
     private _bumpScale = 1.0;
     @serialize()
     public get bumpScale() {
@@ -405,6 +407,43 @@ export class MToonMaterial extends PushMaterial {
         this._outlineLightingMix = Math.max(0.0, Math.min(1.0, value));
         this._markAllSubMeshesAsAttributesDirty();
     }
+    private _uvOffsetNormalScale = 1.0;
+    @serialize()
+    public get uvOffsetNormalScale() {
+        return this._uvOffsetNormalScale;
+    }
+    public set uvOffsetNormalScale(value: number) {
+        this._uvOffsetNormalScale = value;
+        this._markAllSubMeshesAsMiscDirty();
+    }
+    private _uvAnimationScrollX = 0.0;
+    @serialize()
+    public get uvAnimationScrollX() {
+        return this._uvAnimationScrollX;
+    }
+    public set uvAnimationScrollX(value: number) {
+        this._uvAnimationScrollX = value;
+        this._markAllSubMeshesAsMiscDirty();
+    }
+    private _uvAnimationScrollY = 0.0;
+    @serialize()
+    public get uvAnimationScrollY() {
+        return this._uvAnimationScrollY;
+    }
+    public set uvAnimationScrollY(value: number) {
+        this._uvAnimationScrollY = value;
+        this._markAllSubMeshesAsMiscDirty();
+    }
+    private _uvAnimationRotation = 0.0;
+    @serialize()
+    public get uvAnimationRotation() {
+        return this._uvAnimationRotation;
+    }
+    public set uvAnimationRotation(value: number) {
+        this._uvAnimationRotation = value;
+        this._markAllSubMeshesAsMiscDirty();
+    }
+
     @serialize('alphaTest')
     private _alphaTest = false;
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
@@ -426,6 +465,7 @@ export class MToonMaterial extends PushMaterial {
     /** @hidden */
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public debugMode: DebugMode = DebugMode.None;
+
     private outlineRenderer?: MToonOutlineRenderer;
     private _outlineWidthMode: OutlineWidthMode = OutlineWidthMode.None;
     public get outlineWidthMode() {
@@ -443,6 +483,7 @@ export class MToonMaterial extends PushMaterial {
     }
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineColorMode: OutlineColorMode = OutlineColorMode.MixedLighting;
+
     private _cullMode: CullMode = CullMode.Back;
     @serialize()
     public get cullMode() {
@@ -502,6 +543,7 @@ export class MToonMaterial extends PushMaterial {
         return this.outlineRenderer.name;
     }
 //#endregion
+//#endregion
 
     /**
      * @inheritdoc
@@ -509,15 +551,13 @@ export class MToonMaterial extends PushMaterial {
     public constructor(name: string, scene: Scene) {
         super(name, scene);
 
-        // 裏面描画モードになることがあるのでここで右手座標系に強制する
-        // this.sideOrientation = Material.ClockWiseSideOrientation;
-
         // シェーダストアに登録する
         if (!Effect.IncludesShadersStore.mtoonUboDeclaration) {
             Effect.IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
             Effect.IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
             Effect.IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
             Effect.IncludesShadersStore.mtoonLightFragment = LightFragment;
+            Effect.IncludesShadersStore.mtoonBumpFragment = BumpFragment;
             Effect.ShadersStore.mtoonVertexShader = VertexShader;
             Effect.ShadersStore.mtoonFragmentShader = FragmentShader;
         }
@@ -529,7 +569,7 @@ export class MToonMaterial extends PushMaterial {
 
     /**
      * @inheritdoc
-     * 利用可能かどうかチェックする
+     * SubMesh が利用可能かどうかチェックする
      */
     public isReadyForSubMesh(mesh: AbstractMesh, subMesh: SubMesh, useInstances = false): boolean {
         if (subMesh.effect && this.isFrozen) {
@@ -589,7 +629,10 @@ export class MToonMaterial extends PushMaterial {
                     || !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE')
                     || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
                     || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
-                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')) {
+                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')
+                    || !this.isReadyForTexture(this._uvOffsetNormalTexture, defines, 'UV_OFFSET_NORMAL')
+                    || !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')
+                ) {
                     return false;
                 }
                 if (scene.getEngine().getCaps().standardDerivatives && this._bumpTexture) {
@@ -613,6 +656,8 @@ export class MToonMaterial extends PushMaterial {
                 defines.MATCAP = false;
                 defines.OUTLINE_WIDTH = false;
                 defines.BUMP = false;
+                defines.UV_OFFSET_NORMAL = false;
+                defines.UV_ANIMATION_MASK = false;
             }
 
             defines.PREMULTIPLYALPHA = (this.alphaMode === Constants.ALPHA_PREMULTIPLIED || this.alphaMode === Constants.ALPHA_PREMULTIPLIED_PORTERDUFF);
@@ -723,13 +768,16 @@ export class MToonMaterial extends PushMaterial {
                 'rimLightingMix', 'rimFresnelPower', 'rimLift',
                 'lightColorAttenuation', 'indirectLightIntensity',
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
+                'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
 
-                'vEyePosition', 'vEyeUp',
+                'vEyePosition', 'vEyeUp', 'time',
             ];
 
             const samplers = [
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
-                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler', 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
+                'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'uvOffsetNormalSampler', 'uvAnimationMaskSampler',
             ];
 
             const uniformBuffers = ['Material', 'Scene'];
@@ -838,6 +886,8 @@ export class MToonMaterial extends PushMaterial {
                     this.bindTexture(this._rimTexture, effect, 'rim', 'vRimInfos');
                     this.bindTexture(this._matCapTexture, effect, 'matCap', 'vMatCapInfos');
                     this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
+                    this.bindTexture(this._uvOffsetNormalTexture, effect, 'uvOffsetNormal', 'vUvOffsetNormalInfos');
+                    this.bindTexture(this._uvAnimationMaskTexture, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
                 }
             }
 
@@ -861,6 +911,10 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateFloat('outlineWidth', this._outlineWidth);
             this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
             this._uniformBuffer.updateFloat('outlineLightingMix', this._outlineLightingMix);
+            this._uniformBuffer.updateFloat('uvOffsetNormalScale', this._uvOffsetNormalScale);
+            this._uniformBuffer.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
+            this._uniformBuffer.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
+            this._uniformBuffer.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
 
             // Clip plane
             MaterialHelper.BindClipPlane(effect, scene);
@@ -902,6 +956,13 @@ export class MToonMaterial extends PushMaterial {
         }
         effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera!));
         effect.setFloat('isOutline', 0.0);
+        const t = window.performance.now() / 1000;
+        effect.setVector4('time', new Vector4(
+            t / 20,
+            t,
+            t * 2,
+            t * 3,
+        ));
 
         this._uniformBuffer.update();
         this._afterBind(mesh, this._activeEffect);
@@ -995,6 +1056,12 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('vOutlineWidthInfos', 2);
         this._uniformBuffer.addUniform('outlineWidthMatrix', 16);
 
+        this._uniformBuffer.addUniform('vUvOffsetNormalInfos', 2);
+        this._uniformBuffer.addUniform('uvOffsetNormalMatrix', 16);
+
+        this._uniformBuffer.addUniform('vUvAnimationMaskInfos', 2);
+        this._uniformBuffer.addUniform('uvAnimationMaskMatrix', 16);
+
         this._uniformBuffer.addUniform('vTangentSpaceParams', 2);
         this._uniformBuffer.addUniform('pointSize', 1);
         this._uniformBuffer.addUniform('visibility', 1);
@@ -1011,6 +1078,10 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('outlineWidth', 1);
         this._uniformBuffer.addUniform('outlineScaledMaxDistance', 1);
         this._uniformBuffer.addUniform('outlineLightingMix', 1);
+        this._uniformBuffer.addUniform('uvOffsetNormalScale', 1);
+        this._uniformBuffer.addUniform('uvAnimationScrollX', 1);
+        this._uniformBuffer.addUniform('uvAnimationScrollY', 1);
+        this._uniformBuffer.addUniform('uvAnimationRotation', 1);
 
         this._uniformBuffer.create();
     }

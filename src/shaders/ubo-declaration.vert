@@ -28,6 +28,10 @@ uniform Material
     vec4 vOutlineColor;
     vec2 vOutlineWidthInfos;
     mat4 outlineWidthMatrix;
+    vec2 vUvOffsetNormalInfos;
+    mat4 uvOffsetNormalMatrix;
+    vec2 vUvAnimationMaskInfos;
+    mat4 uvAnimationMaskMatrix;
     vec2 vTangentSpaceParams;
     float pointSize;
     float visibility;
@@ -43,6 +47,10 @@ uniform Material
     float outlineWidth;
     float outlineScaledMaxDistance;
     float outlineLightingMix;
+    float uvOffsetNormalScale;
+    float uvAnimationScrollX;
+    float uvAnimationScrollY;
+    float uvAnimationRotation;
 };
 
 uniform Scene {

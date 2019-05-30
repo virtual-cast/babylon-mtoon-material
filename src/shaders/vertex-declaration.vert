@@ -50,6 +50,16 @@ uniform vec2 vOutlineWidthInfos;
 uniform mat4 outlineWidthMatrix;
 #endif
 
+#ifdef UV_OFFSET_NORMAL
+uniform vec2 vUvOffsetNormalInfos;
+uniform mat4 uvOffsetNormalMatrix;
+#endif
+
+#ifdef UV_ANIMATION_MASK
+uniform vec2 vUvAnimationMaskInfos;
+uniform mat4 uvAnimationMaskMatrix;
+#endif
+
 #ifdef POINTSIZE
 uniform float pointSize;
 #endif

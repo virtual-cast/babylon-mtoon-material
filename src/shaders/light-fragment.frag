@@ -54,22 +54,12 @@
     #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})
         lightDirection = computeLightDirection(light{X}.vLightData);
     #endif
-    mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, uvOffset, lightDirection, light{X}.vLightDiffuse.rgba, shadow);
-    diffuseBase = mtoonDiffuse.rgb;
+    mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, mainUv, lightDirection, light{X}.vLightDiffuse.rgba, shadow);
+    diffuseBase += mtoonDiffuse.rgb;
     alpha = alpha * mtoonDiffuse.a;
     #ifdef ALPHATEST
         if (alpha < alphaCutOff) {
             discard;
         }
-    #endif
-
-    #ifdef SPECULARTERM
-        specularBase += info.specular * shadow;
-    #endif
-    #ifdef CLEARCOAT
-        clearCoatBase += info.clearCoat.rgb * shadow;
-    #endif
-    #ifdef SHEEN
-        sheenBase += info.sheen.rgb * shadow;
     #endif
 #endif
