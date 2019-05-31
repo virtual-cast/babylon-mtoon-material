@@ -2,7 +2,7 @@
 // @see effect.ts
 #include<__decl__mtoonVertex>
 
-// 基本的に default.vertex.fx のまま
+// 基本的に default.vertex.fx を踏襲している
 
 // Attributes
 
@@ -153,7 +153,7 @@ void main(void) {
         vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
         positionUpdated.xyz += outlineOffset;
 #endif
-    }
+    } // End isOutline == 1.0
 
     vec4 vertex = vec4(1.0);
 #ifdef MULTIVIEW

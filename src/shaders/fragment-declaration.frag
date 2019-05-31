@@ -1,12 +1,13 @@
 uniform mat4 viewProjection;
 uniform mat4 view;
+uniform float visibility;
+
+// Colors
 uniform vec4 vDiffuseColor;
 uniform vec3 vEmissiveColor;
 uniform vec3 vShadeColor;
 uniform vec3 vRimColor;
 uniform vec4 vOutlineColor;
-
-uniform float visibility;
 
 // Samplers
 #ifdef DIFFUSE
@@ -54,6 +55,7 @@ uniform vec2 vUvOffsetNormalInfos;
 uniform vec2 vUvAnimationMaskInfos;
 #endif
 
+// MToon params
 uniform float shadingGradeRate;
 uniform float receiveShadowRate;
 uniform float shadeShift;

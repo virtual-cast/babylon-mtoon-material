@@ -327,11 +327,7 @@ void main(void) {
 
     // Base color
     vec4 baseColor = vec4(1., 1., 1., 1.);
-    vec3 diffuseColor = vDiffuseColor.rgb;
-
-#ifdef DIFFUSE
-    baseColor.rgb *= vDiffuseInfos.y;
-#endif
+    vec3 diffuseColor = vec3(1., 1., 1.);
 
     // Alpha
     float alpha = 1.0;
@@ -393,7 +389,7 @@ void main(void) {
 #include<mtoonBumpFragment>
 
 #ifdef TWOSIDEDLIGHTING
-     normalW = gl_FrontFacing ? normalW : -normalW;
+    normalW = gl_FrontFacing ? normalW : -normalW;
 #endif
 
 // 通常の lightFragment ではなく、自前実装の mtoonLightFragment を読み込む
@@ -402,18 +398,18 @@ void main(void) {
     vec3 finalDiffuse = clamp(diffuseBase, 0.0, 1.0) * baseColor.rgb;
 
     // Composition
-    vec4 color = vec4(finalDiffuse, alpha);
+    vec4 color = vec4(finalDiffuse, clamp(alpha, 0.0, 1.0));
 
     color.rgb = max(color.rgb, 0.);
 #include<logDepthFragment>
 #include<fogFragment>
 
-     color.a *= visibility;
+    color.a *= visibility;
 
 #ifdef PREMULTIPLYALPHA
     // Convert to associative (premultiplied) format if needed.
     color.rgb *= color.a;
 #endif
 
-     gl_FragColor = color;
+    gl_FragColor = color;
 }

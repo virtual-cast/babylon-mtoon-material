@@ -1,5 +1,4 @@
 #ifdef LIGHT{X}
-    // 影の計算は流用
     #ifdef SHADOW{X}
         #ifdef SHADOWCLOSEESM{X}
             #if defined(SHADOWCUBE{X})
@@ -56,7 +55,7 @@
     #endif
     mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, mainUv, lightDirection, light{X}.vLightDiffuse.rgba, shadow);
     diffuseBase += mtoonDiffuse.rgb;
-    alpha = alpha * mtoonDiffuse.a;
+    alpha = min(alpha, mtoonDiffuse.a);
     #ifdef ALPHATEST
         if (alpha < alphaCutOff) {
             discard;
