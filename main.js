@@ -357,6 +357,38 @@ function getInspectableCustomProperties() {
             max: 1,
             step: 0.01,
         },
+        {
+            label: 'UV Offset Normal Scale',
+            propertyName: 'uvOffsetNormalScale',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: 0,
+            max: 10,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Scroll X',
+            propertyName: 'uvAnimationScrollX',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: -1,
+            max: 1,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Scroll Y',
+            propertyName: 'uvAnimationScrollY',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: -1,
+            max: 1,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Rotation',
+            propertyName: 'uvAnimationRotation',
+            type: _babylonjs_core_Misc_iInspectable__WEBPACK_IMPORTED_MODULE_0__["InspectableType"].Slider,
+            min: -0.5,
+            max: 0.5,
+            step: 0.01,
+        },
     ];
 }
 
@@ -421,6 +453,10 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.MATCAPDIRECTUV = 0;
         _this.OUTLINE_WIDTH = false;
         _this.OUTLINE_WIDTHDIRECTUV = 0;
+        _this.UV_OFFSET_NORMAL = false;
+        _this.UV_OFFSET_NORMALDIRECTUV = 0;
+        _this.UV_ANIMATION_MASK = false;
+        _this.UV_ANIMATION_MASKDIRECTUV = 0;
         // Misc
         _this.MULTIVIEW = false;
         _this.FOG = false;
@@ -458,11 +494,15 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
 /*!*******************************!*\
   !*** ./src/mtoon-material.ts ***!
   \*******************************/
-/*! exports provided: MToonMaterial */
+/*! exports provided: DebugMode, OutlineColorMode, OutlineWidthMode, CullMode, MToonMaterial */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DebugMode", function() { return DebugMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OutlineColorMode", function() { return OutlineColorMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "OutlineWidthMode", function() { return OutlineWidthMode; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CullMode", function() { return CullMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MToonMaterial", function() { return MToonMaterial; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
@@ -474,11 +514,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Meshes/buffer */ "./node_modules/@babylonjs/core/Meshes/buffer.js");
 /* harmony import */ var _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Misc/decorators */ "./node_modules/@babylonjs/core/Misc/decorators.js");
 /* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
-/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
-/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
-/* harmony import */ var _babylonjs_core_Rendering_edgesRenderer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Rendering/edgesRenderer */ "./node_modules/@babylonjs/core/Rendering/edgesRenderer.js");
-/* harmony import */ var _babylonjs_core_Rendering_outlineRenderer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Rendering/outlineRenderer */ "./node_modules/@babylonjs/core/Rendering/outlineRenderer.js");
-/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
+/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
+/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
+/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
 
 
 
@@ -489,9 +527,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-// side-effect
 
 
 
@@ -499,6 +534,7 @@ __webpack_require__.r(__webpack_exports__);
 var UboDeclaration = __webpack_require__(/*! ./shaders/ubo-declaration.vert */ "./src/shaders/ubo-declaration.vert").default;
 var VertexDeclaration = __webpack_require__(/*! ./shaders/vertex-declaration.vert */ "./src/shaders/vertex-declaration.vert").default;
 var FragmentDeclaration = __webpack_require__(/*! ./shaders/fragment-declaration.frag */ "./src/shaders/fragment-declaration.frag").default;
+var BumpFragment = __webpack_require__(/*! ./shaders/bump-fragment.frag */ "./src/shaders/bump-fragment.frag").default;
 var LightFragment = __webpack_require__(/*! ./shaders/light-fragment.frag */ "./src/shaders/light-fragment.frag").default;
 var VertexShader = __webpack_require__(/*! ./shaders/mtoon.vert */ "./src/shaders/mtoon.vert").default;
 var FragmentShader = __webpack_require__(/*! ./shaders/mtoon.frag */ "./src/shaders/mtoon.frag").default;
@@ -545,40 +581,11 @@ var CullMode;
  * VRM での出力パラメータとプロパティのマッピングは下記となります。
  *
  * @link https://github.com/Santarh/MToon/
- * @link https://dwango.github.io/vrm/univrm/shaders/mtoon/
- * @property alphaCutOut = _Cutoff
- * @property diffuseColor = _Color
- * @property shadeColor = _ShadeColor
- * @property diffuseTexture = _MainTex
- * @property shadeTexture = _ShadeTexture
- * @property parallaxScaleBias = _BumpScale
- * @property bumpTexture = _BumpMap
- * @property receiveShadowTexture = _ReceiveShadowTexture
- * @property receiveShadowRate = _ReceiveShadowRate
- * @property shadingGradeRate = _ShadingGradeRate
- * @property shadingGradeTexture = _ShadingGradeTexture
- * @property shadeShift = _ShadeShift
- * @property shadeToony = _ShadeToony
- * @property lightColorAttenuation = _LightColorAttenuation
- * @property indirectLightIntensity = _IndirectLightIntensity
- * @property rimTexture = _RimTexture
- * @property rimLightingMix = _RimLightingMix
- * @property rimFresnelPower = _RimFresnelPower
- * @property rimLift = _RimLift
- * @property matCapTexture = _SphereAdd
- * @property emissiveColor = _EmissionColor
- * @property emissiveTexture = _EmissionMap
- * @property outlineWidthTexture = _OutlineWidthTexture
- * @property outlineWidth = _OutlineWidth
- * @property outlineScaledMaxDistance = _OutlineScaledMaxDistance
- * @property outlineColor = _OutlineColor
- * @property outlineLightingMix = _OutlineLightingMix
- * @property debugMode = _DebugMode
- * @property outlineWidthMode = _OutlineWidthMode
- * @property outlineColorMode = _OutlineColorMode
+ * @link https://vrm.dev/univrm/shaders/mtoon/
  */
 var MToonMaterial = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](MToonMaterial, _super);
+    //#endregion
     //#endregion
     /**
      * @inheritdoc
@@ -587,6 +594,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         var _a;
         var _this = _super.call(this, name, scene) || this;
         //#region Properties
+        //#region Textures
         _this._diffuseTexture = null;
         /**
          * 通常色テクスチャ
@@ -634,10 +642,22 @@ var MToonMaterial = /** @class */ (function (_super) {
          * アウトラインの幅の調整テクスチャ
          */
         _this.outlineWidthTexture = null;
+        _this._uvOffsetNormalTexture = null;
         /**
-         * 現状 MToon は 1 ライトのみ考慮する
+         * UV オフセット法線テクスチャ
          */
-        _this.maxSimultaneousLights = 1;
+        _this.uvOffsetNormalTexture = null;
+        _this._uvAnimationMaskTexture = null;
+        /**
+         * UV アニメーションマスクテクスチャ
+         */
+        _this.uvAnimationMaskTexture = null;
+        //#endregion
+        //#region babylon parameters
+        /**
+         * 対応最大ライト数
+         */
+        _this.maxSimultaneousLights = 16;
         /**
          * Specular 非対応
          */
@@ -674,6 +694,8 @@ var MToonMaterial = /** @class */ (function (_super) {
          * アルファテスト時のカットしきい値
          */
         _this.alphaCutOff = 0.5;
+        //#endregion
+        //#region Colors
         /**
          * diffuseTexture に乗算される色
          */
@@ -704,6 +726,8 @@ var MToonMaterial = /** @class */ (function (_super) {
          * アウトラインの色
          */
         _this.outlineColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.0, 0.0, 0.0);
+        //#endregion
+        //#region MToon parameters
         _this._bumpScale = 1.0;
         _this._receiveShadowRate = 1.0;
         _this._shadingGradeRate = 1.0;
@@ -717,6 +741,10 @@ var MToonMaterial = /** @class */ (function (_super) {
         _this._outlineWidth = 0.5;
         _this._outlineScaledMaxDistance = 1.0;
         _this._outlineLightingMix = 1.0;
+        _this._uvOffsetNormalScale = 1.0;
+        _this._uvAnimationScrollX = 0.0;
+        _this._uvAnimationScrollY = 0.0;
+        _this._uvAnimationRotation = 0.0;
         _this._alphaTest = false;
         _this.alphaTest = false;
         _this._alphaBlend = false;
@@ -729,20 +757,19 @@ var MToonMaterial = /** @class */ (function (_super) {
         _this._outlineCullMode = CullMode.Front;
         _this.outlineCullMode = CullMode.Front;
         _this.storedCullMode = CullMode.Back;
-        // 裏面描画モードになることがあるのでここで右手座標系に強制する
-        // this.sideOrientation = Material.ClockWiseSideOrientation;
         // シェーダストアに登録する
         if (!_babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonUboDeclaration) {
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonLightFragment = LightFragment;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonBumpFragment = BumpFragment;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
             _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
         }
         // Inspector にプロパティを追加
         _this.inspectableCustomProperties = _this.inspectableCustomProperties || [];
-        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_14__["getInspectableCustomProperties"])());
+        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_10__["getInspectableCustomProperties"])());
         return _this;
     }
     Object.defineProperty(MToonMaterial.prototype, "appendedTextures", {
@@ -757,8 +784,11 @@ var MToonMaterial = /** @class */ (function (_super) {
                 this._shadeTexture,
                 this._receiveShadowTexture,
                 this._shadingGradeTexture,
+                this._rimTexture,
                 this._matCapTexture,
                 this._outlineWidthTexture,
+                this._uvOffsetNormalTexture,
+                this._uvAnimationMaskTexture,
             ];
         },
         enumerable: true,
@@ -934,6 +964,50 @@ var MToonMaterial = /** @class */ (function (_super) {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(MToonMaterial.prototype, "uvOffsetNormalScale", {
+        get: function () {
+            return this._uvOffsetNormalScale;
+        },
+        set: function (value) {
+            this._uvOffsetNormalScale = value;
+            this._markAllSubMeshesAsMiscDirty();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "uvAnimationScrollX", {
+        get: function () {
+            return this._uvAnimationScrollX;
+        },
+        set: function (value) {
+            this._uvAnimationScrollX = value;
+            this._markAllSubMeshesAsMiscDirty();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "uvAnimationScrollY", {
+        get: function () {
+            return this._uvAnimationScrollY;
+        },
+        set: function (value) {
+            this._uvAnimationScrollY = value;
+            this._markAllSubMeshesAsMiscDirty();
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "uvAnimationRotation", {
+        get: function () {
+            return this._uvAnimationRotation;
+        },
+        set: function (value) {
+            this._uvAnimationRotation = value;
+            this._markAllSubMeshesAsMiscDirty();
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(MToonMaterial.prototype, "alphaBlend", {
         get: function () {
             return this._alphaBlend;
@@ -958,7 +1032,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 /**
                  * このマテリアル用のアウトラインレンダラーを生成する
                  */
-                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_11__["MToonOutlineRenderer"](this.getScene(), this);
+                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_12__["MToonOutlineRenderer"](this.getScene(), this);
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1022,7 +1096,7 @@ var MToonMaterial = /** @class */ (function (_super) {
     };
     /**
      * @inheritdoc
-     * 利用可能かどうかチェックする
+     * SubMesh が利用可能かどうかチェックする
      */
     MToonMaterial.prototype.isReadyForSubMesh = function (mesh, subMesh, useInstances) {
         if (useInstances === void 0) { useInstances = false; }
@@ -1032,7 +1106,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
         }
         if (!subMesh._materialDefines) {
-            subMesh._materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_10__["MToonMaterialDefines"]();
+            subMesh._materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_11__["MToonMaterialDefines"]();
         }
         var scene = this.getScene();
         var defines = subMesh._materialDefines;
@@ -1067,7 +1141,9 @@ var MToonMaterial = /** @class */ (function (_super) {
                     || !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE')
                     || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
                     || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
-                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')) {
+                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')
+                    || !this.isReadyForTexture(this._uvOffsetNormalTexture, defines, 'UV_OFFSET_NORMAL')
+                    || !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')) {
                     return false;
                 }
                 if (scene.getEngine().getCaps().standardDerivatives && this._bumpTexture) {
@@ -1092,6 +1168,8 @@ var MToonMaterial = /** @class */ (function (_super) {
                 defines.MATCAP = false;
                 defines.OUTLINE_WIDTH = false;
                 defines.BUMP = false;
+                defines.UV_OFFSET_NORMAL = false;
+                defines.UV_ANIMATION_MASK = false;
             }
             defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
         }
@@ -1160,11 +1238,14 @@ var MToonMaterial = /** @class */ (function (_super) {
                 'rimLightingMix', 'rimFresnelPower', 'rimLift',
                 'lightColorAttenuation', 'indirectLightIntensity',
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
-                'vEyePosition', 'vEyeUp',
+                'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
+                'vEyePosition', 'vEyeUp', 'time',
             ];
             var samplers = [
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
-                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler', 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
+                'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'uvOffsetNormalSampler', 'uvAnimationMaskSampler',
             ];
             var uniformBuffers = ['Material', 'Scene'];
             _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareUniformsAndSamplersList({
@@ -1256,6 +1337,8 @@ var MToonMaterial = /** @class */ (function (_super) {
                     this.bindTexture(this._rimTexture, effect, 'rim', 'vRimInfos');
                     this.bindTexture(this._matCapTexture, effect, 'matCap', 'vMatCapInfos');
                     this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
+                    this.bindTexture(this._uvOffsetNormalTexture, effect, 'uvOffsetNormal', 'vUvOffsetNormalInfos');
+                    this.bindTexture(this._uvAnimationMaskTexture, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
                 }
             }
             // Point size
@@ -1276,6 +1359,10 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uniformBuffer.updateFloat('outlineWidth', this._outlineWidth);
             this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
             this._uniformBuffer.updateFloat('outlineLightingMix', this._outlineLightingMix);
+            this._uniformBuffer.updateFloat('uvOffsetNormalScale', this._uvOffsetNormalScale);
+            this._uniformBuffer.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
+            this._uniformBuffer.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
+            this._uniformBuffer.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
             // Clip plane
             _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindClipPlane(effect, scene);
             // Colors
@@ -1309,6 +1396,8 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera));
         effect.setFloat('isOutline', 0.0);
+        var t = window.performance.now() / 1000;
+        effect.setVector4('time', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Vector4"](t / 20, t, t * 2, t * 3));
         this._uniformBuffer.update();
         this._afterBind(mesh, this._activeEffect);
     };
@@ -1384,6 +1473,10 @@ var MToonMaterial = /** @class */ (function (_super) {
         this._uniformBuffer.addUniform('vOutlineColor', 3);
         this._uniformBuffer.addUniform('vOutlineWidthInfos', 2);
         this._uniformBuffer.addUniform('outlineWidthMatrix', 16);
+        this._uniformBuffer.addUniform('vUvOffsetNormalInfos', 2);
+        this._uniformBuffer.addUniform('uvOffsetNormalMatrix', 16);
+        this._uniformBuffer.addUniform('vUvAnimationMaskInfos', 2);
+        this._uniformBuffer.addUniform('uvAnimationMaskMatrix', 16);
         this._uniformBuffer.addUniform('vTangentSpaceParams', 2);
         this._uniformBuffer.addUniform('pointSize', 1);
         this._uniformBuffer.addUniform('visibility', 1);
@@ -1399,6 +1492,10 @@ var MToonMaterial = /** @class */ (function (_super) {
         this._uniformBuffer.addUniform('outlineWidth', 1);
         this._uniformBuffer.addUniform('outlineScaledMaxDistance', 1);
         this._uniformBuffer.addUniform('outlineLightingMix', 1);
+        this._uniformBuffer.addUniform('uvOffsetNormalScale', 1);
+        this._uniformBuffer.addUniform('uvAnimationScrollX', 1);
+        this._uniformBuffer.addUniform('uvAnimationScrollY', 1);
+        this._uniformBuffer.addUniform('uvAnimationRotation', 1);
         this._uniformBuffer.create();
     };
     /**
@@ -1608,6 +1705,18 @@ var MToonMaterial = /** @class */ (function (_super) {
         Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "outlineWidthTexture", void 0);
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('outlineWidthTexture')
+    ], MToonMaterial.prototype, "_uvOffsetNormalTexture", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    ], MToonMaterial.prototype, "uvOffsetNormalTexture", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('outlineWidthTexture')
+    ], MToonMaterial.prototype, "_uvAnimationMaskTexture", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    ], MToonMaterial.prototype, "uvAnimationMaskTexture", void 0);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
     ], MToonMaterial.prototype, "useLogarithmicDepth", null);
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
@@ -1685,6 +1794,18 @@ var MToonMaterial = /** @class */ (function (_super) {
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
     ], MToonMaterial.prototype, "outlineLightingMix", null);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    ], MToonMaterial.prototype, "uvOffsetNormalScale", null);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    ], MToonMaterial.prototype, "uvAnimationScrollX", null);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    ], MToonMaterial.prototype, "uvAnimationScrollY", null);
+    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    ], MToonMaterial.prototype, "uvAnimationRotation", null);
     tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
         Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('alphaTest')
     ], MToonMaterial.prototype, "_alphaTest", void 0);
@@ -1849,6 +1970,19 @@ var MToonOutlineRenderer = /** @class */ (function () {
 
 /***/ }),
 
+/***/ "./src/shaders/bump-fragment.frag":
+/*!****************************************!*\
+  !*** ./src/shaders/bump-fragment.frag ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("// replace vBumpUV to mainUv\r\nvec2 uvOffset = vec2(0.0, 0.0);\r\n\r\n#if defined(BUMP) || defined(PARALLAX)\r\n\t#ifdef NORMALXYSCALE\r\n\t\tfloat normalScale = 1.0;\r\n\t#else\r\n\t\tfloat normalScale = vBumpInfos.y;\r\n\t#endif\r\n\r\n\t#if defined(TANGENT) && defined(NORMAL)\r\n\t\tmat3 TBN = vTBN;\r\n\t#else\r\n\t\tmat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, mainUv);\r\n\t#endif\r\n#elif defined(ANISOTROPIC)\r\n\t#if defined(TANGENT) && defined(NORMAL)\r\n\t\tmat3 TBN = vTBN;\r\n\t#else\r\n\t\tmat3 TBN = cotangent_frame(normalW, vPositionW, vMainUV1, vec2(1., 1.));\r\n\t#endif\r\n#endif\r\n\r\n#ifdef PARALLAX\r\n\tmat3 invTBN = transposeMat3(TBN);\r\n\r\n\t#ifdef PARALLAXOCCLUSION\r\n\t\tuvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, mainUv, vBumpInfos.z);\r\n\t#else\r\n\t\tuvOffset = parallaxOffset(invTBN * viewDirectionW, vBumpInfos.z);\r\n\t#endif\r\n#endif\r\n\r\n#ifdef BUMP\r\n\t#ifdef OBJECTSPACE_NORMALMAP\r\n\t\tnormalW = normalize(texture2D(bumpSampler, mainUv).xyz  * 2.0 - 1.0);\r\n\t\tnormalW = normalize(mat3(normalMatrix) * normalW);\r\n\t#else\r\n\t\tnormalW = perturbNormal(TBN, mainUv + uvOffset);\r\n\t#endif\r\n#endif\r\n");
+
+/***/ }),
+
 /***/ "./src/shaders/fragment-declaration.frag":
 /*!***********************************************!*\
   !*** ./src/shaders/fragment-declaration.frag ***!
@@ -1858,7 +1992,7 @@ var MToonOutlineRenderer = /** @class */ (function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("uniform mat4 viewProjection;\r\nuniform mat4 view;\r\nuniform vec4 vDiffuseColor;\r\nuniform vec3 vEmissiveColor;\r\nuniform vec3 vShadeColor;\r\nuniform vec3 vRimColor;\r\nuniform vec4 vOutlineColor;\r\n\r\nuniform float visibility;\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform vec2 vTangentSpaceParams;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\n#endif\r\n\r\nuniform float shadingGradeRate;\r\nuniform float receiveShadowRate;\r\nuniform float shadeShift;\r\nuniform float shadeToony;\r\nuniform float lightColorAttenuation;\r\nuniform float indirectLightIntensity;\r\nuniform float rimLightingMix;\r\nuniform float rimFresnelPower;\r\nuniform float rimLift;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("uniform mat4 viewProjection;\r\nuniform mat4 view;\r\nuniform float visibility;\r\n\r\n// Colors\r\nuniform vec4 vDiffuseColor;\r\nuniform vec3 vEmissiveColor;\r\nuniform vec3 vShadeColor;\r\nuniform vec3 vRimColor;\r\nuniform vec4 vOutlineColor;\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform vec2 vTangentSpaceParams;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\n#endif\r\n\r\n#ifdef UV_OFFSET_NORMAL\r\nuniform vec2 vUvOffsetNormalInfos;\r\n#endif\r\n\r\n#ifdef UV_ANIMATION_MASK\r\nuniform vec2 vUvAnimationMaskInfos;\r\n#endif\r\n\r\n// MToon params\r\nuniform float shadingGradeRate;\r\nuniform float receiveShadowRate;\r\nuniform float shadeShift;\r\nuniform float shadeToony;\r\nuniform float lightColorAttenuation;\r\nuniform float indirectLightIntensity;\r\nuniform float rimLightingMix;\r\nuniform float rimFresnelPower;\r\nuniform float rimLift;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\nuniform float uvOffsetNormalScale;\r\nuniform float uvAnimationScrollX;\r\nuniform float uvAnimationScrollY;\r\nuniform float uvAnimationRotation;\r\n");
 
 /***/ }),
 
@@ -1871,7 +2005,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("#ifdef LIGHT{X}\r\n    // 影の計算は流用\r\n    #ifdef SHADOW{X}\r\n        #ifdef SHADOWCLOSEESM{X}\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithCloseESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithCloseESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWESM{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPOISSON{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithPoissonSamplingCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithPoissonSampling(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCF{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCF1(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCF3(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCF5(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCSS{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCSS16(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCSS32(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCSS64(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #else\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadow(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #endif\r\n    #else\r\n        shadow = 1.;\r\n    #endif\r\n\r\n    // ここで MToon のライティングを適用\r\n    #ifdef SPOTLIGHT{X}\r\n        lightDirection = computeSpotLightDirection(light{X}.vLightData);\r\n    #elif defined(HEMILIGHT{X})\r\n        lightDirection = computeHemisphericLightDirection(light{X}.vLightData, normalW.xyz);\r\n    #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})\r\n        lightDirection = computeLightDirection(light{X}.vLightData);\r\n    #endif\r\n    mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, uvOffset, lightDirection, light{X}.vLightDiffuse.rgba, shadow);\r\n    diffuseBase = mtoonDiffuse.rgb;\r\n    alpha = alpha * mtoonDiffuse.a;\r\n    #ifdef ALPHATEST\r\n        if (alpha < alphaCutOff) {\r\n            discard;\r\n        }\r\n    #endif\r\n\r\n    #ifdef SPECULARTERM\r\n        specularBase += info.specular * shadow;\r\n    #endif\r\n    #ifdef CLEARCOAT\r\n        clearCoatBase += info.clearCoat.rgb * shadow;\r\n    #endif\r\n    #ifdef SHEEN\r\n        sheenBase += info.sheen.rgb * shadow;\r\n    #endif\r\n#endif\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("#ifdef LIGHT{X}\r\n    #ifdef SHADOW{X}\r\n        #ifdef SHADOWCLOSEESM{X}\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithCloseESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithCloseESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWESM{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPOISSON{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithPoissonSamplingCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithPoissonSampling(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCF{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCF1(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCF3(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCF5(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCSS{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCSS16(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCSS32(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCSS64(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #else\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadow(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #endif\r\n    #else\r\n        shadow = 1.;\r\n    #endif\r\n\r\n    // ここで MToon のライティングを適用\r\n    #ifdef SPOTLIGHT{X}\r\n        lightDirection = computeSpotLightDirection(light{X}.vLightData);\r\n    #elif defined(HEMILIGHT{X})\r\n        lightDirection = computeHemisphericLightDirection(light{X}.vLightData, normalW.xyz);\r\n    #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})\r\n        lightDirection = computeLightDirection(light{X}.vLightData);\r\n    #endif\r\n    mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, mainUv, lightDirection, light{X}.vLightDiffuse.rgba, shadow);\r\n    diffuseBase += mtoonDiffuse.rgb;\r\n    alpha = min(alpha, mtoonDiffuse.a);\r\n    #ifdef ALPHATEST\r\n        if (alpha < alphaCutOff) {\r\n            discard;\r\n        }\r\n    #endif\r\n#endif\r\n");
 
 /***/ }),
 
@@ -1884,7 +2018,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("#include<__decl__mtoonFragment>\r\n\r\n#if defined(BUMP) || !defined(NORMAL)\r\n#extension GL_OES_standard_derivatives : enable\r\n#endif\r\n\r\n#ifdef LOGARITHMICDEPTH\r\n#extension GL_EXT_frag_depth : enable\r\n#endif\r\n\r\n// Constants\r\n#define RECIPROCAL_PI2 0.15915494\r\n\r\nuniform vec3 vEyePosition;\r\nuniform vec3 vEyeUp;\r\nuniform vec3 vAmbientColor;\r\nuniform float aspect;\r\nuniform float isOutline;\r\n\r\n// Input\r\nvarying vec3 vPositionW;\r\n\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    varying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    varying vec2 vMainUV2;\r\n#endif\r\n\r\n// Helper functions\r\n#include<helperFunctions>\r\n\r\n// Lights\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<lightsFragmentFunctions>\r\n#include<shadowsFragmentFunctions>\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\n    #if DIFFUSEDIRECTUV == 1\r\n        #define vDiffuseUV vMainUV1\r\n    #elif DIFFUSEDIRECTUV == 2\r\n        #define vDiffuseUV vMainUV2\r\n    #else\r\n        varying vec2 vDiffuseUV;\r\n    #endif\r\n    uniform sampler2D diffuseSampler;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\n    #if EMISSIVEDIRECTUV == 1\r\n        #define vEmissiveUV vMainUV1\r\n    #elif EMISSIVEDIRECTUV == 2\r\n        #define vEmissiveUV vMainUV2\r\n    #else\r\n        varying vec2 vEmissiveUV;\r\n    #endif\r\n    uniform sampler2D emissiveSampler;\r\n#endif\r\n\r\n#ifdef ALPHATEST\r\n     uniform float alphaCutOff;\r\n#endif\r\n\r\n#ifdef SHADE\r\n    uniform sampler2D shadeSampler;\r\n    #if SHADEDIRECTUV == 1\r\n        #define vShadeUV vMainUV1\r\n    #elif SHADEDIRECTUV == 2\r\n        #define vShadeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadeUV;\r\n    #endif\r\n#endif\r\n#ifdef RECEIVE_SHADOW\r\n    uniform sampler2D receiveShadowSampler;\r\n    #if RECEIVE_SHADOWDIRECTUV == 1\r\n        #define vReceiveShadowUV vMainUV1\r\n    #elif RECEIVE_SHADOWDIRECTUV == 2\r\n        #define vReceiveShadowUV vMainUV2\r\n    #else\r\n        varying vec2 vReceiveShadowUV;\r\n    #endif\r\n#endif\r\n#ifdef SHADING_GRADE\r\n    uniform sampler2D shadingGradeSampler;\r\n    #if SHADING_GRADEDIRECTUV == 1\r\n        #define vShadingGradeUV vMainUV1\r\n    #elif SHADING_GRADEDIRECTUV == 2\r\n        #define vShadingGradeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadingGradeUV;\r\n    #endif\r\n#endif\r\n#ifdef RIM\r\n    uniform sampler2D rimSampler;\r\n    #if RIMDIRECTUV == 1\r\n        #define vRimUV vMainUV1\r\n    #elif RIMDIRECTUV == 2\r\n        #define vRimUV vMainUV2\r\n    #else\r\n        varying vec2 vRimUV;\r\n    #endif\r\n#endif\r\n#ifdef MATCAP\r\n    uniform sampler2D matCapSampler;\r\n    #if MATCAPDIRECTUV == 1\r\n        #define vMatCapUV vMainUV1\r\n    #elif MATCAPDIRECTUV == 2\r\n        #define vMatCapUV vMainUV2\r\n    #else\r\n        varying vec2 vMatCapUV;\r\n    #endif\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n    #if OUTLINE_WIDTHDIRECTUV == 1\r\n        #define vOutlineWidthUV vMainUV1\r\n    #elif OUTLINE_WIDTHDIRECTUV == 2\r\n        #define vOutlineWidthUV vMainUV2\r\n    #else\r\n        varying vec2 vOutlineWidthUV;\r\n    #endif\r\n#endif\r\n\r\n/**\r\n* DirectionLight, PointLight の角度を計算\r\n*/\r\nvec3 computeLightDirection(vec4 lightData) {\r\n      return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));\r\n}\r\n\r\n/**\r\n* SpotLight の角度を計算\r\n*/\r\nvec3 computeSpotLightDirection(vec4 lightData) {\r\n     return normalize(lightData.xyz - vPositionW);\r\n}\r\n\r\n/**\r\n* HemisphericLight の角度を計算\r\n*/\r\nvec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {\r\n     return normalize(lightData.xyz);\r\n}\r\n\r\n/**\r\n* MToon シェーダーの陰実装\r\n*/\r\nvec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset, vec3 lightDirection, vec4 lightDiffuse, float shadow) {\r\n    float _receiveShadow = receiveShadowRate;\r\n#ifdef RECEIVE_SHADOW\r\n    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, vReceiveShadowUV + uvOffset).a;\r\n#endif\r\n\r\n    float _shadingGrade = shadingGradeRate;\r\n#ifdef SHADING_GRADE\r\n    _shadingGrade = _shadingGrade * (1.0 - texture2D(shadingGradeSampler, vShadingGradeUV + uvOffset).r);\r\n#endif\r\n\r\n    // lighting intensity\r\n    float _lightIntensity = dot(lightDirection, worldNormal);\r\n    _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]\r\n    _lightIntensity = _lightIntensity * (1.0 - _receiveShadow * (1.0 - (shadow * 0.5 + 0.5))); // receive shadow\r\n    _lightIntensity = _lightIntensity * _shadingGrade; // darker\r\n    _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]\r\n    _lightIntensity = smoothstep(shadeShift, shadeShift + (1.0 - shadeToony), _lightIntensity); // shade & tooned\r\n\r\n    // lighting with color\r\n    vec3 _directLighting = lightDiffuse.rgb; // direct\r\n    vec3 _lighting = _directLighting;\r\n    _lighting = mix(_lighting, vec3(max(0.001, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation);\r\n\r\n    // GI\r\n    vec3 _indirectLighting = indirectLightIntensity * vAmbientColor.rgb;\r\n    _indirectLighting = mix(_indirectLighting, vec3(max(0.001, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation);\r\n\r\n    // color lerp\r\n    vec3 _shade = vShadeColor;\r\n#ifdef SHADE\r\n    _shade = _shade * texture2D(shadeSampler, vShadeUV + uvOffset).rgb;\r\n#endif\r\n\r\n    vec4 _lit = vDiffuseColor;\r\n#ifdef DIFFUSE\r\n    _lit = _lit * texture2D(diffuseSampler, vDiffuseUV + uvOffset);\r\n#endif\r\n\r\n    vec3 _result = mix(_shade.rgb, _lit.rgb, _lightIntensity);\r\n    _result = _result * _lighting + _indirectLighting * _lit.rgb;\r\n\r\n    // pure light\r\n    vec3 _pureLight = _lighting * _lightIntensity * _indirectLighting;\r\n    _pureLight = mix(_pureLight, vec3(max(_pureLight.x, max(_pureLight.y, _pureLight.z))), lightColorAttenuation);\r\n\r\n    // parametric rim lighting\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n    vec3 _rimColor = vRimColor.rgb;\r\n#ifdef RIM\r\n    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + uvoffset).rgb;\r\n#endif\r\n    vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;\r\n    _rim *= mix(vec3(1.0), _pureLight, rimLightingMix);\r\n    _result += _rim;\r\n#endif\r\n\r\n    // additive matcap\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n#ifdef MATCAP\r\n    vec3 _worldViewUp = normalize(vEyeUp - worldView * dot(worldView, vEyeUp));\r\n    vec3 _worldViewRight = normalize(cross(worldView, _worldViewUp));\r\n    vec2 _matCapUv = vec2(dot(_worldViewRight, worldNormal), dot(_worldViewUp, worldNormal)) * 0.5 + 0.5;\r\n    _matCapUv.y = (1.0 - _matCapUv.y);\r\n    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv + uvOffset).rgb;\r\n    _result += _matCapLighting;\r\n#endif\r\n#endif\r\n\r\n#ifdef MTOON_OUTLINE_COLOR_FIXED\r\n    _result = mix(_result, vOutlineColor.rgb, isOutline);\r\n#elif defined(MTOON_OUTLINE_COLOR_MIXED)\r\n    _result = mix(_result, vOutlineColor.rgb * mix(vec3(1.0), _result, outlineLightingMix), isOutline);\r\n#else\r\n#endif\r\n\r\n    // debug\r\n#ifdef MTOON_DEBUG_NORMAL\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(worldNormal * 0.5 + 0.5, _lit.a);\r\n    #endif\r\n#elif defined(MTOON_DEBUG_LITSHADERATE)\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(_lightIntensity * _lighting, _lit.a);\r\n    #endif\r\n#endif\r\n\r\n    return vec4(_result, _lit.a * vOutlineColor.a);\r\n}\r\n\r\n#include<bumpFragmentFunctions>\r\n#include<clipPlaneFragmentDeclaration>\r\n#include<logDepthDeclaration>\r\n#include<fogFragmentDeclaration>\r\n\r\nvoid main(void) {\r\n#ifdef MTOON_CLIP_IF_OUTLINE_IS_NONE\r\n    #ifdef MTOON_OUTLINE_WIDTH_WORLD\r\n    #elif MTOON_OUTLINE_WIDTH_SCREEN\r\n    #else\r\n        discard;\r\n    #endif\r\n#endif\r\n\r\n#include<clipPlaneFragment>\r\n\r\n    vec3 viewDirectionW = normalize(vEyePosition - vPositionW);\r\n\r\n    // Base color\r\n    vec4 baseColor = vec4(1., 1., 1., 1.);\r\n    vec3 diffuseColor = vDiffuseColor.rgb;\r\n\r\n\r\n#ifdef DIFFUSE\r\n    baseColor.rgb *= vDiffuseInfos.y;\r\n#endif\r\n\r\n    // Alpha\r\n    float alpha = 1.0;\r\n\r\n    // Bump\r\n#ifdef NORMAL\r\n     vec3 normalW = normalize(vNormalW);\r\n#else\r\n     vec3 normalW = normalize(-cross(dFdx(vPositionW), dFdy(vPositionW)));\r\n#endif\r\n\r\n#include<bumpFragment>\r\n\r\n#ifdef TWOSIDEDLIGHTING\r\n     normalW = gl_FrontFacing ? normalW : -normalW;\r\n#endif\r\n\r\n#include<depthPrePass>\r\n\r\n    // Ambient color\r\n    vec3 baseAmbientColor = vec3(1., 1., 1.);\r\n    float glossiness = 0.;\r\n\r\n    // Lighting\r\n    vec3 diffuseBase = vec3(0., 0., 0.);\r\n    lightingInfo info;\r\n    float shadow = 1.;\r\n    vec3 lightDirection = vec3(0.0, 1.0, 0.0);\r\n    vec4 mtoonDiffuse = vec4(0.0, 0.0, 0.0, 1.0);\r\n\r\n// 通常の lightFragment ではなく、自前実装の mtoonLightFragment を読み込む\r\n#include<mtoonLightFragment>[0..maxSimultaneousLights]\r\n\r\n    // Emissive\r\n    vec3 emissiveColor = vEmissiveColor.rgb;\r\n#ifdef EMISSIVE\r\n     emissiveColor *= texture2D(emissiveSampler, vEmissiveUV + uvOffset).rgb * vEmissiveInfos.y;\r\n#endif\r\n\r\n    vec3 finalDiffuse = clamp(diffuseBase + emissiveColor, 0.0, 1.0) * baseColor.rgb;\r\n\r\n    // Composition\r\n    vec4 color = vec4(finalDiffuse, alpha);\r\n\r\n    color.rgb = max(color.rgb, 0.);\r\n#include<logDepthFragment>\r\n#include<fogFragment>\r\n\r\n     color.a *= visibility;\r\n\r\n#ifdef PREMULTIPLYALPHA\r\n    // Convert to associative (premultiplied) format if needed.\r\n    color.rgb *= color.a;\r\n#endif\r\n\r\n     gl_FragColor = color;\r\n}\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("#include<__decl__mtoonFragment>\r\n\r\n#if defined(BUMP) || !defined(NORMAL)\r\n#extension GL_OES_standard_derivatives : enable\r\n#endif\r\n\r\n#ifdef LOGARITHMICDEPTH\r\n#extension GL_EXT_frag_depth : enable\r\n#endif\r\n\r\n// Constants\r\n#define RECIPROCAL_PI2 0.15915494\r\n#define PI_2 6.28318530718\r\n#define EPS_COL 0.00001\r\n\r\nuniform vec3 vEyePosition;\r\nuniform vec3 vEyeUp;\r\nuniform vec3 vAmbientColor;\r\nuniform float aspect;\r\nuniform float isOutline;\r\nuniform vec4 time;\r\n\r\n// Input\r\nvarying vec3 vPositionW;\r\n\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    varying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    varying vec2 vMainUV2;\r\n#endif\r\n\r\n// Helper functions\r\n#include<helperFunctions>\r\n\r\n// Lights\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<lightsFragmentFunctions>\r\n#include<shadowsFragmentFunctions>\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\n    #if DIFFUSEDIRECTUV == 1\r\n        #define vDiffuseUV vMainUV1\r\n    #elif DIFFUSEDIRECTUV == 2\r\n        #define vDiffuseUV vMainUV2\r\n    #else\r\n        varying vec2 vDiffuseUV;\r\n    #endif\r\n    uniform sampler2D diffuseSampler;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\n    #if EMISSIVEDIRECTUV == 1\r\n        #define vEmissiveUV vMainUV1\r\n    #elif EMISSIVEDIRECTUV == 2\r\n        #define vEmissiveUV vMainUV2\r\n    #else\r\n        varying vec2 vEmissiveUV;\r\n    #endif\r\n    uniform sampler2D emissiveSampler;\r\n#endif\r\n\r\n#ifdef ALPHATEST\r\n     uniform float alphaCutOff;\r\n#endif\r\n\r\n#ifdef SHADE\r\n    uniform sampler2D shadeSampler;\r\n    #if SHADEDIRECTUV == 1\r\n        #define vShadeUV vMainUV1\r\n    #elif SHADEDIRECTUV == 2\r\n        #define vShadeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadeUV;\r\n    #endif\r\n#endif\r\n#ifdef RECEIVE_SHADOW\r\n    uniform sampler2D receiveShadowSampler;\r\n    #if RECEIVE_SHADOWDIRECTUV == 1\r\n        #define vReceiveShadowUV vMainUV1\r\n    #elif RECEIVE_SHADOWDIRECTUV == 2\r\n        #define vReceiveShadowUV vMainUV2\r\n    #else\r\n        varying vec2 vReceiveShadowUV;\r\n    #endif\r\n#endif\r\n#ifdef SHADING_GRADE\r\n    uniform sampler2D shadingGradeSampler;\r\n    #if SHADING_GRADEDIRECTUV == 1\r\n        #define vShadingGradeUV vMainUV1\r\n    #elif SHADING_GRADEDIRECTUV == 2\r\n        #define vShadingGradeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadingGradeUV;\r\n    #endif\r\n#endif\r\n#ifdef RIM\r\n    uniform sampler2D rimSampler;\r\n    #if RIMDIRECTUV == 1\r\n        #define vRimUV vMainUV1\r\n    #elif RIMDIRECTUV == 2\r\n        #define vRimUV vMainUV2\r\n    #else\r\n        varying vec2 vRimUV;\r\n    #endif\r\n#endif\r\n#ifdef MATCAP\r\n    uniform sampler2D matCapSampler;\r\n    #if MATCAPDIRECTUV == 1\r\n        #define vMatCapUV vMainUV1\r\n    #elif MATCAPDIRECTUV == 2\r\n        #define vMatCapUV vMainUV2\r\n    #else\r\n        varying vec2 vMatCapUV;\r\n    #endif\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n    #if OUTLINE_WIDTHDIRECTUV == 1\r\n        #define vOutlineWidthUV vMainUV1\r\n    #elif OUTLINE_WIDTHDIRECTUV == 2\r\n        #define vOutlineWidthUV vMainUV2\r\n    #else\r\n        varying vec2 vOutlineWidthUV;\r\n    #endif\r\n#endif\r\n#ifdef UV_OFFSET_NORMAL\r\n    uniform sampler2D uvOffsetNormalSampler;\r\n    #if UV_OFFSET_NORMALDIRECTUV == 1\r\n        #define vUvOffsetNormalUV vMainUV1\r\n    #elif UV_OFFSET_NORMALDIRECTUV == 2\r\n        #define vUvOffsetNormalUV vMainUV2\r\n    #else\r\n        varying vec2 vUvOffsetNormalUV;\r\n    #endif\r\n#endif\r\n#ifdef UV_ANIMATION_MASK\r\n    uniform sampler2D uvAnimationMaskSampler;\r\n    #if UV_ANIMATION_MASKDIRECTUV == 1\r\n        #define vUvAnimationMaskUV vMainUV1\r\n    #elif UV_ANIMATION_MASKDIRECTUV == 2\r\n        #define vUvAnimationMaskUV vMainUV2\r\n    #else\r\n        varying vec2 vUvAnimationMaskUV;\r\n    #endif\r\n#endif\r\n\r\n/**\r\n* DirectionalLight, PointLight の角度を計算\r\n*/\r\nvec3 computeLightDirection(vec4 lightData) {\r\n      return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));\r\n}\r\n\r\n/**\r\n* SpotLight の角度を計算\r\n*/\r\nvec3 computeSpotLightDirection(vec4 lightData) {\r\n     return normalize(lightData.xyz - vPositionW);\r\n}\r\n\r\n/**\r\n* HemisphericLight の角度を計算\r\n*/\r\nvec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {\r\n     return normalize(lightData.xyz);\r\n}\r\n\r\n/**\r\n* MToon シェーダーの陰実装\r\n*/\r\nvec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, vec3 lightDirection, vec4 lightDiffuse, float shadowAttenuation) {\r\n    float _receiveShadow = receiveShadowRate;\r\n#ifdef RECEIVE_SHADOW\r\n    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, mainUv).r * vReceiveShadowInfos.y;\r\n#endif\r\n\r\n    float _shadingGrade = 0.0;\r\n#ifdef SHADING_GRADE\r\n    _shadingGrade = 1.0 - texture2D(shadingGradeSampler, mainUv).r * vShadingGradeInfos.y;\r\n#endif\r\n    _shadingGrade = 1.0 - shadingGradeRate * _shadingGrade;\r\n\r\n    // Lighting\r\n    vec3 _lightColor = lightDiffuse.rgb * step(0.5, length(lightDirection)); // length(lightDir) is zero if directional light is disabled.\r\n    float _dotNL = dot(lightDirection, worldNormal);\r\n#ifdef MTOON_FORWARD_ADD\r\n    float _lightAttenuation = 1.0;\r\n#else\r\n    float _lightAttenuation = shadowAttenuation * mix(1.0, shadowAttenuation, _receiveShadow);\r\n#endif\r\n\r\n    // lighting intensity\r\n    float _lightIntensity = _dotNL;\r\n    _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]\r\n    _lightIntensity = _lightIntensity * _lightAttenuation; // receive shadow\r\n    _lightIntensity = _lightIntensity * _shadingGrade; // darker\r\n    _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]\r\n    // tooned. mapping from [minIntensityThreshold, maxIntensityThreshold] to [0, 1]\r\n    float _maxIntensityThreshold = mix(1.0, shadeShift, shadeToony);\r\n    float _minIntensityThreshold = shadeShift;\r\n    _lightIntensity = clamp((_lightIntensity - _minIntensityThreshold) / max(EPS_COL, (_maxIntensityThreshold - _minIntensityThreshold)), 0.0, 1.0);\r\n\r\n    // Albedo color\r\n    vec3 _shade = vShadeColor;\r\n#ifdef SHADE\r\n    _shade = _shade * texture2D(shadeSampler, mainUv).rgb * vShadeInfos.y;\r\n#endif\r\n\r\n    vec4 _lit = vDiffuseColor;\r\n#ifdef DIFFUSE\r\n    _lit = _lit * texture2D(diffuseSampler, mainUv) * vDiffuseInfos.y;\r\n#endif\r\n    vec3 _col = mix(_shade.rgb, _lit.rgb, _lightIntensity);\r\n\r\n    // Direct Light\r\n    vec3 _lighting = _lightColor;\r\n    _lighting = mix(_lighting, vec3(max(EPS_COL, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation); // color atten\r\n#ifdef MTOON_FORWARD_ADD\r\n    _lighting *= 0.5; // darken if additional light\r\n    _lighting *= min(0, dotNL) + 1.0; // darken dotNL < 0 area by using half lambert\r\n    _lighting *= shadowAttenuation; // darken if receiving shadow\r\n#else\r\n    // base light does not darken.\r\n#endif\r\n    _col *= _lighting;\r\n\r\n    // Indirect Light\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n    vec3 _toonedGI = vAmbientColor.rgb; // TODO: GI\r\n    vec3 _indirectLighting = mix(_toonedGI, vAmbientColor.rgb, indirectLightIntensity);\r\n    _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten\r\n    _col += _indirectLighting * _lit.rgb;\r\n#endif\r\n\r\n    // parametric rim lighting\r\n#ifdef MTOON_FORWARD_ADD\r\n    vec3 _staticRimLighting = vec3(0.0);\r\n    vec3 _mixedRimLighting = _lighting;\r\n#else\r\n    vec3 _staticRimLighting = vec3(1.0);\r\n    vec3 _mixedRimLighting = _lighting + _indirectLighting;\r\n#endif\r\n    vec3 _rimLighting = mix(_staticRimLighting, _mixedRimLighting, rimLightingMix);\r\n    vec3 _rimColor = vRimColor.rgb;\r\n#ifdef RIM\r\n    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + mainUv).rgb * vRimInfos.y;\r\n#endif\r\n    vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;\r\n    _col += mix(_rim * _rimLighting, vec3(0.0), isOutline);\r\n\r\n    // additive matcap\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n#ifdef MATCAP\r\n    vec3 _worldViewUp = normalize(vEyeUp - worldView * dot(worldView, vEyeUp));\r\n    vec3 _worldViewRight = normalize(cross(worldView, _worldViewUp));\r\n    vec2 _matCapUv = vec2(dot(_worldViewRight, worldNormal), dot(_worldViewUp, worldNormal)) * 0.5 + 0.5;\r\n    // uv.y is reversed\r\n    _matCapUv.y = (1.0 - _matCapUv.y);\r\n    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv).rgb * vMatCapInfos.y;\r\n    _col += mix(_matCapLighting, vec3(0.0), isOutline);\r\n#endif\r\n#endif\r\n\r\n    // Emission\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n    vec3 _emission = vEmissiveColor.rgb;\r\n#ifdef EMISSIVE\r\n     _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;\r\n#endif\r\n     _col += mix(_emission, vec3(0.0), isOutline);\r\n#endif\r\n\r\n    // outline\r\n#ifdef MTOON_OUTLINE_COLOR_FIXED\r\n    _col = mix(_col, vOutlineColor.rgb, isOutline);\r\n#elif defined(MTOON_OUTLINE_COLOR_MIXED)\r\n    _col = mix(_col, vOutlineColor.rgb * mix(vec3(1.0), _col, outlineLightingMix), isOutline);\r\n#else\r\n#endif\r\n\r\n    // debug\r\n#ifdef MTOON_DEBUG_NORMAL\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(worldNormal * 0.5 + 0.5, _lit.a);\r\n    #endif\r\n#elif defined(MTOON_DEBUG_LITSHADERATE)\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(_lightIntensity, _lit.a);\r\n    #endif\r\n#endif\r\n\r\n    return vec4(_col, _lit.a * vOutlineColor.a);\r\n}\r\n\r\n#include<bumpFragmentFunctions>\r\n#include<clipPlaneFragmentDeclaration>\r\n#include<logDepthDeclaration>\r\n#include<fogFragmentDeclaration>\r\n\r\nvoid main(void) {\r\n#ifdef MTOON_CLIP_IF_OUTLINE_IS_NONE\r\n    #ifdef MTOON_OUTLINE_WIDTH_WORLD\r\n    #elif defined(MTOON_OUTLINE_WIDTH_SCREEN)\r\n    #else\r\n        discard;\r\n    #endif\r\n#endif\r\n\r\n#include<clipPlaneFragment>\r\n\r\n    vec3 viewDirectionW = normalize(vEyePosition - vPositionW);\r\n\r\n    // Base color\r\n    vec4 baseColor = vec4(1., 1., 1., 1.);\r\n    vec3 diffuseColor = vec3(1., 1., 1.);\r\n\r\n    // Alpha\r\n    float alpha = 1.0;\r\n\r\n    // Bump\r\n#ifdef NORMAL\r\n     vec3 normalW = normalize(vNormalW);\r\n#else\r\n     vec3 normalW = normalize(-cross(dFdx(vPositionW), dFdy(vPositionW)));\r\n#endif\r\n\r\n#include<depthPrePass>\r\n\r\n    // Ambient color\r\n    vec3 baseAmbientColor = vec3(1., 1., 1.);\r\n    float glossiness = 0.;\r\n\r\n    // Lighting\r\n    vec3 diffuseBase = vec3(0., 0., 0.);\r\n    lightingInfo info;\r\n    float shadow = 1.;\r\n    vec3 lightDirection = vec3(0.0, 1.0, 0.0);\r\n    vec4 mtoonDiffuse = vec4(0.0, 0.0, 0.0, 1.0);\r\n\r\n    // MToon UV\r\n    // 全てのテクスチャは diffuse(_MainTex) の UV 情報を利用する\r\n    vec2 mainUv = vec2(0.0);\r\n#ifdef DIFFUSE\r\n    mainUv += vDiffuseUV;\r\n#elif defined(MAINUV1)\r\n    mainUv += vMainUV1;\r\n#elif defined(MAINUV2)\r\n    mainUv += vMainUV2;\r\n#endif\r\n\r\n    // UV Offset\r\n    vec3 mainUvOffset = vec3(0.0);\r\n#ifdef UV_OFFSET_NORMAL\r\n    mainUvOffset = texture2D(uvOffsetNormalSampler, mainUv).rgb;\r\n#elif defined(BUMP)\r\n    mainUvOffset = texture2D(bumpSampler, mainUv).rgb;\r\n#endif\r\n    // offset uv with normal.xy*scale*0.01\r\n    mainUvOffset = mainUvOffset * uvOffsetNormalScale * 0.01;\r\n    mainUv += mainUvOffset.xy;\r\n\r\n    // uv anim\r\n    float uvAnim = time.y;\r\n#ifdef UV_ANIMATION_MASK\r\n    uvAnim *= texture2D(uvAnimationMaskSampler, mainUv).r;\r\n#endif\r\n    // translate uv in bottom-left origin coordinates.\r\n    mainUv += vec2(uvAnimationScrollX, uvAnimationScrollY) * uvAnim;\r\n    // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.\r\n    float rotateRad = uvAnimationRotation * PI_2 * uvAnim;\r\n    vec2 rotatePivot = vec2(0.5, 0.5);\r\n    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;\r\n\r\n#include<mtoonBumpFragment>\r\n\r\n#ifdef TWOSIDEDLIGHTING\r\n    normalW = gl_FrontFacing ? normalW : -normalW;\r\n#endif\r\n\r\n// 通常の lightFragment ではなく、自前実装の mtoonLightFragment を読み込む\r\n#include<mtoonLightFragment>[0..maxSimultaneousLights]\r\n\r\n    vec3 finalDiffuse = clamp(diffuseBase, 0.0, 1.0) * baseColor.rgb;\r\n\r\n    // Composition\r\n    vec4 color = vec4(finalDiffuse, clamp(alpha, 0.0, 1.0));\r\n\r\n    color.rgb = max(color.rgb, 0.);\r\n#include<logDepthFragment>\r\n#include<fogFragment>\r\n\r\n    color.a *= visibility;\r\n\r\n#ifdef PREMULTIPLYALPHA\r\n    // Convert to associative (premultiplied) format if needed.\r\n    color.rgb *= color.a;\r\n#endif\r\n\r\n    gl_FragColor = color;\r\n}\r\n");
 
 /***/ }),
 
@@ -1897,7 +2031,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// この include は特別で、 UboDeclaration または VertexDeclaration のどちらかに置換される\r\n// @see effect.ts\r\n#include<__decl__mtoonVertex>\r\n\r\n// 基本的に default.vertex.fx のまま\r\n\r\n// Attributes\r\n\r\nattribute vec3 position;\r\n#ifdef NORMAL\r\nattribute vec3 normal;\r\n#endif\r\n#ifdef TANGENT\r\nattribute vec4 tangent;\r\n#endif\r\n#ifdef UV1\r\nattribute vec2 uv;\r\n#endif\r\n#ifdef UV2\r\nattribute vec2 uv2;\r\n#endif\r\n\r\n#include<helperFunctions>\r\n\r\n#include<bonesDeclaration>\r\n\r\n// Uniforms\r\n#include<instancesDeclaration>\r\n\r\n#ifdef MAINUV1\r\nvarying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\nvarying vec2 vMainUV2;\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\nvarying vec2 vDiffuseUV;\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\nvarying vec2 vEmissiveUV;\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\nvarying vec2 vBumpUV;\r\n#endif\r\n\r\n// Output\r\nvarying vec3 vPositionW;\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#include<bumpVertexDeclaration>\r\n\r\n#include<clipPlaneVertexDeclaration>\r\n\r\n#include<fogVertexDeclaration>\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<morphTargetsVertexGlobalDeclaration>\r\n#include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<logDepthDeclaration>\r\n\r\n\r\n// Additional Uniforms\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    varying vec2 vShadeUV;\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    varying vec2 vReceiveShadowUV;\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    varying vec2 vShadingGradeUV;\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    varying vec2 vRimUV;\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    varying vec2 vMatCapUV;\r\n#endif\r\n#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0\r\n    varying vec2 vOutlineWidthUV;\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n#endif\r\n\r\nuniform float aspect;\r\nuniform float isOutline;\r\n\r\nvoid main(void) {\r\n\r\n    vec3 positionUpdated = position;\r\n#ifdef NORMAL\r\n    vec3 normalUpdated = normal;\r\n#endif\r\n#ifdef TANGENT\r\n    vec4 tangentUpdated = tangent;\r\n#endif\r\n\r\n#include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<instancesVertex>\r\n#include<bonesVertex>\r\n\r\n    // Texture coordinates\r\n#ifndef UV1\r\n    vec2 uv = vec2(0., 0.);\r\n#endif\r\n#ifndef UV2\r\n    vec2 uv2 = vec2(0., 0.);\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    vMainUV1 = uv;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    vMainUV2 = uv2;\r\n#endif\r\n\r\n    float outlineTex = 1.0;\r\n    if (isOutline == 1.0) {\r\n#ifdef OUTLINE_WIDTH\r\n    #if OUTLINE_WIDTHDIRECTUV == 0\r\n        if (vOutlineWidthInfos.x == 0.) {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));\r\n        } else {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));\r\n        }\r\n    #elif defined(MAINUV1)\r\n        vec2 vOutlineWidthUV = vMainUV1;\r\n    #elif defined(MAINUV2)\r\n        vec2 vOutlineWidthUV = vMainUV2;\r\n    #else\r\n        vec2 vOutlineWidthUV = vec2(0., 0.);\r\n    #endif\r\n    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;\r\n#endif\r\n\r\n#ifdef MTOON_OUTLINE_WIDTH_WORLD\r\n        // ワールド座標の normal 分だけ移動する\r\n        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;\r\n        positionUpdated.xyz += outlineOffset;\r\n#endif\r\n    }\r\n\r\n    vec4 vertex = vec4(1.0);\r\n#ifdef MULTIVIEW\r\n    if (gl_ViewID_OVR == 0u) {\r\n        vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n    } else {\r\n        vertex = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);\r\n    }\r\n#else\r\n    vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n#endif\r\n\r\n#ifdef MTOON_OUTLINE_WIDTH_SCREEN\r\n    if (isOutline == 1.0) {\r\n        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));\r\n        projectedNormal *= min(vertex.w, outlineScaledMaxDistance);\r\n        projectedNormal.x *= aspect;\r\n        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy;\r\n    }\r\n#endif\r\n\r\n    gl_Position = vertex;\r\n\r\n    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);\r\n    vPositionW = vec3(worldPos);\r\n\r\n#ifdef NORMAL\r\n    mat3 normalWorld = mat3(finalWorld);\r\n\r\n    #ifdef NONUNIFORMSCALING\r\n        normalWorld = transposeMat3(inverseMat3(normalWorld));\r\n    #endif\r\n\r\n    vNormalW = normalize(normalWorld * normalUpdated);\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\n    if (vDiffuseInfos.x == 0.)\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\n    if (vEmissiveInfos.x == 0.)\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\n    if (vBumpInfos.x == 0.)\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    if (vShadeInfos.x == 0.) {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    if (vReceiveShadowInfos.x == 0.) {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    if (vShadingGradeInfos.x == 0.) {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    if (vRimInfos.x == 0.) {\r\n        vRimUV = vec2(rimMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vRimUV = vec2(rimMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    if (vMatCapInfos.x == 0.) {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#include<bumpVertex>\r\n#include<clipPlaneVertex>\r\n#include<fogVertex>\r\n#include<shadowsVertex>[0..maxSimultaneousLights]\r\n\r\n#include<pointCloudVertex>\r\n#include<logDepthVertex>\r\n\r\n}\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// この include は特別で、 UboDeclaration または VertexDeclaration のどちらかに置換される\r\n// @see effect.ts\r\n#include<__decl__mtoonVertex>\r\n\r\n// 基本的に default.vertex.fx を踏襲している\r\n\r\n// Attributes\r\n\r\nattribute vec3 position;\r\n#ifdef NORMAL\r\nattribute vec3 normal;\r\n#endif\r\n#ifdef TANGENT\r\nattribute vec4 tangent;\r\n#endif\r\n#ifdef UV1\r\nattribute vec2 uv;\r\n#endif\r\n#ifdef UV2\r\nattribute vec2 uv2;\r\n#endif\r\n\r\n#include<helperFunctions>\r\n\r\n#include<bonesDeclaration>\r\n\r\n// Uniforms\r\n#include<instancesDeclaration>\r\n\r\n#ifdef MAINUV1\r\nvarying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\nvarying vec2 vMainUV2;\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\nvarying vec2 vDiffuseUV;\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\nvarying vec2 vEmissiveUV;\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\nvarying vec2 vBumpUV;\r\n#endif\r\n\r\n// Output\r\nvarying vec3 vPositionW;\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#include<bumpVertexDeclaration>\r\n\r\n#include<clipPlaneVertexDeclaration>\r\n\r\n#include<fogVertexDeclaration>\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<morphTargetsVertexGlobalDeclaration>\r\n#include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<logDepthDeclaration>\r\n\r\n\r\n// Additional Uniforms\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    varying vec2 vShadeUV;\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    varying vec2 vReceiveShadowUV;\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    varying vec2 vShadingGradeUV;\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    varying vec2 vRimUV;\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    varying vec2 vMatCapUV;\r\n#endif\r\n#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0\r\n    varying vec2 vOutlineWidthUV;\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n#endif\r\n#if defined(UV_OFFSET_NORMAL) && UV_OFFSET_NORMALDIRECTUV == 0\r\n    varying vec2 vUvOffsetNormalUV;\r\n#endif\r\n#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0\r\n    varying vec2 vUvAnimationMaskUV;\r\n#endif\r\n\r\nuniform float aspect;\r\nuniform float isOutline;\r\n\r\nvoid main(void) {\r\n\r\n    vec3 positionUpdated = position;\r\n#ifdef NORMAL\r\n    vec3 normalUpdated = normal;\r\n#endif\r\n#ifdef TANGENT\r\n    vec4 tangentUpdated = tangent;\r\n#endif\r\n\r\n#include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<instancesVertex>\r\n#include<bonesVertex>\r\n\r\n    // Texture coordinates\r\n#ifndef UV1\r\n    vec2 uv = vec2(0., 0.);\r\n#endif\r\n#ifndef UV2\r\n    vec2 uv2 = vec2(0., 0.);\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    vMainUV1 = uv;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    vMainUV2 = uv2;\r\n#endif\r\n\r\n    float outlineTex = 1.0;\r\n    if (isOutline == 1.0) {\r\n#ifdef OUTLINE_WIDTH\r\n    #if OUTLINE_WIDTHDIRECTUV == 0\r\n        if (vOutlineWidthInfos.x == 0.) {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));\r\n        } else {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));\r\n        }\r\n    #elif defined(MAINUV1)\r\n        vec2 vOutlineWidthUV = vMainUV1;\r\n    #elif defined(MAINUV2)\r\n        vec2 vOutlineWidthUV = vMainUV2;\r\n    #else\r\n        vec2 vOutlineWidthUV = vec2(0., 0.);\r\n    #endif\r\n    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;\r\n#endif\r\n\r\n#ifdef MTOON_OUTLINE_WIDTH_WORLD\r\n        // ワールド座標の normal 分だけ移動する\r\n        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;\r\n        positionUpdated.xyz += outlineOffset;\r\n#endif\r\n    } // End isOutline == 1.0\r\n\r\n    vec4 vertex = vec4(1.0);\r\n#ifdef MULTIVIEW\r\n    if (gl_ViewID_OVR == 0u) {\r\n        vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n    } else {\r\n        vertex = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);\r\n    }\r\n#else\r\n    vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n#endif\r\n\r\n#ifdef MTOON_OUTLINE_WIDTH_SCREEN\r\n    if (isOutline == 1.0) {\r\n        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));\r\n        projectedNormal *= min(vertex.w, outlineScaledMaxDistance);\r\n        projectedNormal.x *= aspect;\r\n        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1 - abs(normalize(view * vec4(normalUpdated, 1.0).z)), 0.0, 1.0); // ignore offset when normal toward camera\r\n    }\r\n#endif\r\n\r\n    gl_Position = vertex;\r\n\r\n    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);\r\n    vPositionW = vec3(worldPos);\r\n\r\n#ifdef NORMAL\r\n    mat3 normalWorld = mat3(finalWorld);\r\n\r\n    #ifdef NONUNIFORMSCALING\r\n        normalWorld = transposeMat3(inverseMat3(normalWorld));\r\n    #endif\r\n\r\n    vNormalW = normalize(normalWorld * normalUpdated);\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\n    if (vDiffuseInfos.x == 0.)\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\n    if (vEmissiveInfos.x == 0.)\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\n    if (vBumpInfos.x == 0.)\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    if (vShadeInfos.x == 0.) {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    if (vReceiveShadowInfos.x == 0.) {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    if (vShadingGradeInfos.x == 0.) {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    if (vRimInfos.x == 0.) {\r\n        vRimUV = vec2(rimMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vRimUV = vec2(rimMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    if (vMatCapInfos.x == 0.) {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(UV_OFFSET_NORMAL) && UV_OFFSET_NORMALDIRECTUV == 0\r\n    if (vUvOffsetNormalInfos.x == 0.) {\r\n        vUvOffsetNormalUV = vec2(uvOffsetNormalMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vUvOffsetNormalUV = vec2(uvOffsetNormalMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0\r\n    if (vUvAnimationMaskInfos.x == 0.) {\r\n        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#include<bumpVertex>\r\n#include<clipPlaneVertex>\r\n#include<fogVertex>\r\n#include<shadowsVertex>[0..maxSimultaneousLights]\r\n\r\n#include<pointCloudVertex>\r\n#include<logDepthVertex>\r\n\r\n}\r\n");
 
 /***/ }),
 
@@ -1910,7 +2044,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に展開される\r\n// @see effect.ts\r\n\r\nlayout(std140, column_major) uniform;\r\n\r\nuniform Material\r\n{\r\n    vec4 vDiffuseColor;\r\n    vec2 vDiffuseInfos;\r\n    mat4 diffuseMatrix;\r\n    vec4 vEmissiveColor;\r\n    vec2 vEmissiveInfos;\r\n    mat4 emissiveMatrix;\r\n    vec3 vBumpInfos;\r\n    mat4 bumpMatrix;\r\n    vec3 vShadeColor;\r\n    vec2 vShadeInfos;\r\n    mat4 shadeMatrix;\r\n    vec2 vReceiveShadowInfos;\r\n    mat4 receiveShadowMatrix;\r\n    vec2 vShadingGradeInfos;\r\n    mat4 shadingGradeMatrix;\r\n    vec3 vRimColor;\r\n    vec2 vRimInfos;\r\n    mat4 rimMatrix;\r\n    vec2 vMatCapInfos;\r\n    mat4 matCapMatrix;\r\n    vec4 vOutlineColor;\r\n    vec2 vOutlineWidthInfos;\r\n    mat4 outlineWidthMatrix;\r\n    vec2 vTangentSpaceParams;\r\n    float pointSize;\r\n    float visibility;\r\n    float shadingGradeRate;\r\n    float receiveShadowRate;\r\n    float shadeShift;\r\n    float shadeToony;\r\n    float lightColorAttenuation;\r\n    float indirectLightIntensity;\r\n    float rimLightingMix;\r\n    float rimFresnelPower;\r\n    float rimLift;\r\n    float outlineWidth;\r\n    float outlineScaledMaxDistance;\r\n    float outlineLightingMix;\r\n};\r\n\r\nuniform Scene {\r\n    mat4 viewProjection;\r\n#ifdef MULTIVIEW\r\n    mat4 viewProjectionR;\r\n#endif\r\n    mat4 view;\r\n};\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に WebGL2 の場合展開される\r\n// @see effect.ts\r\n\r\nlayout(std140, column_major) uniform;\r\n\r\nuniform Material\r\n{\r\n    // Color & Texture\r\n    vec4 vDiffuseColor;\r\n    vec2 vDiffuseInfos;\r\n    mat4 diffuseMatrix;\r\n    vec4 vEmissiveColor;\r\n    vec2 vEmissiveInfos;\r\n    mat4 emissiveMatrix;\r\n    vec3 vBumpInfos;\r\n    mat4 bumpMatrix;\r\n    vec3 vShadeColor;\r\n    vec2 vShadeInfos;\r\n    mat4 shadeMatrix;\r\n    vec2 vReceiveShadowInfos;\r\n    mat4 receiveShadowMatrix;\r\n    vec2 vShadingGradeInfos;\r\n    mat4 shadingGradeMatrix;\r\n    vec3 vRimColor;\r\n    vec2 vRimInfos;\r\n    mat4 rimMatrix;\r\n    vec2 vMatCapInfos;\r\n    mat4 matCapMatrix;\r\n    vec4 vOutlineColor;\r\n    vec2 vOutlineWidthInfos;\r\n    mat4 outlineWidthMatrix;\r\n    vec2 vUvOffsetNormalInfos;\r\n    mat4 uvOffsetNormalMatrix;\r\n    vec2 vUvAnimationMaskInfos;\r\n    mat4 uvAnimationMaskMatrix;\r\n\r\n    // babylon specific\r\n    vec2 vTangentSpaceParams;\r\n    float pointSize;\r\n    float visibility;\r\n\r\n    // MToon params\r\n    float shadingGradeRate;\r\n    float receiveShadowRate;\r\n    float shadeShift;\r\n    float shadeToony;\r\n    float lightColorAttenuation;\r\n    float indirectLightIntensity;\r\n    float rimLightingMix;\r\n    float rimFresnelPower;\r\n    float rimLift;\r\n    float outlineWidth;\r\n    float outlineScaledMaxDistance;\r\n    float outlineLightingMix;\r\n    float uvOffsetNormalScale;\r\n    float uvAnimationScrollX;\r\n    float uvAnimationScrollY;\r\n    float uvAnimationRotation;\r\n};\r\n\r\n// babylon specific\r\nuniform Scene {\r\n    mat4 viewProjection;\r\n#ifdef MULTIVIEW\r\n    mat4 viewProjectionR;\r\n#endif\r\n    mat4 view;\r\n};\r\n");
 
 /***/ }),
 
@@ -1923,7 +2057,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// Uniforms\r\nuniform mat4 viewProjection;\r\nuniform mat4 view;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\n\r\n#ifdef DIFFUSE\r\nuniform mat4 diffuseMatrix;\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\nuniform mat4 emissiveMatrix;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform mat4 bumpMatrix;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\nuniform mat4 shadeMatrix;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\nuniform mat4 receiveShadowMatrix;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\nuniform mat4 shadingGradeMatrix;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\nuniform mat4 rimMatrix;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\nuniform mat4 matCapMatrix;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\nuniform mat4 outlineWidthMatrix;\r\n#endif\r\n\r\n#ifdef POINTSIZE\r\nuniform float pointSize;\r\n#endif\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// Uniforms\r\nuniform mat4 viewProjection;\r\nuniform mat4 view;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\n\r\n#ifdef DIFFUSE\r\nuniform mat4 diffuseMatrix;\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\nuniform mat4 emissiveMatrix;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform mat4 bumpMatrix;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\nuniform mat4 shadeMatrix;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\nuniform mat4 receiveShadowMatrix;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\nuniform mat4 shadingGradeMatrix;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\nuniform mat4 rimMatrix;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\nuniform mat4 matCapMatrix;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\nuniform mat4 outlineWidthMatrix;\r\n#endif\r\n\r\n#ifdef UV_OFFSET_NORMAL\r\nuniform vec2 vUvOffsetNormalInfos;\r\nuniform mat4 uvOffsetNormalMatrix;\r\n#endif\r\n\r\n#ifdef UV_ANIMATION_MASK\r\nuniform vec2 vUvAnimationMaskInfos;\r\nuniform mat4 uvAnimationMaskMatrix;\r\n#endif\r\n\r\n#ifdef POINTSIZE\r\nuniform float pointSize;\r\n#endif\r\n");
 
 /***/ }),
 
@@ -1973,7 +2107,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function main() {
     return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat;
+        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat, mat, diffuse, bump;
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -2058,6 +2192,22 @@ function main() {
                         mat.matCapTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('resources/matcap.png', scene, true, false);
                         mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](0, 0, 0);
                         mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](0, 0, 0);
+                        mtoonMaterials.push(mat);
+                    }
+                    {
+                        mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_11__["MToonMaterial"]('MtoonMaterialScroll', scene);
+                        mat.outlineWidthMode = 1;
+                        diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('http://i.imgur.com/Wk1cGEq.png', scene);
+                        diffuse.uScale = 4;
+                        diffuse.vScale = 4;
+                        mat.diffuseTexture = diffuse;
+                        mat.shadeTexture = mat.diffuseTexture.clone();
+                        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__["Color3"](0.5, 0.5, 0.5);
+                        bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('http://i.imgur.com/wGyk6os.png', scene);
+                        bump.uScale = 4;
+                        bump.vScale = 4;
+                        mat.bumpTexture = bump;
+                        mat.uvAnimationScrollX = 0.5;
                         mtoonMaterials.push(mat);
                     }
                     mtoonMaterials.forEach(function (mat, index) {
