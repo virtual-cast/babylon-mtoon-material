@@ -181,5 +181,37 @@ export function getInspectableCustomProperties(): IInspectable[] {
             max: 1,
             step: 0.01,
         },
+        {
+            label: 'UV Offset Normal Scale',
+            propertyName: 'uvOffsetNormalScale',
+            type: InspectableType.Slider,
+            min: 0,
+            max: 10,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Scroll X',
+            propertyName: 'uvAnimationScrollX',
+            type: InspectableType.Slider,
+            min: -1,
+            max: 1,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Scroll Y',
+            propertyName: 'uvAnimationScrollY',
+            type: InspectableType.Slider,
+            min: -1,
+            max: 1,
+            step: 0.1,
+        },
+        {
+            label: 'UV Animation Rotation',
+            propertyName: 'uvAnimationRotation',
+            type: InspectableType.Slider,
+            min: -0.5,
+            max: 0.5,
+            step: 0.01,
+        },
     ];
 }

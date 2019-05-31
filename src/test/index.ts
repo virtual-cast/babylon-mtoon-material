@@ -113,6 +113,24 @@ async function main() {
         mat.shadeColor = new Color3(0, 0, 0);
         mtoonMaterials.push(mat);
     }
+    {
+        const mat = new MToonMaterial('MtoonMaterialScroll', scene);
+        mat.outlineWidthMode = 1;
+        // Textures from https://www.babylonjs-playground.com/#20OAV9#33
+        const diffuse = new Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        diffuse.uScale = 4;
+        diffuse.vScale = 4;
+        mat.diffuseTexture = diffuse;
+        mat.shadeTexture = mat.diffuseTexture.clone();
+        mat.shadeColor = new Color3(0.5, 0.5, 0.5);
+
+        const bump = new Texture('http://i.imgur.com/wGyk6os.png', scene);
+        bump.uScale = 4;
+        bump.vScale = 4;
+        mat.bumpTexture = bump;
+        mat.uvAnimationScrollX = 0.5;
+        mtoonMaterials.push(mat);
+    }
 
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる

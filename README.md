@@ -15,7 +15,7 @@ This is **Work In Progress**. Some settings will be ignored or generates inconsi
 ## Features
 
 - Some [StandardMaterial](https://doc.babylonjs.com/api/classes/babylon.standardmaterial) abilities
-    - Lighting(Only 1 light)
+    - Lighting
     - Multiview
     - LogarithmicDepth
     - Fog
@@ -34,15 +34,16 @@ This is **Work In Progress**. Some settings will be ignored or generates inconsi
     - Shade(shaded diffuse)
     - Receive Shadow(received shadow rate texture alpha)
     - Shading Grade
+    - Rim
     - MatCap
     - Outline Width
-    - Todo: Rim
+- UV Animation(Scroll, Rotation)
+- Serialize Support
 
 These are not covered.
 
 - Specular
 - Vertex Color
-- TODO: Serialize Support
 
 ## Usage
 

@@ -10,12 +10,15 @@
 
 // Constants
 #define RECIPROCAL_PI2 0.15915494
+#define PI_2 6.28318530718
+#define EPS_COL 0.00001
 
 uniform vec3 vEyePosition;
 uniform vec3 vEyeUp;
 uniform vec3 vAmbientColor;
 uniform float aspect;
 uniform float isOutline;
+uniform vec4 time;
 
 // Input
 varying vec3 vPositionW;
@@ -128,9 +131,29 @@ varying vec3 vNormalW;
         varying vec2 vOutlineWidthUV;
     #endif
 #endif
+#ifdef UV_OFFSET_NORMAL
+    uniform sampler2D uvOffsetNormalSampler;
+    #if UV_OFFSET_NORMALDIRECTUV == 1
+        #define vUvOffsetNormalUV vMainUV1
+    #elif UV_OFFSET_NORMALDIRECTUV == 2
+        #define vUvOffsetNormalUV vMainUV2
+    #else
+        varying vec2 vUvOffsetNormalUV;
+    #endif
+#endif
+#ifdef UV_ANIMATION_MASK
+    uniform sampler2D uvAnimationMaskSampler;
+    #if UV_ANIMATION_MASKDIRECTUV == 1
+        #define vUvAnimationMaskUV vMainUV1
+    #elif UV_ANIMATION_MASKDIRECTUV == 2
+        #define vUvAnimationMaskUV vMainUV2
+    #else
+        varying vec2 vUvAnimationMaskUV;
+    #endif
+#endif
 
 /**
-* DirectionLight, PointLight の角度を計算
+* DirectionalLight, PointLight の角度を計算
 */
 vec3 computeLightDirection(vec4 lightData) {
       return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));
@@ -153,63 +176,86 @@ vec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {
 /**
 * MToon シェーダーの陰実装
 */
-vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset, vec3 lightDirection, vec4 lightDiffuse, float shadow) {
+vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, vec3 lightDirection, vec4 lightDiffuse, float shadowAttenuation) {
     float _receiveShadow = receiveShadowRate;
 #ifdef RECEIVE_SHADOW
-    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, vReceiveShadowUV + uvOffset).a;
+    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, mainUv).r * vReceiveShadowInfos.y;
 #endif
 
-    float _shadingGrade = shadingGradeRate;
+    float _shadingGrade = 0.0;
 #ifdef SHADING_GRADE
-    _shadingGrade = _shadingGrade * (1.0 - texture2D(shadingGradeSampler, vShadingGradeUV + uvOffset).r);
+    _shadingGrade = 1.0 - texture2D(shadingGradeSampler, mainUv).r * vShadingGradeInfos.y;
+#endif
+    _shadingGrade = 1.0 - shadingGradeRate * _shadingGrade;
+
+    // Lighting
+    vec3 _lightColor = lightDiffuse.rgb * step(0.5, length(lightDirection)); // length(lightDir) is zero if directional light is disabled.
+    float _dotNL = dot(lightDirection, worldNormal);
+#ifdef MTOON_FORWARD_ADD
+    float _lightAttenuation = 1.0;
+#else
+    float _lightAttenuation = shadowAttenuation * mix(1.0, shadowAttenuation, _receiveShadow);
 #endif
 
     // lighting intensity
-    float _lightIntensity = dot(lightDirection, worldNormal);
+    float _lightIntensity = _dotNL;
     _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]
-    _lightIntensity = _lightIntensity * (1.0 - _receiveShadow * (1.0 - (shadow * 0.5 + 0.5))); // receive shadow
+    _lightIntensity = _lightIntensity * _lightAttenuation; // receive shadow
     _lightIntensity = _lightIntensity * _shadingGrade; // darker
     _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]
-    _lightIntensity = smoothstep(shadeShift, shadeShift + (1.0 - shadeToony), _lightIntensity); // shade & tooned
+    // tooned. mapping from [minIntensityThreshold, maxIntensityThreshold] to [0, 1]
+    float _maxIntensityThreshold = mix(1.0, shadeShift, shadeToony);
+    float _minIntensityThreshold = shadeShift;
+    _lightIntensity = clamp((_lightIntensity - _minIntensityThreshold) / max(EPS_COL, (_maxIntensityThreshold - _minIntensityThreshold)), 0.0, 1.0);
 
-    // lighting with color
-    vec3 _directLighting = lightDiffuse.rgb; // direct
-    vec3 _lighting = _directLighting;
-    _lighting = mix(_lighting, vec3(max(0.001, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation);
-
-    // GI
-    vec3 _indirectLighting = indirectLightIntensity * vAmbientColor.rgb;
-    _indirectLighting = mix(_indirectLighting, vec3(max(0.001, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation);
-
-    // color lerp
+    // Albedo color
     vec3 _shade = vShadeColor;
 #ifdef SHADE
-    _shade = _shade * texture2D(shadeSampler, vShadeUV + uvOffset).rgb;
+    _shade = _shade * texture2D(shadeSampler, mainUv).rgb * vShadeInfos.y;
 #endif
 
     vec4 _lit = vDiffuseColor;
 #ifdef DIFFUSE
-    _lit = _lit * texture2D(diffuseSampler, vDiffuseUV + uvOffset);
+    _lit = _lit * texture2D(diffuseSampler, mainUv) * vDiffuseInfos.y;
 #endif
+    vec3 _col = mix(_shade.rgb, _lit.rgb, _lightIntensity);
 
-    vec3 _result = mix(_shade.rgb, _lit.rgb, _lightIntensity);
-    _result = _result * _lighting + _indirectLighting * _lit.rgb;
+    // Direct Light
+    vec3 _lighting = _lightColor;
+    _lighting = mix(_lighting, vec3(max(EPS_COL, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation); // color atten
+#ifdef MTOON_FORWARD_ADD
+    _lighting *= 0.5; // darken if additional light
+    _lighting *= min(0, dotNL) + 1.0; // darken dotNL < 0 area by using half lambert
+    _lighting *= shadowAttenuation; // darken if receiving shadow
+#else
+    // base light does not darken.
+#endif
+    _col *= _lighting;
 
-    // pure light
-    vec3 _pureLight = _lighting * _lightIntensity * _indirectLighting;
-    _pureLight = mix(_pureLight, vec3(max(_pureLight.x, max(_pureLight.y, _pureLight.z))), lightColorAttenuation);
+    // Indirect Light
+#ifdef MTOON_FORWARD_ADD
+#else
+    vec3 _toonedGI = vAmbientColor.rgb; // TODO: GI
+    vec3 _indirectLighting = mix(_toonedGI, vAmbientColor.rgb, indirectLightIntensity);
+    _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten
+    _col += _indirectLighting * _lit.rgb;
+#endif
 
     // parametric rim lighting
 #ifdef MTOON_FORWARD_ADD
+    vec3 _staticRimLighting = vec3(0.0);
+    vec3 _mixedRimLighting = _lighting;
 #else
+    vec3 _staticRimLighting = vec3(1.0);
+    vec3 _mixedRimLighting = _lighting + _indirectLighting;
+#endif
+    vec3 _rimLighting = mix(_staticRimLighting, _mixedRimLighting, rimLightingMix);
     vec3 _rimColor = vRimColor.rgb;
 #ifdef RIM
-    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + uvoffset).rgb;
+    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + mainUv).rgb * vRimInfos.y;
 #endif
     vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;
-    _rim *= mix(vec3(1.0), _pureLight, rimLightingMix);
-    _result += _rim;
-#endif
+    _col += mix(_rim * _rimLighting, vec3(0.0), isOutline);
 
     // additive matcap
 #ifdef MTOON_FORWARD_ADD
@@ -218,16 +264,28 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
     vec3 _worldViewUp = normalize(vEyeUp - worldView * dot(worldView, vEyeUp));
     vec3 _worldViewRight = normalize(cross(worldView, _worldViewUp));
     vec2 _matCapUv = vec2(dot(_worldViewRight, worldNormal), dot(_worldViewUp, worldNormal)) * 0.5 + 0.5;
+    // uv.y is reversed
     _matCapUv.y = (1.0 - _matCapUv.y);
-    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv + uvOffset).rgb;
-    _result += _matCapLighting;
+    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv).rgb * vMatCapInfos.y;
+    _col += mix(_matCapLighting, vec3(0.0), isOutline);
 #endif
 #endif
 
+    // Emission
+#ifdef MTOON_FORWARD_ADD
+#else
+    vec3 _emission = vEmissiveColor.rgb;
+#ifdef EMISSIVE
+     _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;
+#endif
+     _col += mix(_emission, vec3(0.0), isOutline);
+#endif
+
+    // outline
 #ifdef MTOON_OUTLINE_COLOR_FIXED
-    _result = mix(_result, vOutlineColor.rgb, isOutline);
+    _col = mix(_col, vOutlineColor.rgb, isOutline);
 #elif defined(MTOON_OUTLINE_COLOR_MIXED)
-    _result = mix(_result, vOutlineColor.rgb * mix(vec3(1.0), _result, outlineLightingMix), isOutline);
+    _col = mix(_col, vOutlineColor.rgb * mix(vec3(1.0), _col, outlineLightingMix), isOutline);
 #else
 #endif
 
@@ -242,11 +300,11 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
     #ifdef MTOON_FORWARD_ADD
         return vec4(0.0);
     #else
-        return vec4(_lightIntensity * _lighting, _lit.a);
+        return vec4(_lightIntensity, _lit.a);
     #endif
 #endif
 
-    return vec4(_result, _lit.a * vOutlineColor.a);
+    return vec4(_col, _lit.a * vOutlineColor.a);
 }
 
 #include<bumpFragmentFunctions>
@@ -257,7 +315,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 uvOffset
 void main(void) {
 #ifdef MTOON_CLIP_IF_OUTLINE_IS_NONE
     #ifdef MTOON_OUTLINE_WIDTH_WORLD
-    #elif MTOON_OUTLINE_WIDTH_SCREEN
+    #elif defined(MTOON_OUTLINE_WIDTH_SCREEN)
     #else
         discard;
     #endif
@@ -269,12 +327,7 @@ void main(void) {
 
     // Base color
     vec4 baseColor = vec4(1., 1., 1., 1.);
-    vec3 diffuseColor = vDiffuseColor.rgb;
-
-
-#ifdef DIFFUSE
-    baseColor.rgb *= vDiffuseInfos.y;
-#endif
+    vec3 diffuseColor = vec3(1., 1., 1.);
 
     // Alpha
     float alpha = 1.0;
@@ -284,12 +337,6 @@ void main(void) {
      vec3 normalW = normalize(vNormalW);
 #else
      vec3 normalW = normalize(-cross(dFdx(vPositionW), dFdy(vPositionW)));
-#endif
-
-#include<bumpFragment>
-
-#ifdef TWOSIDEDLIGHTING
-     normalW = gl_FrontFacing ? normalW : -normalW;
 #endif
 
 #include<depthPrePass>
@@ -305,30 +352,64 @@ void main(void) {
     vec3 lightDirection = vec3(0.0, 1.0, 0.0);
     vec4 mtoonDiffuse = vec4(0.0, 0.0, 0.0, 1.0);
 
+    // MToon UV
+    // 全てのテクスチャは diffuse(_MainTex) の UV 情報を利用する
+    vec2 mainUv = vec2(0.0);
+#ifdef DIFFUSE
+    mainUv += vDiffuseUV;
+#elif defined(MAINUV1)
+    mainUv += vMainUV1;
+#elif defined(MAINUV2)
+    mainUv += vMainUV2;
+#endif
+
+    // UV Offset
+    vec3 mainUvOffset = vec3(0.0);
+#ifdef UV_OFFSET_NORMAL
+    mainUvOffset = texture2D(uvOffsetNormalSampler, mainUv).rgb;
+#elif defined(BUMP)
+    mainUvOffset = texture2D(bumpSampler, mainUv).rgb;
+#endif
+    // offset uv with normal.xy*scale*0.01
+    mainUvOffset = mainUvOffset * uvOffsetNormalScale * 0.01;
+    mainUv += mainUvOffset.xy;
+
+    // uv anim
+    float uvAnim = time.y;
+#ifdef UV_ANIMATION_MASK
+    uvAnim *= texture2D(uvAnimationMaskSampler, mainUv).r;
+#endif
+    // translate uv in bottom-left origin coordinates.
+    mainUv += vec2(uvAnimationScrollX, uvAnimationScrollY) * uvAnim;
+    // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.
+    float rotateRad = uvAnimationRotation * PI_2 * uvAnim;
+    vec2 rotatePivot = vec2(0.5, 0.5);
+    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
+
+#include<mtoonBumpFragment>
+
+#ifdef TWOSIDEDLIGHTING
+    normalW = gl_FrontFacing ? normalW : -normalW;
+#endif
+
 // 通常の lightFragment ではなく、自前実装の mtoonLightFragment を読み込む
 #include<mtoonLightFragment>[0..maxSimultaneousLights]
 
-    // Emissive
-    vec3 emissiveColor = vEmissiveColor.rgb;
-#ifdef EMISSIVE
-     emissiveColor *= texture2D(emissiveSampler, vEmissiveUV + uvOffset).rgb * vEmissiveInfos.y;
-#endif
-
-    vec3 finalDiffuse = clamp(diffuseBase + emissiveColor, 0.0, 1.0) * baseColor.rgb;
+    vec3 finalDiffuse = clamp(diffuseBase, 0.0, 1.0) * baseColor.rgb;
 
     // Composition
-    vec4 color = vec4(finalDiffuse, alpha);
+    vec4 color = vec4(finalDiffuse, clamp(alpha, 0.0, 1.0));
 
     color.rgb = max(color.rgb, 0.);
 #include<logDepthFragment>
 #include<fogFragment>
 
-     color.a *= visibility;
+    color.a *= visibility;
 
 #ifdef PREMULTIPLYALPHA
     // Convert to associative (premultiplied) format if needed.
     color.rgb *= color.a;
 #endif
 
-     gl_FragColor = color;
+    gl_FragColor = color;
 }

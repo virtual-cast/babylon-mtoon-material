@@ -1,10 +1,11 @@
-// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に展開される
+// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に WebGL2 の場合展開される
 // @see effect.ts
 
 layout(std140, column_major) uniform;
 
 uniform Material
 {
+    // Color & Texture
     vec4 vDiffuseColor;
     vec2 vDiffuseInfos;
     mat4 diffuseMatrix;
@@ -28,9 +29,17 @@ uniform Material
     vec4 vOutlineColor;
     vec2 vOutlineWidthInfos;
     mat4 outlineWidthMatrix;
+    vec2 vUvOffsetNormalInfos;
+    mat4 uvOffsetNormalMatrix;
+    vec2 vUvAnimationMaskInfos;
+    mat4 uvAnimationMaskMatrix;
+
+    // babylon specific
     vec2 vTangentSpaceParams;
     float pointSize;
     float visibility;
+
+    // MToon params
     float shadingGradeRate;
     float receiveShadowRate;
     float shadeShift;
@@ -43,8 +52,13 @@ uniform Material
     float outlineWidth;
     float outlineScaledMaxDistance;
     float outlineLightingMix;
+    float uvOffsetNormalScale;
+    float uvAnimationScrollX;
+    float uvAnimationScrollY;
+    float uvAnimationRotation;
 };
 
+// babylon specific
 uniform Scene {
     mat4 viewProjection;
 #ifdef MULTIVIEW

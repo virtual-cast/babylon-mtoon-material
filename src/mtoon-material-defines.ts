@@ -40,6 +40,10 @@ export class MToonMaterialDefines extends MaterialDefines {
     public MATCAPDIRECTUV = 0;
     public OUTLINE_WIDTH = false;
     public OUTLINE_WIDTHDIRECTUV = 0;
+    public UV_OFFSET_NORMAL = false;
+    public UV_OFFSET_NORMALDIRECTUV = 0;
+    public UV_ANIMATION_MASK = false;
+    public UV_ANIMATION_MASKDIRECTUV = 0;
 
     // Misc
     public MULTIVIEW = false;
