@@ -146,14 +146,6 @@ export class MToonMaterial extends PushMaterial {
     public outlineWidthTexture: Nullable<BaseTexture> = null;
 
     @serializeAsTexture('outlineWidthTexture')
-    private _uvOffsetNormalTexture: Nullable<BaseTexture> = null;
-    /**
-     * UV オフセット法線テクスチャ
-     */
-    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
-    public uvOffsetNormalTexture: Nullable<BaseTexture> = null;
-
-    @serializeAsTexture('outlineWidthTexture')
     private _uvAnimationMaskTexture: Nullable<BaseTexture> = null;
     /**
      * UV アニメーションマスクテクスチャ
@@ -175,7 +167,6 @@ export class MToonMaterial extends PushMaterial {
             this._rimTexture,
             this._matCapTexture,
             this._outlineWidthTexture,
-            this._uvOffsetNormalTexture,
             this._uvAnimationMaskTexture,
         ];
     }
@@ -407,15 +398,6 @@ export class MToonMaterial extends PushMaterial {
         this._outlineLightingMix = Math.max(0.0, Math.min(1.0, value));
         this._markAllSubMeshesAsAttributesDirty();
     }
-    private _uvOffsetNormalScale = 1.0;
-    @serialize()
-    public get uvOffsetNormalScale() {
-        return this._uvOffsetNormalScale;
-    }
-    public set uvOffsetNormalScale(value: number) {
-        this._uvOffsetNormalScale = value;
-        this._markAllSubMeshesAsMiscDirty();
-    }
     private _uvAnimationScrollX = 0.0;
     @serialize()
     public get uvAnimationScrollX() {
@@ -630,7 +612,6 @@ export class MToonMaterial extends PushMaterial {
                     || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
                     || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
                     || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')
-                    || !this.isReadyForTexture(this._uvOffsetNormalTexture, defines, 'UV_OFFSET_NORMAL')
                     || !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')
                 ) {
                     return false;
@@ -656,7 +637,6 @@ export class MToonMaterial extends PushMaterial {
                 defines.MATCAP = false;
                 defines.OUTLINE_WIDTH = false;
                 defines.BUMP = false;
-                defines.UV_OFFSET_NORMAL = false;
                 defines.UV_ANIMATION_MASK = false;
             }
 
@@ -777,7 +757,7 @@ export class MToonMaterial extends PushMaterial {
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
                 'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
                 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
-                'uvOffsetNormalSampler', 'uvAnimationMaskSampler',
+                'uvAnimationMaskSampler',
             ];
 
             const uniformBuffers = ['Material', 'Scene'];
@@ -886,7 +866,6 @@ export class MToonMaterial extends PushMaterial {
                     this.bindTexture(this._rimTexture, effect, 'rim', 'vRimInfos');
                     this.bindTexture(this._matCapTexture, effect, 'matCap', 'vMatCapInfos');
                     this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
-                    this.bindTexture(this._uvOffsetNormalTexture, effect, 'uvOffsetNormal', 'vUvOffsetNormalInfos');
                     this.bindTexture(this._uvAnimationMaskTexture, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
                 }
             }
@@ -911,7 +890,6 @@ export class MToonMaterial extends PushMaterial {
             this._uniformBuffer.updateFloat('outlineWidth', this._outlineWidth);
             this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
             this._uniformBuffer.updateFloat('outlineLightingMix', this._outlineLightingMix);
-            this._uniformBuffer.updateFloat('uvOffsetNormalScale', this._uvOffsetNormalScale);
             this._uniformBuffer.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
             this._uniformBuffer.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
             this._uniformBuffer.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
@@ -1056,9 +1034,6 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('vOutlineWidthInfos', 2);
         this._uniformBuffer.addUniform('outlineWidthMatrix', 16);
 
-        this._uniformBuffer.addUniform('vUvOffsetNormalInfos', 2);
-        this._uniformBuffer.addUniform('uvOffsetNormalMatrix', 16);
-
         this._uniformBuffer.addUniform('vUvAnimationMaskInfos', 2);
         this._uniformBuffer.addUniform('uvAnimationMaskMatrix', 16);
 
@@ -1078,7 +1053,6 @@ export class MToonMaterial extends PushMaterial {
         this._uniformBuffer.addUniform('outlineWidth', 1);
         this._uniformBuffer.addUniform('outlineScaledMaxDistance', 1);
         this._uniformBuffer.addUniform('outlineLightingMix', 1);
-        this._uniformBuffer.addUniform('uvOffsetNormalScale', 1);
         this._uniformBuffer.addUniform('uvAnimationScrollX', 1);
         this._uniformBuffer.addUniform('uvAnimationScrollY', 1);
         this._uniformBuffer.addUniform('uvAnimationRotation', 1);

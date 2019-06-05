@@ -131,16 +131,6 @@ varying vec3 vNormalW;
         varying vec2 vOutlineWidthUV;
     #endif
 #endif
-#ifdef UV_OFFSET_NORMAL
-    uniform sampler2D uvOffsetNormalSampler;
-    #if UV_OFFSET_NORMALDIRECTUV == 1
-        #define vUvOffsetNormalUV vMainUV1
-    #elif UV_OFFSET_NORMALDIRECTUV == 2
-        #define vUvOffsetNormalUV vMainUV2
-    #else
-        varying vec2 vUvOffsetNormalUV;
-    #endif
-#endif
 #ifdef UV_ANIMATION_MASK
     uniform sampler2D uvAnimationMaskSampler;
     #if UV_ANIMATION_MASKDIRECTUV == 1
@@ -362,17 +352,6 @@ void main(void) {
 #elif defined(MAINUV2)
     mainUv += vMainUV2;
 #endif
-
-    // UV Offset
-    vec3 mainUvOffset = vec3(0.0);
-#ifdef UV_OFFSET_NORMAL
-    mainUvOffset = texture2D(uvOffsetNormalSampler, mainUv).rgb;
-#elif defined(BUMP)
-    mainUvOffset = texture2D(bumpSampler, mainUv).rgb;
-#endif
-    // offset uv with normal.xy*scale*0.01
-    mainUvOffset = mainUvOffset * uvOffsetNormalScale * 0.01;
-    mainUv += mainUvOffset.xy;
 
     // uv anim
     float uvAnim = time.y;

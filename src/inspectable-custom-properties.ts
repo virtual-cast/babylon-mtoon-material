@@ -182,14 +182,6 @@ export function getInspectableCustomProperties(): IInspectable[] {
             step: 0.01,
         },
         {
-            label: 'UV Offset Normal Scale',
-            propertyName: 'uvOffsetNormalScale',
-            type: InspectableType.Slider,
-            min: 0,
-            max: 10,
-            step: 0.1,
-        },
-        {
             label: 'UV Animation Scroll X',
             propertyName: 'uvAnimationScrollX',
             type: InspectableType.Slider,
