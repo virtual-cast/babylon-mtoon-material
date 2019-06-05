@@ -230,7 +230,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
     _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten
     _col += _indirectLighting * _lit.rgb;
 
-    _col = min(_col, _lit); // comment out if you want to PBR absolutely.
+    _col = min(_col.rgb, _lit.rgb); // comment out if you want to PBR absolutely.
 #endif
 
     // parametric rim lighting
