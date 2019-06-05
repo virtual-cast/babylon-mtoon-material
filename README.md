@@ -49,19 +49,72 @@ These are not covered.
 
 This material will be automatically assined to VRM/VCI model within [babylon-vrm-loader](https://github.com/virtual-cast/babylon-vrm-loader).
 
-You can explicitly assign MToonMaterial to some meshes.
+Also you can explicitly assign MToonMaterial to some meshes.
 
-```ts
+### Browser
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Babylon.js MToon Material</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+    </head>
+    <body>
+        <main id="wrapper">
+            <canvas id="renderCanvas"></canvas>
+        </main>
+        <script src="https://preview.babylonjs.com/babylon.max.js"></script>
+        <script src="https://unpkg.com/babylon-mtoon-material/dist/index.js"></script>
+        <script>
+            // example usage from https://github.com/BabylonJS/Babylon.js
+            const canvas = document.getElementById('renderCanvas');
+            const engine = new BABYLON.Engine(canvas, true, {preserveDrawingBuffer: true, stencil: true});
+            const scene = new BABYLON.Scene(engine);
+            const camera = new BABYLON.FreeCamera('camera1', new BABYLON.Vector3(0, 5, -10), scene);
+            camera.setTarget(BABYLON.Vector3.Zero());
+            camera.attachControl(canvas, false);
+            new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(0, 1, 0), scene);
+            const sphere = BABYLON.Mesh.CreateSphere('sphere1', 16, 2, scene, false, BABYLON.Mesh.FRONTSIDE);
+            sphere.position.y = 1;
+
+            // Assign MToonMaterial
+            sphere.material = new MToonMaterial('mat1', scene);
+
+            engine.runRenderLoop(function(){
+                scene.render();
+            });
+            window.addEventListener('resize', function(){
+                engine.resize();
+            });
+        </script>
+    </body>
+</html>
+```
+
+### npm
+
+```s
+$ npm install --save @babylonjs/core babylon-mtoon-material
+```
+
+```js
+// in index.js
+import { Mesh } from 'babylonjs/core';
+import { MToonMaterial } from 'babylon-mtoon-material';
+
+// initializing
+
 const sphere = BABYLON.Mesh.CreateSphere('Sphere', 16, 1, scene);
-const material = new MToonMaterial('MtoonMaterial', scene);
-sphere.material = material;
+sphere.material = new MToonMaterial('MtoonMaterial', scene);
 ```
 
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-## Build
+### Build
 
 ```s
 $ yarn build
