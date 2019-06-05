@@ -131,16 +131,6 @@ varying vec3 vNormalW;
         varying vec2 vOutlineWidthUV;
     #endif
 #endif
-#ifdef UV_OFFSET_NORMAL
-    uniform sampler2D uvOffsetNormalSampler;
-    #if UV_OFFSET_NORMALDIRECTUV == 1
-        #define vUvOffsetNormalUV vMainUV1
-    #elif UV_OFFSET_NORMALDIRECTUV == 2
-        #define vUvOffsetNormalUV vMainUV2
-    #else
-        varying vec2 vUvOffsetNormalUV;
-    #endif
-#endif
 #ifdef UV_ANIMATION_MASK
     uniform sampler2D uvAnimationMaskSampler;
     #if UV_ANIMATION_MASKDIRECTUV == 1
@@ -239,6 +229,8 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
     vec3 _indirectLighting = mix(_toonedGI, vAmbientColor.rgb, indirectLightIntensity);
     _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten
     _col += _indirectLighting * _lit.rgb;
+
+    _col = min(_col, _lit); // comment out if you want to PBR absolutely.
 #endif
 
     // parametric rim lighting
@@ -362,17 +354,6 @@ void main(void) {
 #elif defined(MAINUV2)
     mainUv += vMainUV2;
 #endif
-
-    // UV Offset
-    vec3 mainUvOffset = vec3(0.0);
-#ifdef UV_OFFSET_NORMAL
-    mainUvOffset = texture2D(uvOffsetNormalSampler, mainUv).rgb;
-#elif defined(BUMP)
-    mainUvOffset = texture2D(bumpSampler, mainUv).rgb;
-#endif
-    // offset uv with normal.xy*scale*0.01
-    mainUvOffset = mainUvOffset * uvOffsetNormalScale * 0.01;
-    mainUv += mainUvOffset.xy;
 
     // uv anim
     float uvAnim = time.y;

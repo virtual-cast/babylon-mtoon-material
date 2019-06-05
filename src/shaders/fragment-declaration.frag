@@ -47,10 +47,6 @@ uniform vec2 vMatCapInfos;
 uniform vec2 vOutlineWidthInfos;
 #endif
 
-#ifdef UV_OFFSET_NORMAL
-uniform vec2 vUvOffsetNormalInfos;
-#endif
-
 #ifdef UV_ANIMATION_MASK
 uniform vec2 vUvAnimationMaskInfos;
 #endif
@@ -68,7 +64,6 @@ uniform float rimLift;
 uniform float outlineWidth;
 uniform float outlineScaledMaxDistance;
 uniform float outlineLightingMix;
-uniform float uvOffsetNormalScale;
 uniform float uvAnimationScrollX;
 uniform float uvAnimationScrollY;
 uniform float uvAnimationRotation;
