@@ -28,11 +28,10 @@
     ],
     "typings": "dist/index.d.ts",
     "main": "dist/index.js",
-    "dependencies": {
-        "@babylonjs/core": "^4.0.3"
-    },
+    "dependencies": {},
     "devDependencies": {
-        "@babylonjs/inspector": "^4.0.3",
+        "@babylonjs/core": "^4.0.0",
+        "@babylonjs/inspector": "^4.0.0",
         "@semantic-release/commit-analyzer": "^6.1.0",
         "@semantic-release/git": "^7.0.8",
         "@semantic-release/github": "^5.2.10",
@@ -71,5 +70,8 @@
             "@semantic-release/npm",
             "@semantic-release/git"
         ]
+    },
+    "peerDependencies": {
+        "@babylonjs/core": "^4.0.0"
     }
 }
