@@ -1,14 +1,9 @@
 const resolve = require('path').resolve;
+const merge = require('webpack-merge');
 
-module.exports = {
+const baseConfig = {
     mode: 'production',
     entry: resolve(__dirname, 'src', 'index'),
-    output: {
-        library: 'babylon-mtoon-material',
-        libraryTarget: 'umd',
-        filename: 'index.js',
-        path: resolve(__dirname, 'dist'),
-    },
     module: {
         rules: [
             {
@@ -26,7 +21,41 @@ module.exports = {
         extensions: ['.js', '.ts', '.vert', '.frag'],
     },
     target: 'web',
-    externals: [
-        /^@babylonjs\/core.*$/,
-    ],
 };
+
+module.exports = [
+    /**
+     * to UMD for npm
+     */
+    merge(baseConfig, {
+        output: {
+            library: 'babylon-mtoon-material',
+            libraryTarget: 'umd',
+            filename: 'index.module.js',
+            path: resolve(__dirname, 'dist'),
+        },
+        externals: [
+            /^@babylonjs\/core.*$/,
+        ],
+    }),
+    /**
+     * to window.MToonMaterial
+     */
+    merge(baseConfig, {
+        output: {
+            library: 'MToonMaterial',
+            libraryTarget: 'window',
+            libraryExport: 'MToonMaterial',
+            filename: 'index.js',
+            path: resolve(__dirname, 'dist'),
+        },
+        externals: [
+            function (context, request, callback) {
+                if (/^@babylonjs\/core.*$/.test(request)) {
+                    return callback(null, `window BABYLON`);
+                }
+                callback();
+            },
+        ],
+    }),
+]

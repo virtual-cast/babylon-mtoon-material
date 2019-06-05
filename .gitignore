@@ -12,6 +12,7 @@ build
 .history
 
 node_modules/
+dist/
 
 test/main.js
 test/main.js.map
