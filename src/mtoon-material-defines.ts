@@ -11,6 +11,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     public MTOON_OUTLINE_COLOR_MIXED = false;
     public MTOON_DEBUG_NORMAL = false;
     public MTOON_DEBUG_LITSHADERRATE = false;
+    public ALPHABLEND = false;
 
     // Attributes
     public NORMAL = false;
