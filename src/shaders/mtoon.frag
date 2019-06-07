@@ -273,6 +273,12 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
      _col += mix(_emission, vec3(0.0), isOutline);
 #endif
 
+    float _alpha = 1.0;
+
+#ifdef ALPHABLEND
+    _alpha = mix(_lit.a, _lit.a * vOutlineColor.a, isOutline);
+#endif
+
     // outline
 #ifdef MTOON_OUTLINE_COLOR_FIXED
     _col = mix(_col, vOutlineColor.rgb, isOutline);
@@ -296,7 +302,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
     #endif
 #endif
 
-    return vec4(_col, _lit.a * vOutlineColor.a);
+    return vec4(_col, _alpha);
 }
 
 #include<bumpFragmentFunctions>

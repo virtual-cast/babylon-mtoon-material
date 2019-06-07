@@ -1101,6 +1101,10 @@ export class MToonMaterial extends PushMaterial {
      * 定数を設定する
      */
     private applyDefines(defines: any): void {
+        if (this._alphaBlend !== defines.ALPHABLEND) {
+            defines.ALPHABLEND = this._alphaBlend;
+            defines.markAsUnprocessed();
+        }
         switch (this._debugMode) {
             case DebugMode.Normal:
                 if (defines.MTOON_DEBUG_NORMAL !== true) {
