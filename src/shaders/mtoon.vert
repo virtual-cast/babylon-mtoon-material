@@ -168,7 +168,7 @@ void main(void) {
         vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
         projectedNormal *= min(vertex.w, outlineScaledMaxDistance);
         projectedNormal.x *= aspect;
-        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1 - abs(normalize(view * vec4(normalUpdated, 1.0).z)), 0.0, 1.0); // ignore offset when normal toward camera
+        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera
     }
 #endif
 
