@@ -2198,6 +2198,7 @@ function main() {
                     window.addEventListener('resize', function () {
                         engine.resize();
                     });
+                    window.currentScene = scene;
                     return [2 /*return*/];
             }
         });
