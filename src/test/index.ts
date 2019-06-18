@@ -157,6 +157,7 @@ async function main() {
     window.addEventListener('resize', () => {
         engine.resize();
     });
+    (window as any).currentScene = scene;
 }
 
 interface DebugProperties {

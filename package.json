@@ -41,6 +41,11 @@
         "@types/node": "^12.0.0",
         "cz-conventional-changelog": "2.1.0",
         "gh-pages": "^2.0.1",
+        "http-server": "^0.11.1",
+        "jest": "^24.8.0",
+        "jest-dev-server": "^4.2.0",
+        "jest-puppeteer": "^4.2.0",
+        "puppeteer": "^1.17.0",
         "raw-loader": "^3.0.0",
         "semantic-release": "^15.13.3",
         "ts-loader": "^6.0.0",
@@ -54,14 +59,16 @@
     "scripts": {
         "build": "webpack",
         "build:gh-pages": "webpack --config webpack.test.config.js",
+        "build:test": "yarn build:gh-pages",
         "lint": "tslint -p .",
         "debug": "webpack-dev-server --config webpack.test.config.js",
         "release": "semantic-release",
-        "release:gh-pages": "gh-pages -d test -u \"Masaru Yamagishi <m-yamagishi@virtualcast.jp>\" -m \"ci(gh-pages): update gh-pages [skip ci]\""
+        "release:gh-pages": "gh-pages -d test -u \"Masaru Yamagishi <m-yamagishi@virtualcast.jp>\" -m \"ci(gh-pages): update gh-pages [skip ci]\"",
+        "test": "jest test/jest.test.js"
     },
     "config": {
         "commitizen": {
-            "path": "./node_modules/cz-conventional-changelog"
+           "path": "./node_modules/cz-conventional-changelog"
         }
     },
     "release": {
