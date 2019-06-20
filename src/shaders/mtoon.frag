@@ -275,7 +275,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
 
     float _alpha = 1.0;
 
-#ifdef ALPHABLEND
+#if defined(ALPHABLEND) || defined(ALPHATEST)
     _alpha = mix(_lit.a, _lit.a * vOutlineColor.a, isOutline);
 #endif
 
