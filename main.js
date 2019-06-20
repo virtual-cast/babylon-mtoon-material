@@ -2069,7 +2069,7 @@ __webpack_require__.r(__webpack_exports__);
 
 function main() {
     return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
-        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat, mat, diffuse, bump;
+        var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat, mat, mat, diffuse, bump;
         return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -2138,6 +2138,15 @@ function main() {
                         mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
                         mat.shadeTexture = mat.diffuseTexture.clone();
                         mat.alphaBlend = true;
+                        mtoonMaterials.push(mat);
+                    }
+                    {
+                        mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_11__["MToonMaterial"]('MtoonMaterialTransparentCutout', scene);
+                        mat.outlineWidthMode = 1;
+                        // Textures from https://www.babylonjs-playground.com/#YDO1F#18
+                        mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__["Texture"]('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+                        mat.shadeTexture = mat.diffuseTexture.clone();
+                        mat.alphaTest = true;
                         mtoonMaterials.push(mat);
                     }
                     {
