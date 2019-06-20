@@ -98,6 +98,15 @@ async function main() {
         mtoonMaterials.push(mat);
     }
     {
+        const mat = new MToonMaterial('MtoonMaterialTransparentCutout', scene);
+        mat.outlineWidthMode = 1;
+        // Textures from https://www.babylonjs-playground.com/#YDO1F#18
+        mat.diffuseTexture = new Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+        mat.shadeTexture = mat.diffuseTexture.clone();
+        mat.alphaTest = true;
+        mtoonMaterials.push(mat);
+    }
+    {
         const mat = new MToonMaterial('MtoonMaterialRim', scene);
         mat.outlineWidthMode = 1;
         mat.diffuseColor = new Color3(0, 0, 0);
