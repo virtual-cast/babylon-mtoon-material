@@ -4,13 +4,11 @@
 
 ![](mtoon.png)
 
-Unity MToon Shader WebGL porting to babylon.js.
+[Unity Santarh/MToon Shader](https://github.com/Santarh/MToon/) WebGL porting to [babylon.js](https://www.babylonjs.com/).
 
 This is **Work In Progress**. Some settings will be ignored or generates inconsistent lighting.
 
 [About MToon](https://vrm.dev/en/univrm/shaders/mtoon/)([ja](https://vrm.dev/univrm/shaders/mtoon/))
-
-[Original Unity MToon Repository: Santarh/MToon](https://github.com/Santarh/MToon/)
 
 ## Features
 
@@ -31,12 +29,12 @@ This is **Work In Progress**. Some settings will be ignored or generates inconsi
     - Diffuse
     - Emissive
     - Bump
-    - Shade(shaded diffuse)
-    - Receive Shadow(received shadow rate texture alpha)
-    - Shading Grade
+    - Shade(shaded diffuse rate with red channel)
+    - Receive Shadow(received shadow rate with red channel)
+    - Shading Grade(shading grade rate with red channel)
     - Rim
     - MatCap
-    - Outline Width
+    - Outline Width(outline width rate with red channel)
 - UV Animation(Scroll, Rotation)
 - Serialize Support
 
@@ -49,9 +47,11 @@ These are not covered.
 
 This material will be automatically assined to VRM/VCI model within [babylon-vrm-loader](https://github.com/virtual-cast/babylon-vrm-loader).
 
-Also you can explicitly assign MToonMaterial to some meshes.
+Also you can explicitly assign MToonMaterial to any meshes.
 
 ### Browser
+
+Live preview at CodePen is [here](https://codepen.io/akai_inu/pen/EBwGxE).
 
 ```html
 <!DOCTYPE html>
@@ -101,7 +101,7 @@ $ npm install --save @babylonjs/core babylon-mtoon-material
 
 ```js
 // in index.js
-import { Mesh } from 'babylonjs/core';
+import { Mesh } from '@babylonjs/core';
 import { MToonMaterial } from 'babylon-mtoon-material';
 
 // initializing
@@ -117,16 +117,27 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 ### Build
 
 ```s
+$ yarn install --frozen-lockfile
 $ yarn build
 ```
 
 ### Debugging MToonMaterial
 
 ```s
+$ yarn install --frozen-lockfile
 $ yarn debug
 ```
 
 You can see inspector on http://localhost:8080/
+
+### Test
+
+```s
+# executes tslint
+$ yarn lint
+# executes jest testing with puppetter
+$ yarn test
+```
 
 ## Related Links
 
@@ -134,7 +145,7 @@ You can see inspector on http://localhost:8080/
 - [Santarh/MToon: Toon Shader with Unity Global Illumination](https://github.com/Santarh/MToon/)
 - [vrm-c/UniVRM: Unity package that can import and export VRM format](https://github.com/vrm-c/UniVRM)
 - [Create a Material for the Material Library](https://doc.babylonjs.com/how_to/how_to_create_a_material_for_materialslibrary)
-- [Materials](https://doc.babylonjs.com/babylon101/materials)
+- [Materials - Babylon.js Documentation](https://doc.babylonjs.com/babylon101/materials)
 
 ## Licenses
 
