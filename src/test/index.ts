@@ -4,17 +4,17 @@ import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
+import { Material } from '@babylonjs/core/Materials/material';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import { SphereBuilder } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
+import { TorusKnotBuilder } from '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
+import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Scene } from '@babylonjs/core/scene';
 import { MToonMaterial } from '../mtoon-material';
 
 import '@babylonjs/core/Helpers/sceneHelpers';
-import '@babylonjs/core/Meshes/Builders/sphereBuilder';
-import '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
 import '@babylonjs/inspector';
-import { Material } from '@babylonjs/core/Materials/material';
 
 async function main() {
     const debugProperties = getDebugProperties();
@@ -54,11 +54,11 @@ async function main() {
     pointLight.setEnabled(false);
 
     // Meshes
-    const standardMaterialSphere = Mesh.CreateSphere('StandardMaterialSphere1', 16, 1, scene);
+    const standardMaterialSphere = SphereBuilder.CreateSphere('StandardMaterialSphere1', {}, scene);
     standardMaterialSphere.position = new Vector3(1.2, 1.2, 0);
     standardMaterialSphere.receiveShadows = true;
 
-    const shadowCaster = Mesh.CreateTorusKnot('ShadowCaster', 1, 0.2, 32, 32, 2, 3, scene);
+    const shadowCaster = TorusKnotBuilder.CreateTorusKnot('ShadowCaster', {}, scene);
     shadowCaster.position = new Vector3(-10.0, 5.0, 0.0);
     shadowCaster.setEnabled(debugProperties.shadow);
     if (debugProperties.shadow) {
@@ -146,11 +146,26 @@ async function main() {
         mat.sideOrientation = Material.CounterClockWiseSideOrientation;
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
-        const sphere = Mesh.CreateSphere(`${mat.name}_Sphere`, 16, 1, scene);
+        const sphere = SphereBuilder.CreateSphere(`${mat.name}_Sphere`, {}, scene);
         sphere.position = new Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;
         sphere.material = mat;
     });
+
+    {
+        // No Normal
+        const mat = new MToonMaterial('MToonMaterialNoNormal', scene);
+        mat.cullMode = 1;
+        mat.outlineCullMode = 2;
+        mat.outlineWidthMode = 1;
+        const sphere = SphereBuilder.CreateSphere('MToonMaterialNoNormal_Sphere', {}, scene);
+        sphere.position = new Vector3(2.4, 1.2, 0);
+        sphere.receiveShadows = true;
+        sphere.material = mat;
+        if (sphere.geometry) {
+            sphere.geometry.removeVerticesData(VertexBuffer.NormalKind);
+        }
+    }
 
     if (debugProperties.inspector) {
        await scene.debugLayer.show({
