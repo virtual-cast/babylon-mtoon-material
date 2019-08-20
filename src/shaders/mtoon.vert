@@ -145,7 +145,7 @@ void main(void) {
     outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
 #endif
 
-#ifdef MTOON_OUTLINE_WIDTH_WORLD
+#if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)
         // ワールド座標の normal 分だけ移動する
         vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
         positionUpdated.xyz += outlineOffset;
@@ -163,7 +163,7 @@ void main(void) {
     vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
 #endif
 
-#ifdef MTOON_OUTLINE_WIDTH_SCREEN
+#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)
     if (isOutline == 1.0) {
         vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
         projectedNormal *= min(vertex.w, outlineScaledMaxDistance);
