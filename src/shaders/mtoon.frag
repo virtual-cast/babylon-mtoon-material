@@ -367,11 +367,13 @@ void main(void) {
     uvAnim *= texture2D(uvAnimationMaskSampler, mainUv).r;
 #endif
     // translate uv in bottom-left origin coordinates.
-    mainUv += vec2(uvAnimationScrollX, uvAnimationScrollY) * uvAnim;
+    // uv is reversed
+    mainUv += vec2(-uvAnimationScrollX, -uvAnimationScrollY) * uvAnim;
     // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.
     float rotateRad = uvAnimationRotation * PI_2 * uvAnim;
     vec2 rotatePivot = vec2(0.5, 0.5);
-    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
+    // uv is reversed
+    mainUv = mat2(sin(rotateRad), cos(rotateRad), cos(rotateRad), -sin(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
 
 #include<mtoonBumpFragment>
 

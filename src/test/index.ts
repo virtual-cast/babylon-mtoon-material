@@ -140,6 +140,42 @@ async function main() {
         mat.uvAnimationScrollX = 0.5;
         mtoonMaterials.push(mat);
     }
+    {
+        const mat = new MToonMaterial('MtoonMaterialScrollY', scene);
+        mat.outlineWidthMode = 1;
+        // Textures from https://www.babylonjs-playground.com/#20OAV9#33
+        const diffuse = new Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        diffuse.uScale = 4;
+        diffuse.vScale = 4;
+        mat.diffuseTexture = diffuse;
+        mat.shadeTexture = mat.diffuseTexture.clone();
+        mat.shadeColor = new Color3(0.5, 0.5, 0.5);
+
+        const bump = new Texture('http://i.imgur.com/wGyk6os.png', scene);
+        bump.uScale = 4;
+        bump.vScale = 4;
+        mat.bumpTexture = bump;
+        mat.uvAnimationScrollY = 0.5;
+        mtoonMaterials.push(mat);
+    }
+    {
+        const mat = new MToonMaterial('MtoonMaterialRotation', scene);
+        mat.outlineWidthMode = 1;
+        // Textures from https://www.babylonjs-playground.com/#20OAV9#33
+        const diffuse = new Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        diffuse.uScale = 4;
+        diffuse.vScale = 4;
+        mat.diffuseTexture = diffuse;
+        mat.shadeTexture = mat.diffuseTexture.clone();
+        mat.shadeColor = new Color3(0.5, 0.5, 0.5);
+
+        const bump = new Texture('http://i.imgur.com/wGyk6os.png', scene);
+        bump.uScale = 4;
+        bump.vScale = 4;
+        mat.bumpTexture = bump;
+        mat.uvAnimationRotation = 0.1;
+        mtoonMaterials.push(mat);
+    }
 
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
