@@ -372,8 +372,7 @@ void main(void) {
     // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.
     float rotateRad = uvAnimationRotation * PI_2 * uvAnim;
     vec2 rotatePivot = vec2(0.5, 0.5);
-    // uv is reversed
-    mainUv = mat2(sin(rotateRad), cos(rotateRad), cos(rotateRad), -sin(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
+    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
 
 #include<mtoonBumpFragment>
 
