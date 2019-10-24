@@ -172,6 +172,10 @@ void main(void) {
     }
 #endif
 
+    if (isOutline == 1.0) {
+        vertex.z += 1E-2 * vertex.w; // anti-artifact magic from three-vrm
+    }
+
     gl_Position = vertex;
 
     vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);
