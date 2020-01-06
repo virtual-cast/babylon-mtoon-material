@@ -1,12 +1,14 @@
 # babylon-mtoon-material
 
-[![npm version](https://badge.fury.io/js/babylon-mtoon-material.svg)](https://badge.fury.io/js/babylon-mtoon-material) [![Greenkeeper badge](https://badges.greenkeeper.io/virtual-cast/babylon-mtoon-material.svg)](https://greenkeeper.io/) [![CircleCI](https://circleci.com/gh/virtual-cast/babylon-mtoon-material.svg?style=svg)](https://circleci.com/gh/virtual-cast/babylon-mtoon-material) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
+[![npm version](https://badge.fury.io/js/babylon-mtoon-material.svg)](https://badge.fury.io/js/babylon-mtoon-material) [![CircleCI](https://circleci.com/gh/virtual-cast/babylon-mtoon-material.svg?style=svg)](https://circleci.com/gh/virtual-cast/babylon-mtoon-material) [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
 ![](mtoon.png)
 
 [Unity Santarh/MToon Shader](https://github.com/Santarh/MToon/) WebGL porting to [babylon.js](https://www.babylonjs.com/).
 
-This is **Work In Progress**. Some settings will be ignored or generates inconsistent lighting.
+Some settings will be ignored or generates inconsistent lighting.
+
+When you use babylon.js-beta.17 or older, please use [v1.9.0](https://github.com/virtual-cast/babylon-mtoon-material/releases/tag/v1.9.0).
 
 [About MToon](https://vrm.dev/en/univrm/shaders/mtoon/)([ja](https://vrm.dev/univrm/shaders/mtoon/))
 
