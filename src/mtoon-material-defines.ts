@@ -60,6 +60,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     public CLIPPLANE2 = false;
     public CLIPPLANE3 = false;
     public CLIPPLANE4 = false;
+    public CLIPPLANE5 = false;
+    public CLIPPLANE6 = false;
     public BONETEXTURE = false;
     public INSTANCES = false;
     public SHADOWFLOAT = false;
