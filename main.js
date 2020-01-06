@@ -20,7 +20,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 		var moduleId, chunkId, i = 0, resolves = [];
 /******/ 		for(;i < chunkIds.length; i++) {
 /******/ 			chunkId = chunkIds[i];
-/******/ 			if(installedChunks[chunkId]) {
+/******/ 			if(Object.prototype.hasOwnProperty.call(installedChunks, chunkId) && installedChunks[chunkId]) {
 /******/ 				resolves.push(installedChunks[chunkId][0]);
 /******/ 			}
 /******/ 			installedChunks[chunkId] = 0;
@@ -406,7 +406,7 @@ __webpack_require__.r(__webpack_exports__);
  * Material Defines
  */
 var MToonMaterialDefines = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](MToonMaterialDefines, _super);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MToonMaterialDefines, _super);
     /**
      * @inheritdoc
      */
@@ -465,6 +465,8 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.CLIPPLANE2 = false;
         _this.CLIPPLANE3 = false;
         _this.CLIPPLANE4 = false;
+        _this.CLIPPLANE5 = false;
+        _this.CLIPPLANE6 = false;
         _this.BONETEXTURE = false;
         _this.INSTANCES = false;
         _this.SHADOWFLOAT = false;
@@ -499,16 +501,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
 /* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
 /* harmony import */ var _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babylonjs/core/Materials/effect */ "./node_modules/@babylonjs/core/Materials/effect.js");
-/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
-/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
-/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
-/* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
-/* harmony import */ var _babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Meshes/buffer */ "./node_modules/@babylonjs/core/Meshes/buffer.js");
-/* harmony import */ var _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Misc/decorators */ "./node_modules/@babylonjs/core/Misc/decorators.js");
-/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
-/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
-/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
-/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
+/* harmony import */ var _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babylonjs/core/Materials/effectFallbacks */ "./node_modules/@babylonjs/core/Materials/effectFallbacks.js");
+/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
+/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
+/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
+/* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
+/* harmony import */ var _babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Meshes/buffer */ "./node_modules/@babylonjs/core/Meshes/buffer.js");
+/* harmony import */ var _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Misc/decorators */ "./node_modules/@babylonjs/core/Misc/decorators.js");
+/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
+/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
+/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
+/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
+
 
 
 
@@ -576,7 +580,7 @@ var CullMode;
  * @link https://vrm.dev/univrm/shaders/mtoon/
  */
 var MToonMaterial = /** @class */ (function (_super) {
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"](MToonMaterial, _super);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MToonMaterial, _super);
     //#endregion
     //#endregion
     /**
@@ -681,38 +685,39 @@ var MToonMaterial = /** @class */ (function (_super) {
          * アルファテスト時のカットしきい値
          */
         _this.alphaCutOff = 0.5;
+        _this._rebuildInParallel = false;
         //#endregion
         //#region Colors
         /**
          * diffuseTexture に乗算される色
          */
-        _this.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](1.0, 1.0, 1.0);
+        _this.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](1.0, 1.0, 1.0);
         /**
          * 環境光
          */
-        _this.ambientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.1, 0.1, 0.1);
+        _this.ambientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.1, 0.1, 0.1);
         /**
          * シーンの AmbientColor と掛け合わせた後の色
          * @see bindForSubMesh
          * @hidden
          */
-        _this.globalAmbientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.0, 0.0, 0.0);
+        _this.globalAmbientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
         /**
          * 純粋加算される発光色
          */
-        _this.emissiveColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.0, 0.0, 0.0);
+        _this.emissiveColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
         /**
          * shadeTexture に乗算される色
          */
-        _this.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.97, 0.81, 0.86);
+        _this.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.97, 0.81, 0.86);
         /**
          * Rim の色
          */
-        _this.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.0, 0.0, 0.0);
+        _this.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
         /**
          * アウトラインの色
          */
-        _this.outlineColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Color3"](0.0, 0.0, 0.0);
+        _this.outlineColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
         //#endregion
         //#region MToon parameters
         _this._bumpScale = 1.0;
@@ -755,7 +760,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         // Inspector にプロパティを追加
         _this.inspectableCustomProperties = _this.inspectableCustomProperties || [];
-        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_10__["getInspectableCustomProperties"])());
+        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_11__["getInspectableCustomProperties"])());
         return _this;
     }
     Object.defineProperty(MToonMaterial.prototype, "appendedTextures", {
@@ -1006,7 +1011,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 /**
                  * このマテリアル用のアウトラインレンダラーを生成する
                  */
-                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_12__["MToonOutlineRenderer"](this.getScene(), this);
+                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_13__["MToonOutlineRenderer"](this.getScene(), this);
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1023,19 +1028,19 @@ var MToonMaterial = /** @class */ (function (_super) {
                 case CullMode.Off:
                     // 両面を描画する
                     this.backFaceCulling = false;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_3__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
                 case CullMode.Front:
                     // 表面を描画しない(=裏面だけ描画する)
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_3__["Material"].CounterClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].CounterClockWiseSideOrientation;
                     this.twoSidedLighting = true;
                     break;
                 case CullMode.Back:
                     // 裏面を描画しない(=表面だけ描画する) デフォルト
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_3__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
             }
@@ -1075,12 +1080,12 @@ var MToonMaterial = /** @class */ (function (_super) {
     MToonMaterial.prototype.isReadyForSubMesh = function (mesh, subMesh, useInstances) {
         if (useInstances === void 0) { useInstances = false; }
         if (subMesh.effect && this.isFrozen) {
-            if (this._wasPreviouslyReady) {
+            if (subMesh.effect._wasPreviouslyReady) {
                 return true;
             }
         }
         if (!subMesh._materialDefines) {
-            subMesh._materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_11__["MToonMaterialDefines"]();
+            subMesh._materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_12__["MToonMaterialDefines"]();
         }
         var scene = this.getScene();
         var defines = subMesh._materialDefines;
@@ -1091,14 +1096,14 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         var engine = scene.getEngine();
         // Lights
-        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this.maxSimultaneousLights, this._disableLighting);
+        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this.maxSimultaneousLights, this._disableLighting);
         if (this.outlineWidthMode !== OutlineWidthMode.None) {
             // アウトライン描画のためには normal が必要
             defines._needNormals = true;
         }
         this.applyDefines(defines);
         // Multiview
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
         // Textures
         // defines の変更はシェーダのリコンパイルを必要とするため、必要最小限にする
         // そのため若干冗長な記述となっている
@@ -1124,7 +1129,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                     if (!this._bumpTexture.isReady()) {
                         return false;
                     }
-                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
+                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
                 }
                 else {
                     defines.BUMP = false;
@@ -1146,16 +1151,17 @@ var MToonMaterial = /** @class */ (function (_super) {
             defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
         }
         // Misc.
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh), defines);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh), defines);
         // Attribs
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
         // Values that need to be evaluated on every frame
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances);
         // Get correct effect
         if (defines.isDirty) {
+            var lightDisposed = defines._areLightsDisposed;
             defines.markAsProcessed();
             // Fallbacks
-            var fallbacks = new _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["EffectFallbacks"]();
+            var fallbacks = new _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_3__["EffectFallbacks"]();
             if (defines.BUMP) {
                 fallbacks.addFallback(0, 'BUMP');
             }
@@ -1168,32 +1174,32 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (defines.LOGARITHMICDEPTH) {
                 fallbacks.addFallback(0, 'LOGARITHMICDEPTH');
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this.maxSimultaneousLights);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this.maxSimultaneousLights);
             if (defines.MULTIVIEW) {
                 fallbacks.addFallback(0, 'MULTIVIEW');
             }
             // Attributes
-            var attribs = [_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__["VertexBuffer"].PositionKind];
+            var attribs = [_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].PositionKind];
             if (defines.NORMAL) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__["VertexBuffer"].NormalKind);
+                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].NormalKind);
             }
             if (defines.TANGENT) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__["VertexBuffer"].TangentKind);
+                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].TangentKind);
             }
             if (defines.UV1) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__["VertexBuffer"].UVKind);
+                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].UVKind);
             }
             if (defines.UV2) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_7__["VertexBuffer"].UV2Kind);
+                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].UV2Kind);
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
             var shaderName = 'mtoon';
             var uniforms = [
                 'world', 'view', 'viewProjection', 'vLightsType',
                 'visibility', 'mBones',
-                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4',
+                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
                 'vFogInfos', 'vFogColor', 'pointSize',
                 'alphaCutOff', 'logarithmicDepthConstant', 'vTangentSpaceParams', 'boneTextureWidth',
                 'vDiffuseColor', 'vDiffuseInfos', 'diffuseMatrix',
@@ -1220,7 +1226,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 'uvAnimationMaskSampler',
             ];
             var uniformBuffers = ['Material', 'Scene'];
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareUniformsAndSamplersList({
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareUniformsAndSamplersList({
                 uniformsNames: uniforms,
                 uniformBuffersNames: uniformBuffers,
                 samplers: samplers,
@@ -1248,9 +1254,16 @@ var MToonMaterial = /** @class */ (function (_super) {
                 // Use previous effect while new one is compiling
                 if (this.allowShaderHotSwapping && previousEffect && !effect.isReady()) {
                     effect = previousEffect;
+                    this._rebuildInParallel = true;
                     defines.markAsUnprocessed();
+                    if (lightDisposed) {
+                        // re register in case it takes more than one frame.
+                        defines._areLightsDisposed = true;
+                        return false;
+                    }
                 }
                 else {
+                    this._rebuildInParallel = false;
                     scene.resetCachedMaterial();
                     subMesh.setEffect(effect, defines);
                     this.buildUniformLayout();
@@ -1261,7 +1274,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             return false;
         }
         defines._renderId = scene.getRenderId();
-        this._wasPreviouslyReady = true;
+        subMesh.effect._wasPreviouslyReady = true;
         return true;
     };
     /**
@@ -1278,7 +1291,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         this._activeEffect = effect;
         this.bindOnlyWorldMatrix(world);
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindBonesParameters(mesh, effect);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindBonesParameters(mesh, effect);
         var mustRebind = scene.isCachedMaterialInvalid(this, effect, mesh.visibility);
         if (mustRebind) {
             this._uniformBuffer.bindToEffect(effect, 'Material');
@@ -1334,7 +1347,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uniformBuffer.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
             this._uniformBuffer.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
             // Clip plane
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindClipPlane(effect, scene);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindClipPlane(effect, scene);
             // Colors
             scene.ambientColor.multiplyToRef(this.ambientColor, this.globalAmbientColor);
             effect.setColor3('vAmbientColor', this.globalAmbientColor);
@@ -1343,31 +1356,33 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uniformBuffer.updateColor3('vShadeColor', this.shadeColor);
             this._uniformBuffer.updateColor3('vRimColor', this.rimColor);
             this._uniformBuffer.updateColor4('vOutlineColor', this.outlineColor, 1.0);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindEyePosition(effect, scene);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindEyePosition(effect, scene);
             effect.setVector3('vEyeUp', scene.activeCamera.upVector);
         }
         if (mustRebind || !this.isFrozen) {
             // `freeze` しない限り毎回更新される値
             if (scene.lightsEnabled && !this.disableLighting) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this.maxSimultaneousLights);
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this.maxSimultaneousLights, this._rebuildInParallel);
             }
             // View
-            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_9__["Scene"].FOGMODE_NONE) {
+            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__["Scene"].FOGMODE_NONE) {
                 this.bindView(effect);
             }
             // Fog
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
             // Morph targets
             if (defines.NUM_MORPH_INFLUENCERS) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
             }
             // Log. depth
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].BindLogDepth(defines, effect, scene);
+            if (this.useLogarithmicDepth) {
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindLogDepth(defines, effect, scene);
+            }
         }
         effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera));
         effect.setFloat('isOutline', 0.0);
         var t = window.performance.now() / 1000;
-        effect.setVector4('time', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_6__["Vector4"](t / 20, t, t * 2, t * 3));
+        effect.setVector4('time', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Vector4"](t / 20, t, t * 2, t * 3));
         this._uniformBuffer.update();
         this._afterBind(mesh, this._activeEffect);
     };
@@ -1497,7 +1512,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         if (!texture.isReadyOrNotBlocking()) {
             return false;
         }
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_4__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
         return true;
     };
     /**
@@ -1604,7 +1619,7 @@ var MToonMaterial = /** @class */ (function (_super) {
      */
     MToonMaterial.prototype.clone = function (name) {
         var _this = this;
-        var result = _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["SerializationHelper"].Clone(function () { return new MToonMaterial(name, _this.getScene()); }, this);
+        var result = _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Clone(function () { return new MToonMaterial(name, _this.getScene()); }, this);
         result.name = name;
         result.id = name;
         return result;
@@ -1613,190 +1628,190 @@ var MToonMaterial = /** @class */ (function (_super) {
      * @inheritdoc
      */
     MToonMaterial.prototype.serialize = function () {
-        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["SerializationHelper"].Serialize(this);
+        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Serialize(this);
     };
     /**
      * @inheritdoc
      */
     MToonMaterial.Parse = function (parsedMaterial, scene, rootUrl) {
-        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["SerializationHelper"].Parse(function () { return new MToonMaterial(parsedMaterial.name, scene); }, parsedMaterial, scene, rootUrl);
+        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Parse(function () { return new MToonMaterial(parsedMaterial.name, scene); }, parsedMaterial, scene, rootUrl);
     };
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('diffuseTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('diffuseTexture')
     ], MToonMaterial.prototype, "_diffuseTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesAndMiscDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesAndMiscDirty')
     ], MToonMaterial.prototype, "diffuseTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('emissiveTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('emissiveTexture')
     ], MToonMaterial.prototype, "_emissiveTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "emissiveTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('bumpTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('bumpTexture')
     ], MToonMaterial.prototype, "_bumpTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "bumpTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('shadeTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('shadeTexture')
     ], MToonMaterial.prototype, "_shadeTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "shadeTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('receiveShadowTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('receiveShadowTexture')
     ], MToonMaterial.prototype, "_receiveShadowTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "receiveShadowTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('shadingGradeTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('shadingGradeTexture')
     ], MToonMaterial.prototype, "_shadingGradeTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "shadingGradeTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('rimTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('rimTexture')
     ], MToonMaterial.prototype, "_rimTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "rimTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('matCapTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('matCapTexture')
     ], MToonMaterial.prototype, "_matCapTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "matCapTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('outlineWidthTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('outlineWidthTexture')
     ], MToonMaterial.prototype, "_outlineWidthTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "outlineWidthTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsTexture"])('outlineWidthTexture')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('outlineWidthTexture')
     ], MToonMaterial.prototype, "_uvAnimationMaskTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "uvAnimationMaskTexture", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "useLogarithmicDepth", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('disableLighting')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('disableLighting')
     ], MToonMaterial.prototype, "_disableLighting", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
     ], MToonMaterial.prototype, "disableLighting", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('twoSidedLighting')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('twoSidedLighting')
     ], MToonMaterial.prototype, "_twoSidedLighting", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "twoSidedLighting", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('alphaCutOff')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('alphaCutOff')
     ], MToonMaterial.prototype, "_alphaCutOff", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
     ], MToonMaterial.prototype, "alphaCutOff", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serializeAsColor3"])('diffuse')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsColor3"])('diffuse')
     ], MToonMaterial.prototype, "diffuseColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('ambient')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('ambient')
     ], MToonMaterial.prototype, "ambientColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('emissive')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('emissive')
     ], MToonMaterial.prototype, "emissiveColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('shade')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('shade')
     ], MToonMaterial.prototype, "shadeColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('rim')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('rim')
     ], MToonMaterial.prototype, "rimColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('outline')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('outline')
     ], MToonMaterial.prototype, "outlineColor", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "bumpScale", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "receiveShadowRate", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "shadingGradeRate", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "shadeShift", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "shadeToony", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "lightColorAttenuation", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "indirectLightIntensity", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "rimLightingMix", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "rimFresnelPower", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "rimLift", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "outlineWidth", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "outlineScaledMaxDistance", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "outlineLightingMix", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationScrollX", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationScrollY", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationRotation", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('alphaTest')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('alphaTest')
     ], MToonMaterial.prototype, "_alphaTest", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "alphaTest", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "alphaBlend", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])('debugMode')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('debugMode')
     ], MToonMaterial.prototype, "_debugMode", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "debugMode", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "outlineColorMode", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "cullMode", null);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["serialize"])()
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
     ], MToonMaterial.prototype, "_outlineCullMode", void 0);
-    tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"]([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_8__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "outlineCullMode", void 0);
     return MToonMaterial;
-}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_5__["PushMaterial"]));
+}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_6__["PushMaterial"]));
 
 
 
@@ -2068,9 +2083,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 function main() {
-    return tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"](this, void 0, void 0, function () {
+    return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__awaiter"])(this, void 0, void 0, function () {
         var debugProperties, canvas, engine, scene, camera, directionalLight, hemisphericLight, pointLight, standardMaterialSphere, shadowCaster, shadowGenerator, mtoonMaterials, mat, mat, diffuse, bump, mat, mat, mat, mat, mat, diffuse, bump, mat, diffuse, bump, mat, diffuse, bump, mat, sphere;
-        return tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"](this, function (_a) {
+        return Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__generator"])(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     debugProperties = getDebugProperties();
