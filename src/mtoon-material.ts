@@ -1,5 +1,6 @@
 import { Constants } from '@babylonjs/core/Engines/constants';
-import { Effect, EffectFallbacks } from '@babylonjs/core/Materials/effect';
+import { Effect, IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
+import { EffectFallbacks } from '@babylonjs/core/Materials/effectFallbacks';
 import { Material } from '@babylonjs/core/Materials/material';
 import { MaterialHelper } from '@babylonjs/core/Materials/materialHelper';
 import { PushMaterial } from '@babylonjs/core/Materials/pushMaterial';
@@ -10,7 +11,7 @@ import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
 import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
 import { expandToProperty, SerializationHelper, serialize, serializeAsColor3, serializeAsTexture } from '@babylonjs/core/Misc/decorators';
-import { IAnimatable } from '@babylonjs/core/Misc/tools';
+import { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
 import { Scene } from '@babylonjs/core/scene';
 import { Nullable } from '@babylonjs/core/types';
 import { getInspectableCustomProperties } from './inspectable-custom-properties';
@@ -240,6 +241,7 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public alphaCutOff = 0.5;
+    private _rebuildInParallel = false;
 //#endregion
 
 //#region Colors
@@ -555,7 +557,7 @@ export class MToonMaterial extends PushMaterial {
      */
     public isReadyForSubMesh(mesh: AbstractMesh, subMesh: SubMesh, useInstances = false): boolean {
         if (subMesh.effect && this.isFrozen) {
-            if (this._wasPreviouslyReady) {
+            if (subMesh.effect._wasPreviouslyReady) {
                 return true;
             }
         }
@@ -674,6 +676,7 @@ export class MToonMaterial extends PushMaterial {
 
         // Get correct effect
         if (defines.isDirty) {
+            const lightDisposed = defines._areLightsDisposed;
             defines.markAsProcessed();
 
             // Fallbacks
@@ -729,7 +732,7 @@ export class MToonMaterial extends PushMaterial {
             const uniforms = [
                 'world', 'view', 'viewProjection', 'vLightsType',
                 'visibility', 'mBones',
-                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4',
+                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
                 'vFogInfos', 'vFogColor', 'pointSize',
                 'alphaCutOff', 'logarithmicDepthConstant', 'vTangentSpaceParams', 'boneTextureWidth',
 
@@ -768,7 +771,7 @@ export class MToonMaterial extends PushMaterial {
                 samplers,
                 defines,
                 maxSimultaneousLights: this.maxSimultaneousLights,
-            } as any);
+            } as IEffectCreationOptions);
 
             this.applyDefines(defines);
 
@@ -788,14 +791,22 @@ export class MToonMaterial extends PushMaterial {
                     maxSimultaneousLights: this.maxSimultaneousLights,
                     maxSimultaneousMorphTargets: defines.NUM_MORPH_INFLUENCERS,
                 },
-            } as any, engine);
+            } as IEffectCreationOptions, engine);
 
             if (effect) {
                 // Use previous effect while new one is compiling
                 if (this.allowShaderHotSwapping && previousEffect && !effect.isReady()) {
                     effect = previousEffect;
+                    this._rebuildInParallel = true;
                     defines.markAsUnprocessed();
+
+                    if (lightDisposed) {
+                        // re register in case it takes more than one frame.
+                        defines._areLightsDisposed = true;
+                        return false;
+                    }
                 } else {
+                    this._rebuildInParallel = false;
                     scene.resetCachedMaterial();
                     subMesh.setEffect(effect, defines);
                     this.buildUniformLayout();
@@ -808,7 +819,7 @@ export class MToonMaterial extends PushMaterial {
         }
 
         defines._renderId = scene.getRenderId();
-        this._wasPreviouslyReady = true;
+        subMesh.effect._wasPreviouslyReady = true;
 
         return true;
     }
@@ -913,7 +924,7 @@ export class MToonMaterial extends PushMaterial {
         if (mustRebind || !this.isFrozen) {
             // `freeze` しない限り毎回更新される値
             if (scene.lightsEnabled && !this.disableLighting) {
-                MaterialHelper.BindLights(scene, mesh, effect, defines, this.maxSimultaneousLights);
+                MaterialHelper.BindLights(scene, mesh, effect, defines, this.maxSimultaneousLights, this._rebuildInParallel);
             }
 
             // View
@@ -930,7 +941,9 @@ export class MToonMaterial extends PushMaterial {
             }
 
             // Log. depth
-            MaterialHelper.BindLogDepth(defines, effect, scene);
+            if (this.useLogarithmicDepth) {
+                MaterialHelper.BindLogDepth(defines, effect, scene);
+            }
         }
         effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera!));
         effect.setFloat('isOutline', 0.0);
