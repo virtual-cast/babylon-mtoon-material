@@ -1,11 +1,10 @@
 import { Engine } from '@babylonjs/core/Engines/engine';
-import { Material } from '@babylonjs/core/Materials/material';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Mesh, _InstancesBatch } from '@babylonjs/core/Meshes/mesh';
 import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
 import { Scene } from '@babylonjs/core/scene';
 import { ISceneComponent, SceneComponentConstants } from '@babylonjs/core/sceneComponent';
 import { Nullable } from '@babylonjs/core/types';
+import { Matrix } from '@babylonjs/core/Maths/math';
 import { MToonMaterial } from './mtoon-material';
 
 const BASE_NAME = 'MToonOutline';
@@ -76,30 +75,54 @@ export class MToonOutlineRenderer implements ISceneComponent {
      */
     private render(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch): void {
         const effect = subMesh.effect;
-        if (!effect || !effect.isReady()) {
+        if (!effect || !effect.isReady() || !this.scene.activeCamera) {
             return;
         }
 
+        const ownerMesh = subMesh.getMesh();
+        const replacementMesh = ownerMesh._internalAbstractMeshDataInfo._actAsRegularMesh ? ownerMesh : null;
+        const renderingMesh = subMesh.getRenderingMesh();
+        const effectiveMesh = replacementMesh ? replacementMesh : renderingMesh;
+
         this.material.applyOutlineCullMode();
         this._engine.enableEffect(effect);
-        mesh._bind(subMesh, effect, Material.TriangleFillMode);
+        renderingMesh._bind(subMesh, effect, this.material.fillMode);
 
         this._engine.setZOffset(-1);
 
         // レンダリング実行
-        mesh._processRendering(
-            subMesh,
-            effect,
-            Material.TriangleFillMode,
-            batch,
-            this.isHardwareInstancedRendering(subMesh._id, batch),
-            (isInstance, world, effectiveMaterial) => {
-                (effectiveMaterial as MToonMaterial).bindForSubMesh(world, mesh, subMesh);
-                effect.setMatrix('world', world);
-                effect.setFloat('isOutline', 1.0);
-            },
-            this.material,
-        );
+        if (Engine.Version.startsWith('4.0') || Engine.Version.startsWith('4.1')) {
+            // for 4.0, 4.1
+            (renderingMesh as any)._processRendering(
+                subMesh,
+                effect,
+                this.material.fillMode,
+                batch,
+                this.isHardwareInstancedRendering(subMesh._id, batch),
+                (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
+                    effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
+                    effect.setMatrix('world', world);
+                    effect.setFloat('isOutline', 1.0);
+                },
+                this.material,
+            );
+        } else {
+            // for 4.2.0-alpha.0 +
+            (renderingMesh as any)._processRendering(
+                effectiveMesh,
+                subMesh,
+                effect,
+                this.material.fillMode,
+                batch,
+                this.isHardwareInstancedRendering(subMesh._id, batch),
+                (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
+                    effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
+                    effect.setMatrix('world', world);
+                    effect.setFloat('isOutline', 1.0);
+                },
+                this.material,
+            );
+        }
 
         this._engine.setZOffset(0);
         this.material.restoreOutlineCullMode();
@@ -108,7 +131,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
     /**
      * このメッシュを描画する前に実行されるコールバック
      */
-    private _beforeRenderingMesh(mesh: AbstractMesh, subMesh: SubMesh, batch: _InstancesBatch): void {
+    private _beforeRenderingMesh(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch): void {
         this._savedDepthWrite = this._engine.getDepthWrite();
 
         if (!this.willRender(subMesh)) {
@@ -124,7 +147,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
     /**
      * このメッシュを描画した後に実行されるコールバック
      */
-    private _afterRenderingMesh(mesh: AbstractMesh, subMesh: SubMesh, batch: _InstancesBatch): void {
+    private _afterRenderingMesh(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch): void {
         if (!this.willRender(subMesh)) {
             return;
         }
