@@ -781,7 +781,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 this._uvAnimationMaskTexture,
             ];
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "appendedActiveTextures", {
@@ -791,7 +791,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         get: function () {
             return this.appendedTextures.filter(function (t) { return t !== null; });
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "useLogarithmicDepth", {
@@ -809,7 +809,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 this._markAllSubMeshesAsMiscDirty();
             }
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "bumpScale", {
@@ -819,7 +819,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         set: function (value) {
             this._bumpScale = value;
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "receiveShadowRate", {
@@ -830,7 +830,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._receiveShadowRate = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "shadingGradeRate", {
@@ -841,7 +841,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._shadingGradeRate = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "shadeShift", {
@@ -852,7 +852,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._shadeShift = Math.max(-1.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "shadeToony", {
@@ -863,7 +863,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._shadeToony = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "lightColorAttenuation", {
@@ -874,7 +874,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._lightColorAttenuation = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "indirectLightIntensity", {
@@ -885,7 +885,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._indirectLightIntensity = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "rimLightingMix", {
@@ -896,7 +896,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._rimLightingMix = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "rimFresnelPower", {
@@ -907,7 +907,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._rimFresnelPower = Math.max(0.0, Math.min(100.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "rimLift", {
@@ -918,7 +918,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._rimLift = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsLightsDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "outlineWidth", {
@@ -929,7 +929,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._outlineWidth = Math.max(0.01, Math.min(1.0, value));
             this._markAllSubMeshesAsAttributesDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "outlineScaledMaxDistance", {
@@ -940,7 +940,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._outlineScaledMaxDistance = Math.max(1.0, Math.min(10.0, value));
             this._markAllSubMeshesAsAttributesDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "outlineLightingMix", {
@@ -951,7 +951,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._outlineLightingMix = Math.max(0.0, Math.min(1.0, value));
             this._markAllSubMeshesAsAttributesDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "uvAnimationScrollX", {
@@ -962,7 +962,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uvAnimationScrollX = value;
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "uvAnimationScrollY", {
@@ -973,7 +973,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uvAnimationScrollY = value;
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "uvAnimationRotation", {
@@ -984,7 +984,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._uvAnimationRotation = value;
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "alphaBlend", {
@@ -998,7 +998,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "outlineWidthMode", {
@@ -1015,7 +1015,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "cullMode", {
@@ -1046,7 +1046,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
             this._markAllSubMeshesAsMiscDirty();
         },
-        enumerable: true,
+        enumerable: false,
         configurable: true
     });
     /**
@@ -1827,7 +1827,7 @@ var MToonMaterial = /** @class */ (function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MToonOutlineRenderer", function() { return MToonOutlineRenderer; });
-/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
+/* harmony import */ var _babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Engines/engine */ "./node_modules/@babylonjs/core/Engines/engine.js");
 /* harmony import */ var _babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/sceneComponent */ "./node_modules/@babylonjs/core/sceneComponent.js");
 
 
@@ -1876,19 +1876,34 @@ var MToonOutlineRenderer = /** @class */ (function () {
      */
     MToonOutlineRenderer.prototype.render = function (mesh, subMesh, batch) {
         var effect = subMesh.effect;
-        if (!effect || !effect.isReady()) {
+        if (!effect || !effect.isReady() || !this.scene.activeCamera) {
             return;
         }
+        var ownerMesh = subMesh.getMesh();
+        var replacementMesh = ownerMesh._internalAbstractMeshDataInfo._actAsRegularMesh ? ownerMesh : null;
+        var renderingMesh = subMesh.getRenderingMesh();
+        var effectiveMesh = replacementMesh ? replacementMesh : renderingMesh;
         this.material.applyOutlineCullMode();
         this._engine.enableEffect(effect);
-        mesh._bind(subMesh, effect, _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_0__["Material"].TriangleFillMode);
+        renderingMesh._bind(subMesh, effect, this.material.fillMode);
         this._engine.setZOffset(-1);
         // レンダリング実行
-        mesh._processRendering(subMesh, effect, _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_0__["Material"].TriangleFillMode, batch, this.isHardwareInstancedRendering(subMesh._id, batch), function (isInstance, world, effectiveMaterial) {
-            effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
-            effect.setMatrix('world', world);
-            effect.setFloat('isOutline', 1.0);
-        }, this.material);
+        if (_babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__["Engine"].Version.startsWith('4.0') || _babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__["Engine"].Version.startsWith('4.1')) {
+            // for 4.0, 4.1
+            renderingMesh._processRendering(subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh._id, batch), function (isInstance, world, effectiveMaterial) {
+                effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
+                effect.setMatrix('world', world);
+                effect.setFloat('isOutline', 1.0);
+            }, this.material);
+        }
+        else {
+            // for 4.2.0-alpha.0 +
+            renderingMesh._processRendering(effectiveMesh, subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh._id, batch), function (isInstance, world, effectiveMaterial) {
+                effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
+                effect.setMatrix('world', world);
+                effect.setFloat('isOutline', 1.0);
+            }, this.material);
+        }
         this._engine.setZOffset(0);
         this.material.restoreOutlineCullMode();
     };
