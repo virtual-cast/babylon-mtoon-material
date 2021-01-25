@@ -754,13 +754,15 @@ export class MToonMaterial extends PushMaterial {
                 'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
 
                 'vEyePosition', 'vEyeUp', 'time',
+
+                "morphTargetTextureInfo", "morphTargetTextureIndices"
             ];
 
             const samplers = [
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
                 'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
                 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
-                'uvAnimationMaskSampler',
+                'uvAnimationMaskSampler', "morphTargets"
             ];
 
             const uniformBuffers = ['Material', 'Scene'];

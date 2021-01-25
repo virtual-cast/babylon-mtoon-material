@@ -66,6 +66,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     public INSTANCES = false;
     public SHADOWFLOAT = false;
     public MORPHTARGETS = false;
+    public MORPHTARGETS_TEXTURE = false;
     public MORPHTARGETS_NORMAL = false;
     public MORPHTARGETS_TANGENT = false;
     public PREMULTIPLYALPHA = false; // https://playground.babylonjs.com#LNVJJ7
