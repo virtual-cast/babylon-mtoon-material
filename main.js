@@ -471,6 +471,7 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.INSTANCES = false;
         _this.SHADOWFLOAT = false;
         _this.MORPHTARGETS = false;
+        _this.MORPHTARGETS_TEXTURE = false;
         _this.MORPHTARGETS_NORMAL = false;
         _this.MORPHTARGETS_TANGENT = false;
         _this.PREMULTIPLYALPHA = false; // https://playground.babylonjs.com#LNVJJ7
@@ -1218,12 +1219,13 @@ var MToonMaterial = /** @class */ (function (_super) {
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
                 'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
                 'vEyePosition', 'vEyeUp', 'time',
+                "morphTargetTextureInfo", "morphTargetTextureIndices"
             ];
             var samplers = [
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
                 'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
                 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
-                'uvAnimationMaskSampler',
+                'uvAnimationMaskSampler', "morphTargets"
             ];
             var uniformBuffers = ['Material', 'Scene'];
             _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareUniformsAndSamplersList({
