@@ -14,9 +14,12 @@ import { expandToProperty, SerializationHelper, serialize, serializeAsColor3, se
 import { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
 import { Scene } from '@babylonjs/core/scene';
 import { Nullable } from '@babylonjs/core/types';
+// import { PrePassConfiguration } from '@babylonjs/core/Materials/prePassConfiguration';
+// import { DetailMapConfiguration } from '@babylonjs/core/Materials/material.detailMapConfiguration';
 import { getInspectableCustomProperties } from './inspectable-custom-properties';
 import { MToonMaterialDefines } from './mtoon-material-defines';
 import { MToonOutlineRenderer } from './mtoon-outline-renderer';
+import { Engine } from '@babylonjs/core/Engines/engine';
 
 // シェーダ文字列を取得
 const UboDeclaration = require('./shaders/ubo-declaration.vert').default;
@@ -58,6 +61,9 @@ export enum CullMode {
     Front,
     Back,
 }
+
+// from 4.2.0
+// const onCreatedEffectParameters = { effect: null as unknown as Effect, subMesh: null as unknown as Nullable<SubMesh> };
 
 /**
  * MToonMaterial
@@ -242,6 +248,15 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public alphaCutOff = 0.5;
     private _rebuildInParallel = false;
+    public get isPrePassCapable(): boolean {
+        return false;
+    }
+    public get canRenderToMRT() {
+        return false;
+    }
+    // from 4.2.0-
+    // public readonly prePassConfiguration: PrePassConfiguration;
+    // public readonly detailMap = new DetailMapConfiguration(this._markAllSubMeshesAsTexturesDirty.bind(this));
 //#endregion
 
 //#region Colors
@@ -535,6 +550,9 @@ export class MToonMaterial extends PushMaterial {
     public constructor(name: string, scene: Scene) {
         super(name, scene);
 
+        // from 4.2.0
+        // this.prePassConfiguration = new PrePassConfiguration();
+
         // シェーダストアに登録する
         if (!Effect.IncludesShadersStore.mtoonUboDeclaration) {
             Effect.IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
@@ -548,7 +566,7 @@ export class MToonMaterial extends PushMaterial {
 
         // Inspector にプロパティを追加
         this.inspectableCustomProperties = this.inspectableCustomProperties || [];
-        this.inspectableCustomProperties.push(...getInspectableCustomProperties());
+        this.inspectableCustomProperties.concat(getInspectableCustomProperties());
     }
 
     /**
@@ -563,14 +581,21 @@ export class MToonMaterial extends PushMaterial {
         }
 
         if (!subMesh._materialDefines) {
-            subMesh._materialDefines = new MToonMaterialDefines();
+            subMesh.materialDefines = new MToonMaterialDefines();
         }
 
         const scene = this.getScene();
         const defines = subMesh._materialDefines as MToonMaterialDefines;
-        if (!this.checkReadyOnEveryCall && subMesh.effect) {
-            if (defines._renderId === scene.getRenderId()) {
+        if (this.from4_2_0) {
+            if ((this as any)._isReadyForSubMesh(subMesh)) {
                 return true;
+            }
+        } else {
+            // between 4.0.0 to 4.1.0
+            if (!this.checkReadyOnEveryCall && subMesh.effect) {
+                if (defines._renderId === scene.getRenderId()) {
+                    return true;
+                }
             }
         }
 
@@ -595,6 +620,11 @@ export class MToonMaterial extends PushMaterial {
 
         // Multiview
         MaterialHelper.PrepareDefinesForMultiview(scene, defines);
+
+        if (this.from4_2_0) {
+            // from 4.2.0-
+            (MaterialHelper as any).PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT);
+        }
 
         // Textures
         // defines の変更はシェーダのリコンパイルを必要とするため、必要最小限にする
@@ -643,7 +673,18 @@ export class MToonMaterial extends PushMaterial {
             }
 
             defines.PREMULTIPLYALPHA = (this.alphaMode === Constants.ALPHA_PREMULTIPLIED || this.alphaMode === Constants.ALPHA_PREMULTIPLIED_PORTERDUFF);
+
+            if (this.from4_2_0) {
+                // from 4.2.0-
+                defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = (this as any).transparencyMode !== null;
+                defines.ALPHABLEND = (this as any).transparencyMode === null || this.needAlphaBlendingForMesh(mesh);
+            }
         }
+
+        // from 4.2.0
+        // if (!this.detailMap.isReadyForSubMesh(defines, scene)) {
+        //     return false;
+        // }
 
         // Misc.
         MaterialHelper.PrepareDefinesForMisc(
@@ -652,7 +693,7 @@ export class MToonMaterial extends PushMaterial {
             this._useLogarithmicDepth,
             this.pointsCloud,
             this.fogEnabled,
-            this._shouldTurnAlphaTestOn(mesh),
+            this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest,
             defines,
         );
 
@@ -667,12 +708,27 @@ export class MToonMaterial extends PushMaterial {
         );
 
         // Values that need to be evaluated on every frame
-        MaterialHelper.PrepareDefinesForFrameBoundValues(
-            scene,
-            engine,
-            defines,
-            useInstances,
-        );
+        if (this.from4_2_0) {
+            (MaterialHelper as any).PrepareDefinesForFrameBoundValues(
+                scene,
+                engine,
+                defines,
+                useInstances,
+                null,
+                (subMesh.getRenderingMesh() as any).hasThinInstances,
+            );
+        } else {
+            MaterialHelper.PrepareDefinesForFrameBoundValues(
+                scene,
+                engine,
+                defines,
+                useInstances,
+            );
+        }
+
+        // External config
+        // from 4.2.0
+        // this.detailMap.prepareDefines(defines, scene);
 
         // Get correct effect
         if (defines.isDirty) {
@@ -762,10 +818,17 @@ export class MToonMaterial extends PushMaterial {
                 'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
                 'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
                 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
-                'uvAnimationMaskSampler', "morphTargets"
+                'uvAnimationMaskSampler', 'morphTargets',
             ];
 
             const uniformBuffers = ['Material', 'Scene'];
+
+            // from 4.2.0
+            // DetailMapConfiguration.AddUniforms(uniforms);
+            // DetailMapConfiguration.AddSamplers(samplers);
+            //
+            // PrePassConfiguration.AddUniforms(uniforms);
+            // PrePassConfiguration.AddSamplers(samplers);
 
             MaterialHelper.PrepareUniformsAndSamplersList({
                 uniformsNames: uniforms,
@@ -776,6 +839,8 @@ export class MToonMaterial extends PushMaterial {
             } as IEffectCreationOptions);
 
             this.applyDefines(defines);
+
+            const csnrOptions: any = {};
 
             const join = defines.toString();
 
@@ -793,9 +858,16 @@ export class MToonMaterial extends PushMaterial {
                     maxSimultaneousLights: this.maxSimultaneousLights,
                     maxSimultaneousMorphTargets: defines.NUM_MORPH_INFLUENCERS,
                 },
+                processFinalCode: csnrOptions.processFinalCode,
+                multiTarget: defines.PREPASS,
             } as IEffectCreationOptions, engine);
 
             if (effect) {
+                // if (this._onEffectCreatedObservable) {
+                //     onCreatedEffectParameters.effect = effect;
+                //     onCreatedEffectParameters.subMesh = subMesh;
+                //     this._onEffectCreatedObservable.notifyObservers(onCreatedEffectParameters);
+                // }
                 // Use previous effect while new one is compiling
                 if (this.allowShaderHotSwapping && previousEffect && !effect.isReady()) {
                     effect = previousEffect;
@@ -840,22 +912,35 @@ export class MToonMaterial extends PushMaterial {
         }
         this._activeEffect = effect;
 
-        this.bindOnlyWorldMatrix(world);
-        MaterialHelper.BindBonesParameters(mesh, effect);
+        // Matrices
+        if (!defines.INSTANCES || defines.THIN_INSTANCES) {
+            this.bindOnlyWorldMatrix(world);
+        }
+
+        // from 4.2.0-
+        // PrePass
+        // this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
+
+        // Normal Matrix
+        if (defines.OBJECTSPACE_NORMALMAP) {
+            world.toNormalMatrix(this._normalMatrix);
+            this.bindOnlyNormalMatrix(this._normalMatrix);
+        }
 
         const mustRebind = scene.isCachedMaterialInvalid(this, effect, mesh.visibility);
 
+        MaterialHelper.BindBonesParameters(mesh, effect);
+        const ubo = this._uniformBuffer;
         if (mustRebind) {
-            this._uniformBuffer.bindToEffect(effect, 'Material');
+            ubo.bindToEffect(effect, 'Material');
             this.bindViewProjection(effect);
 
-            if (!this._uniformBuffer.useUbo || !this.isFrozen || !this._uniformBuffer.isSync) {
+            if (!ubo.useUbo || !this.isFrozen || !ubo.isSync) {
                 if (scene.texturesEnabled) {
                     this.bindTexture(this._diffuseTexture, effect, 'diffuse', 'vDiffuseInfos');
-                    effect.setFloat('alphaCutOff', this._alphaCutOff);
                     this.bindTexture(this._emissiveTexture, effect, 'emissive', 'vEmissiveInfos');
                     if (this._bumpTexture) {
-                        this._uniformBuffer.updateFloat3(
+                        ubo.updateFloat3(
                             'vBumpInfos',
                             this._bumpTexture.coordinatesIndex,
                             1.0 / this._bumpTexture.level,
@@ -863,14 +948,14 @@ export class MToonMaterial extends PushMaterial {
                         );
                         const matrix = this._bumpTexture.getTextureMatrix();
                         if (!matrix.isIdentityAs3x2()) {
-                            this._uniformBuffer.updateMatrix(`bumpMatrix`, matrix);
+                            ubo.updateMatrix(`bumpMatrix`, matrix);
                         }
                         effect.setTexture(`bumpSampler`, this._bumpTexture);
                         // bumpTexture は babylon.js のデフォルトと反対の状態である
                         if (scene._mirroredCameraPosition) {
-                            this._uniformBuffer.updateFloat2('vTangentSpaceParams', 1.0, 1.0);
+                            ubo.updateFloat2('vTangentSpaceParams', 1.0, 1.0);
                         } else {
-                            this._uniformBuffer.updateFloat2('vTangentSpaceParams', -1.0, -1.0);
+                            ubo.updateFloat2('vTangentSpaceParams', -1.0, -1.0);
                         }
                     }
                     this.bindTexture(this._shadeTexture, effect, 'shade', 'vShadeInfos');
@@ -881,31 +966,36 @@ export class MToonMaterial extends PushMaterial {
                     this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
                     this.bindTexture(this._uvAnimationMaskTexture, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
                 }
+
+                if (this._hasAlphaChannel()) {
+                    effect.setFloat('alphaCutOff', this._alphaCutOff);
+                }
             }
 
             // Point size
             if (this.pointsCloud) {
-                this._uniformBuffer.updateFloat('pointSize', this.pointSize);
+                ubo.updateFloat('pointSize', this.pointSize);
             }
 
-            this._uniformBuffer.updateFloat('visibility', mesh.visibility);
-
             // MToon uniforms
-            this._uniformBuffer.updateFloat('receiveShadowRate', this._receiveShadowRate);
-            this._uniformBuffer.updateFloat('shadingGradeRate', this._shadingGradeRate);
-            this._uniformBuffer.updateFloat('shadeShift', this._shadeShift);
-            this._uniformBuffer.updateFloat('shadeToony', this._shadeToony);
-            this._uniformBuffer.updateFloat('lightColorAttenuation', this._lightColorAttenuation);
-            this._uniformBuffer.updateFloat('indirectLightIntensity', this._indirectLightIntensity);
-            this._uniformBuffer.updateFloat('rimLightingMix', this._rimLightingMix);
-            this._uniformBuffer.updateFloat('rimFresnelPower', this._rimFresnelPower);
-            this._uniformBuffer.updateFloat('rimLift', this._rimLift);
-            this._uniformBuffer.updateFloat('outlineWidth', this._outlineWidth);
-            this._uniformBuffer.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
-            this._uniformBuffer.updateFloat('outlineLightingMix', this._outlineLightingMix);
-            this._uniformBuffer.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
-            this._uniformBuffer.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
-            this._uniformBuffer.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
+            ubo.updateFloat('receiveShadowRate', this._receiveShadowRate);
+            ubo.updateFloat('shadingGradeRate', this._shadingGradeRate);
+            ubo.updateFloat('shadeShift', this._shadeShift);
+            ubo.updateFloat('shadeToony', this._shadeToony);
+            ubo.updateFloat('lightColorAttenuation', this._lightColorAttenuation);
+            ubo.updateFloat('indirectLightIntensity', this._indirectLightIntensity);
+            ubo.updateFloat('rimLightingMix', this._rimLightingMix);
+            ubo.updateFloat('rimFresnelPower', this._rimFresnelPower);
+            ubo.updateFloat('rimLift', this._rimLift);
+            ubo.updateFloat('outlineWidth', this._outlineWidth);
+            ubo.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
+            ubo.updateFloat('outlineLightingMix', this._outlineLightingMix);
+            ubo.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
+            ubo.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
+            ubo.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
+
+            // from 4.2.0-
+            // this.detailMap.bindForSubMesh(ubo, scene, this.isFrozen);
 
             // Clip plane
             MaterialHelper.BindClipPlane(effect, scene);
@@ -913,11 +1003,11 @@ export class MToonMaterial extends PushMaterial {
             // Colors
             scene.ambientColor.multiplyToRef(this.ambientColor, this.globalAmbientColor);
             effect.setColor3('vAmbientColor', this.globalAmbientColor);
-            this._uniformBuffer.updateColor4('vDiffuseColor', this.diffuseColor, this.alpha);
-            this._uniformBuffer.updateColor3('vEmissiveColor', this.emissiveColor);
-            this._uniformBuffer.updateColor3('vShadeColor', this.shadeColor);
-            this._uniformBuffer.updateColor3('vRimColor', this.rimColor);
-            this._uniformBuffer.updateColor4('vOutlineColor', this.outlineColor, 1.0);
+            ubo.updateColor4('vDiffuseColor', this.diffuseColor, this.alpha);
+            ubo.updateColor3('vEmissiveColor', this.emissiveColor);
+            ubo.updateColor3('vShadeColor', this.shadeColor);
+            ubo.updateColor3('vRimColor', this.rimColor);
+            ubo.updateColor4('vOutlineColor', this.outlineColor, 1.0);
 
             MaterialHelper.BindEyePosition(effect, scene);
             effect.setVector3('vEyeUp', scene.activeCamera!.upVector);
@@ -957,8 +1047,8 @@ export class MToonMaterial extends PushMaterial {
             t * 3,
         ));
 
-        this._uniformBuffer.update();
         this._afterBind(mesh, this._activeEffect);
+        ubo.update();
     }
 
     /**
@@ -972,6 +1062,9 @@ export class MToonMaterial extends PushMaterial {
             }
         }
 
+        // from 4.2.0
+        // this.detailMap.getAnimatables(results);
+
         return results;
     }
 
@@ -979,7 +1072,12 @@ export class MToonMaterial extends PushMaterial {
      * @inheritdoc
      */
     public getActiveTextures(): BaseTexture[] {
-        return super.getActiveTextures().concat(this.appendedActiveTextures);
+        const activeTextures = super.getActiveTextures().concat(this.appendedActiveTextures);
+
+        // from 4.2.0
+        // this.detailMap.getActiveTextures(activeTextures);
+
+        return activeTextures;
     }
 
     /**
@@ -988,8 +1086,12 @@ export class MToonMaterial extends PushMaterial {
     public hasTexture(texture: BaseTexture): boolean {
         if (super.hasTexture(texture)) {
             return true;
+        } else if (this.appendedActiveTextures.length > 0) {
+            return true;
         }
-        return this.appendedActiveTextures.length > 0;
+        // from 4.2.0
+        // return this.detailMap.hasTexture(texture);
+        return false;
     }
 
     /**
@@ -1006,6 +1108,10 @@ export class MToonMaterial extends PushMaterial {
                 texture.dispose();
             }
         }
+
+        // from 4.2.0
+        // this.detailMap.dispose(forceDisposeTextures);
+
         super.dispose(forceDisposeEffect, forceDisposeTextures, notBoundToMesh);
     }
 
@@ -1017,62 +1123,66 @@ export class MToonMaterial extends PushMaterial {
      * 第二引数は float の数
      */
     protected buildUniformLayout(): void {
-        this._uniformBuffer.addUniform('vDiffuseColor', 4);
-        this._uniformBuffer.addUniform('vDiffuseInfos', 2);
-        this._uniformBuffer.addUniform('diffuseMatrix', 16);
+        const ubo = this._uniformBuffer;
 
-        this._uniformBuffer.addUniform('vEmissiveColor', 3);
-        this._uniformBuffer.addUniform('vEmissiveInfos', 2);
-        this._uniformBuffer.addUniform('emissiveMatrix', 16);
+        ubo.addUniform('vDiffuseColor', 4);
+        ubo.addUniform('vDiffuseInfos', 2);
+        ubo.addUniform('diffuseMatrix', 16);
 
-        this._uniformBuffer.addUniform('vBumpInfos', 3);
-        this._uniformBuffer.addUniform('bumpMatrix', 16);
+        ubo.addUniform('vEmissiveColor', 3);
+        ubo.addUniform('vEmissiveInfos', 2);
+        ubo.addUniform('emissiveMatrix', 16);
 
-        this._uniformBuffer.addUniform('vShadeColor', 3);
-        this._uniformBuffer.addUniform('vShadeInfos', 2);
-        this._uniformBuffer.addUniform('shadeMatrix', 16);
+        ubo.addUniform('vBumpInfos', 3);
+        ubo.addUniform('bumpMatrix', 16);
 
-        this._uniformBuffer.addUniform('vReceiveShadowInfos', 2);
-        this._uniformBuffer.addUniform('receiveShadowMatrix', 16);
+        ubo.addUniform('vShadeColor', 3);
+        ubo.addUniform('vShadeInfos', 2);
+        ubo.addUniform('shadeMatrix', 16);
 
-        this._uniformBuffer.addUniform('vShadingGradeInfos', 2);
-        this._uniformBuffer.addUniform('shadingGradeMatrix', 16);
+        ubo.addUniform('vReceiveShadowInfos', 2);
+        ubo.addUniform('receiveShadowMatrix', 16);
 
-        this._uniformBuffer.addUniform('vRimColor', 3);
-        this._uniformBuffer.addUniform('vRimInfos', 2);
-        this._uniformBuffer.addUniform('rimMatrix', 16);
+        ubo.addUniform('vShadingGradeInfos', 2);
+        ubo.addUniform('shadingGradeMatrix', 16);
 
-        this._uniformBuffer.addUniform('vMatCapInfos', 2);
-        this._uniformBuffer.addUniform('matCapMatrix', 16);
+        ubo.addUniform('vRimColor', 3);
+        ubo.addUniform('vRimInfos', 2);
+        ubo.addUniform('rimMatrix', 16);
 
-        this._uniformBuffer.addUniform('vOutlineColor', 3);
-        this._uniformBuffer.addUniform('vOutlineWidthInfos', 2);
-        this._uniformBuffer.addUniform('outlineWidthMatrix', 16);
+        ubo.addUniform('vMatCapInfos', 2);
+        ubo.addUniform('matCapMatrix', 16);
 
-        this._uniformBuffer.addUniform('vUvAnimationMaskInfos', 2);
-        this._uniformBuffer.addUniform('uvAnimationMaskMatrix', 16);
+        ubo.addUniform('vOutlineColor', 3);
+        ubo.addUniform('vOutlineWidthInfos', 2);
+        ubo.addUniform('outlineWidthMatrix', 16);
 
-        this._uniformBuffer.addUniform('vTangentSpaceParams', 2);
-        this._uniformBuffer.addUniform('pointSize', 1);
-        this._uniformBuffer.addUniform('visibility', 1);
+        ubo.addUniform('vUvAnimationMaskInfos', 2);
+        ubo.addUniform('uvAnimationMaskMatrix', 16);
 
-        this._uniformBuffer.addUniform('shadingGradeRate', 1);
-        this._uniformBuffer.addUniform('receiveShadowRate', 1);
-        this._uniformBuffer.addUniform('shadeShift', 1);
-        this._uniformBuffer.addUniform('shadeToony', 1);
-        this._uniformBuffer.addUniform('lightColorAttenuation', 1);
-        this._uniformBuffer.addUniform('indirectLightIntensity', 1);
-        this._uniformBuffer.addUniform('rimLightingMix', 1);
-        this._uniformBuffer.addUniform('rimFresnelPower', 1);
-        this._uniformBuffer.addUniform('rimLift', 1);
-        this._uniformBuffer.addUniform('outlineWidth', 1);
-        this._uniformBuffer.addUniform('outlineScaledMaxDistance', 1);
-        this._uniformBuffer.addUniform('outlineLightingMix', 1);
-        this._uniformBuffer.addUniform('uvAnimationScrollX', 1);
-        this._uniformBuffer.addUniform('uvAnimationScrollY', 1);
-        this._uniformBuffer.addUniform('uvAnimationRotation', 1);
+        ubo.addUniform('vTangentSpaceParams', 2);
+        ubo.addUniform('pointSize', 1);
 
-        this._uniformBuffer.create();
+        ubo.addUniform('shadingGradeRate', 1);
+        ubo.addUniform('receiveShadowRate', 1);
+        ubo.addUniform('shadeShift', 1);
+        ubo.addUniform('shadeToony', 1);
+        ubo.addUniform('lightColorAttenuation', 1);
+        ubo.addUniform('indirectLightIntensity', 1);
+        ubo.addUniform('rimLightingMix', 1);
+        ubo.addUniform('rimFresnelPower', 1);
+        ubo.addUniform('rimLift', 1);
+        ubo.addUniform('outlineWidth', 1);
+        ubo.addUniform('outlineScaledMaxDistance', 1);
+        ubo.addUniform('outlineLightingMix', 1);
+        ubo.addUniform('uvAnimationScrollX', 1);
+        ubo.addUniform('uvAnimationScrollY', 1);
+        ubo.addUniform('uvAnimationRotation', 1);
+
+        // from 4.2.0
+        // DetailMapConfiguration.PrepareUniformBuffer(ubo);
+
+        ubo.create();
     }
 
     /**
@@ -1206,6 +1316,9 @@ export class MToonMaterial extends PushMaterial {
      * @inheritdoc
      */
     public needAlphaBlending() {
+        if (!!(this as any)._disableAlphaBlending) {
+            return false;
+        }
         return this._alphaBlend;
     }
 
@@ -1213,7 +1326,37 @@ export class MToonMaterial extends PushMaterial {
      * @inheritdoc
      */
     public needAlphaTesting() {
+        if (!!(this as any)._forceAlphaTest) {
+            return true;
+        }
         return this._alphaTest;
+    }
+
+    protected _shouldUseAlphaFromDiffuseTexture(): boolean {
+        return this._diffuseTexture != null && this._diffuseTexture.hasAlpha && (this as any)._useAlphaFromDiffuseTexture && (this as any)._transparencyMode !== (Material as any).MATERIAL_OPAQUE;
+    }
+
+    protected _hasAlphaChannel(): boolean {
+        return (this._diffuseTexture != null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
+    }
+
+    protected get _forceAlphaTest(): boolean {
+        if (this.from4_2_0) {
+            // @todo
+            // return super._forceAlphaTest;
+        }
+        return false;
+    }
+
+    /**
+     * Engine version from 4.2.0 to latest
+     */
+    private get from4_2_0(): boolean {
+        return !!this.engineVersion.match('4.2.0');
+    }
+
+    private get engineVersion(): string {
+        return Engine.Version;
     }
 
     /**

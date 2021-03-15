@@ -6,6 +6,7 @@ import { ISceneComponent, SceneComponentConstants } from '@babylonjs/core/sceneC
 import { Nullable } from '@babylonjs/core/types';
 import { Matrix } from '@babylonjs/core/Maths/math';
 import { MToonMaterial } from './mtoon-material';
+import { Constants } from '@babylonjs/core/Engines/constants';
 
 const BASE_NAME = 'MToonOutline';
 
@@ -14,6 +15,11 @@ const BASE_NAME = 'MToonOutline';
  * @see OutlineRenderer
  */
 export class MToonOutlineRenderer implements ISceneComponent {
+    /**
+     * Stencil value used to avoid outline being seen within the mesh when the mesh is transparent
+     */
+    private static _StencilReference = 0x04;
+
     public static rendererId = 0;
 
     /**
@@ -65,15 +71,13 @@ export class MToonOutlineRenderer implements ISceneComponent {
      * @inheritdoc
      */
     public dispose(): void {
-        delete this.scene;
-        delete this.material;
-        delete this._engine;
+        // Nothing to do here
     }
 
     /**
      * アウトラインを描画する
      */
-    private render(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch): void {
+    private render(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch, useOverlay = false): void {
         const effect = subMesh.effect;
         if (!effect || !effect.isReady() || !this.scene.activeCamera) {
             return;
@@ -98,7 +102,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
                 effect,
                 this.material.fillMode,
                 batch,
-                this.isHardwareInstancedRendering(subMesh._id, batch),
+                this.isHardwareInstancedRendering(subMesh, batch),
                 (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
                     effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
                     effect.setMatrix('world', world);
@@ -114,7 +118,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
                 effect,
                 this.material.fillMode,
                 batch,
-                this.isHardwareInstancedRendering(subMesh._id, batch),
+                this.isHardwareInstancedRendering(subMesh, batch),
                 (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
                     effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
                     effect.setMatrix('world', world);
@@ -137,11 +141,32 @@ export class MToonOutlineRenderer implements ISceneComponent {
         if (!this.willRender(subMesh)) {
             return;
         }
+        const material = subMesh.getMaterial() as MToonMaterial;
+        if (material.needAlphaBlendingForMesh(mesh)) {
+            this._engine.cacheStencilState();
+            // Draw only to stencil buffer for the original mesh
+            // The resulting stencil buffer will be used so the outline is not visible inside the mesh when the mesh is transparent
+            this._engine.setDepthWrite(false);
+            this._engine.setColorWrite(false);
+            this._engine.setStencilBuffer(true);
+            this._engine.setStencilOperationPass(Constants.REPLACE);
+            this._engine.setStencilFunction(Constants.ALWAYS);
+            this._engine.setStencilMask(MToonOutlineRenderer._StencilReference);
+            this._engine.setStencilFunctionReference(MToonOutlineRenderer._StencilReference);
+            this.render(subMesh.getRenderingMesh(), subMesh, batch, /* This sets offset to 0 */ true);
+
+            this._engine.setColorWrite(true);
+            this._engine.setStencilFunction(Constants.NOTEQUAL);
+        }
 
         // 深度ナシで後ろに描画
         this._engine.setDepthWrite(false);
         this.render(subMesh.getRenderingMesh(), subMesh, batch);
         this._engine.setDepthWrite(this._savedDepthWrite);
+
+        if (material.needAlphaBlendingForMesh(mesh)) {
+            this._engine.restoreStencilState();
+        }
     }
 
     /**
@@ -164,10 +189,16 @@ export class MToonOutlineRenderer implements ISceneComponent {
     /**
      * インスタンシングを行うかどうか
      */
-    private isHardwareInstancedRendering(subMeshId: number, batch: _InstancesBatch): boolean {
-        return (this._engine.getCaps().instancedArrays)
-            && (batch.visibleInstances[subMeshId] !== null)
-            && (typeof batch.visibleInstances[subMeshId] !== 'undefined');
+    private isHardwareInstancedRendering(subMesh: SubMesh, batch: _InstancesBatch): boolean {
+        if (!this._engine.getCaps().instancedArrays) {
+            return false;
+        }
+        let hasThinInstances = false;
+        // from 4.2.0
+        hasThinInstances = (subMesh.getRenderingMesh() as any).hasThinInstances;
+        return (batch.visibleInstances[subMesh._id] !== null)
+            && (typeof batch.visibleInstances[subMesh._id] !== 'undefined')
+            || hasThinInstances;
     }
 
      /**
