@@ -1,6 +1,5 @@
 uniform mat4 viewProjection;
 uniform mat4 view;
-uniform float visibility;
 
 // Colors
 uniform vec4 vDiffuseColor;

@@ -35,7 +35,6 @@ uniform Material
     // babylon specific
     vec2 vTangentSpaceParams;
     float pointSize;
-    float visibility;
 
     // MToon params
     float shadingGradeRate;

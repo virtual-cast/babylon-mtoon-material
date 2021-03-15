@@ -392,8 +392,6 @@ void main(void) {
 #include<logDepthFragment>
 #include<fogFragment>
 
-    color.a *= visibility;
-
 #ifdef PREMULTIPLYALPHA
     // Convert to associative (premultiplied) format if needed.
     color.rgb *= color.a;
