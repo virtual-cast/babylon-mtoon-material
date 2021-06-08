@@ -1,7 +1,7 @@
 import { Constants } from '@babylonjs/core/Engines/constants';
 import { Effect, IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
 import { EffectFallbacks } from '@babylonjs/core/Materials/effectFallbacks';
-import { Material } from '@babylonjs/core/Materials/material';
+import { ICustomShaderNameResolveOptions, Material } from '@babylonjs/core/Materials/material';
 import { MaterialHelper } from '@babylonjs/core/Materials/materialHelper';
 import { PushMaterial } from '@babylonjs/core/Materials/pushMaterial';
 import { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
@@ -14,12 +14,11 @@ import { expandToProperty, SerializationHelper, serialize, serializeAsColor3, se
 import { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
 import { Scene } from '@babylonjs/core/scene';
 import { Nullable } from '@babylonjs/core/types';
-// import { PrePassConfiguration } from '@babylonjs/core/Materials/prePassConfiguration';
-// import { DetailMapConfiguration } from '@babylonjs/core/Materials/material.detailMapConfiguration';
+import { PrePassConfiguration } from '@babylonjs/core/Materials/prePassConfiguration';
+import { DetailMapConfiguration } from '@babylonjs/core/Materials/material.detailMapConfiguration';
 import { getInspectableCustomProperties } from './inspectable-custom-properties';
 import { MToonMaterialDefines } from './mtoon-material-defines';
 import { MToonOutlineRenderer } from './mtoon-outline-renderer';
-import { Engine } from '@babylonjs/core/Engines/engine';
 
 // シェーダ文字列を取得
 const UboDeclaration = require('./shaders/ubo-declaration.vert').default;
@@ -62,8 +61,7 @@ export enum CullMode {
     Back,
 }
 
-// from 4.2.0
-// const onCreatedEffectParameters = { effect: null as unknown as Effect, subMesh: null as unknown as Nullable<SubMesh> };
+const onCreatedEffectParameters = { effect: null as unknown as Effect, subMesh: null as unknown as Nullable<SubMesh> };
 
 /**
  * MToonMaterial
@@ -240,11 +238,17 @@ export class MToonMaterial extends PushMaterial {
      */
     @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public twoSidedLighting = false;
-    @serialize('alphaCutOff')
-    private _alphaCutOff = 0.5;
+    @serialize('useAlphaFromDiffuseTexture')
+    private _useAlphaFromDiffuseTexture = true;
+    /**
+     * Does the transparency come from the diffuse texture alpha channel.
+     */
+    @expandToProperty("_markAllSubMeshesAsTexturesAndMiscDirty")
+    public useAlphaFromDiffuseTexture: boolean;
     /**
      * アルファテスト時のカットしきい値
      */
+    @serialize()
     @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public alphaCutOff = 0.5;
     private _rebuildInParallel = false;
@@ -254,9 +258,8 @@ export class MToonMaterial extends PushMaterial {
     public get canRenderToMRT() {
         return false;
     }
-    // from 4.2.0-
-    // public readonly prePassConfiguration: PrePassConfiguration;
-    // public readonly detailMap = new DetailMapConfiguration(this._markAllSubMeshesAsTexturesDirty.bind(this));
+    public readonly prePassConfiguration: PrePassConfiguration;
+    public readonly detailMap = new DetailMapConfiguration(this._markAllSubMeshesAsTexturesDirty.bind(this));
 //#endregion
 
 //#region Colors
@@ -445,8 +448,23 @@ export class MToonMaterial extends PushMaterial {
 
     @serialize('alphaTest')
     private _alphaTest = false;
-    @expandToProperty('_markAllSubMeshesAsMiscDirty')
-    public alphaTest = false;
+    @serialize()
+    public get alphaTest() {
+        return this._alphaTest;
+    }
+    public set alphaTest(value: boolean) {
+        this._alphaTest = value;
+        if (value) {
+            if (this.alphaBlend) {
+                this._transparencyMode = Material.MATERIAL_ALPHATESTANDBLEND;
+            } else {
+                this._transparencyMode = Material.MATERIAL_ALPHATEST;
+            }
+        } else {
+            this._transparencyMode = Material.MATERIAL_OPAQUE;
+        }
+        this._markAllSubMeshesAsMiscDirty();
+    }
     private _alphaBlend = false;
     @serialize()
     public get alphaBlend() {
@@ -456,6 +474,13 @@ export class MToonMaterial extends PushMaterial {
         this._alphaBlend = value;
         if (value) {
             this.backFaceCulling = true;
+            if (this.alphaTest) {
+                this._transparencyMode = Material.MATERIAL_ALPHATESTANDBLEND;
+            } else {
+                this._transparencyMode = Material.MATERIAL_ALPHABLEND;
+            }
+        } else {
+            this._transparencyMode = Material.MATERIAL_OPAQUE;
         }
         this._markAllSubMeshesAsMiscDirty();
     }
@@ -550,8 +575,7 @@ export class MToonMaterial extends PushMaterial {
     public constructor(name: string, scene: Scene) {
         super(name, scene);
 
-        // from 4.2.0
-        // this.prePassConfiguration = new PrePassConfiguration();
+        this.prePassConfiguration = new PrePassConfiguration();
 
         // シェーダストアに登録する
         if (!Effect.IncludesShadersStore.mtoonUboDeclaration) {
@@ -586,17 +610,8 @@ export class MToonMaterial extends PushMaterial {
 
         const scene = this.getScene();
         const defines = subMesh._materialDefines as MToonMaterialDefines;
-        if (this.from4_2_0) {
-            if ((this as any)._isReadyForSubMesh(subMesh)) {
-                return true;
-            }
-        } else {
-            // between 4.0.0 to 4.1.0
-            if (!this.checkReadyOnEveryCall && subMesh.effect) {
-                if (defines._renderId === scene.getRenderId()) {
-                    return true;
-                }
-            }
+        if (this._isReadyForSubMesh(subMesh)) {
+            return true;
         }
 
         const engine = scene.getEngine();
@@ -621,10 +636,7 @@ export class MToonMaterial extends PushMaterial {
         // Multiview
         MaterialHelper.PrepareDefinesForMultiview(scene, defines);
 
-        if (this.from4_2_0) {
-            // from 4.2.0-
-            (MaterialHelper as any).PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT);
-        }
+        MaterialHelper.PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT);
 
         // Textures
         // defines の変更はシェーダのリコンパイルを必要とするため、必要最小限にする
@@ -674,17 +686,13 @@ export class MToonMaterial extends PushMaterial {
 
             defines.PREMULTIPLYALPHA = (this.alphaMode === Constants.ALPHA_PREMULTIPLIED || this.alphaMode === Constants.ALPHA_PREMULTIPLIED_PORTERDUFF);
 
-            if (this.from4_2_0) {
-                // from 4.2.0-
-                defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = (this as any).transparencyMode !== null;
-                defines.ALPHABLEND = (this as any).transparencyMode === null || this.needAlphaBlendingForMesh(mesh);
-            }
+            defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = this.transparencyMode !== null;
+            defines.ALPHABLEND = this.transparencyMode === null || this.needAlphaBlendingForMesh(mesh);
         }
 
-        // from 4.2.0
-        // if (!this.detailMap.isReadyForSubMesh(defines, scene)) {
-        //     return false;
-        // }
+        if (!this.detailMap.isReadyForSubMesh(defines, scene)) {
+            return false;
+        }
 
         // Misc.
         MaterialHelper.PrepareDefinesForMisc(
@@ -708,27 +716,17 @@ export class MToonMaterial extends PushMaterial {
         );
 
         // Values that need to be evaluated on every frame
-        if (this.from4_2_0) {
-            (MaterialHelper as any).PrepareDefinesForFrameBoundValues(
-                scene,
-                engine,
-                defines,
-                useInstances,
-                null,
-                (subMesh.getRenderingMesh() as any).hasThinInstances,
-            );
-        } else {
-            MaterialHelper.PrepareDefinesForFrameBoundValues(
-                scene,
-                engine,
-                defines,
-                useInstances,
-            );
-        }
+        MaterialHelper.PrepareDefinesForFrameBoundValues(
+            scene,
+            engine,
+            defines,
+            useInstances,
+            null,
+            subMesh.getRenderingMesh().hasThinInstances,
+        );
 
         // External config
-        // from 4.2.0
-        // this.detailMap.prepareDefines(defines, scene);
+        this.detailMap.prepareDefines(defines, scene);
 
         // Get correct effect
         if (defines.isDirty) {
@@ -823,12 +821,11 @@ export class MToonMaterial extends PushMaterial {
 
             const uniformBuffers = ['Material', 'Scene'];
 
-            // from 4.2.0
-            // DetailMapConfiguration.AddUniforms(uniforms);
-            // DetailMapConfiguration.AddSamplers(samplers);
-            //
-            // PrePassConfiguration.AddUniforms(uniforms);
-            // PrePassConfiguration.AddSamplers(samplers);
+            DetailMapConfiguration.AddUniforms(uniforms);
+            DetailMapConfiguration.AddSamplers(samplers);
+
+            PrePassConfiguration.AddUniforms(uniforms);
+            PrePassConfiguration.AddSamplers(samplers);
 
             MaterialHelper.PrepareUniformsAndSamplersList({
                 uniformsNames: uniforms,
@@ -840,7 +837,7 @@ export class MToonMaterial extends PushMaterial {
 
             this.applyDefines(defines);
 
-            const csnrOptions: any = {};
+            const csnrOptions: ICustomShaderNameResolveOptions = {};
 
             const join = defines.toString();
 
@@ -863,11 +860,11 @@ export class MToonMaterial extends PushMaterial {
             } as IEffectCreationOptions, engine);
 
             if (effect) {
-                // if (this._onEffectCreatedObservable) {
-                //     onCreatedEffectParameters.effect = effect;
-                //     onCreatedEffectParameters.subMesh = subMesh;
-                //     this._onEffectCreatedObservable.notifyObservers(onCreatedEffectParameters);
-                // }
+                if (this._onEffectCreatedObservable) {
+                    onCreatedEffectParameters.effect = effect;
+                    onCreatedEffectParameters.subMesh = subMesh;
+                    this._onEffectCreatedObservable.notifyObservers(onCreatedEffectParameters);
+                }
                 // Use previous effect while new one is compiling
                 if (this.allowShaderHotSwapping && previousEffect && !effect.isReady()) {
                     effect = previousEffect;
@@ -917,9 +914,8 @@ export class MToonMaterial extends PushMaterial {
             this.bindOnlyWorldMatrix(world);
         }
 
-        // from 4.2.0-
         // PrePass
-        // this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
+        this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
 
         // Normal Matrix
         if (defines.OBJECTSPACE_NORMALMAP) {
@@ -968,7 +964,7 @@ export class MToonMaterial extends PushMaterial {
                 }
 
                 if (this._hasAlphaChannel()) {
-                    effect.setFloat('alphaCutOff', this._alphaCutOff);
+                    effect.setFloat('alphaCutOff', this.alphaCutOff);
                 }
             }
 
@@ -994,8 +990,7 @@ export class MToonMaterial extends PushMaterial {
             ubo.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
             ubo.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
 
-            // from 4.2.0-
-            // this.detailMap.bindForSubMesh(ubo, scene, this.isFrozen);
+            this.detailMap.bindForSubMesh(ubo, scene, this.isFrozen);
 
             // Clip plane
             MaterialHelper.BindClipPlane(effect, scene);
@@ -1062,8 +1057,7 @@ export class MToonMaterial extends PushMaterial {
             }
         }
 
-        // from 4.2.0
-        // this.detailMap.getAnimatables(results);
+        this.detailMap.getAnimatables(results);
 
         return results;
     }
@@ -1074,8 +1068,7 @@ export class MToonMaterial extends PushMaterial {
     public getActiveTextures(): BaseTexture[] {
         const activeTextures = super.getActiveTextures().concat(this.appendedActiveTextures);
 
-        // from 4.2.0
-        // this.detailMap.getActiveTextures(activeTextures);
+        this.detailMap.getActiveTextures(activeTextures);
 
         return activeTextures;
     }
@@ -1087,11 +1080,13 @@ export class MToonMaterial extends PushMaterial {
         if (super.hasTexture(texture)) {
             return true;
         } else if (this.appendedActiveTextures.length > 0) {
-            return true;
+            for (const tex of this.appendedActiveTextures) {
+                if (tex === texture) {
+                    return true;
+                }
+            }
         }
-        // from 4.2.0
-        // return this.detailMap.hasTexture(texture);
-        return false;
+        return this.detailMap.hasTexture(texture);
     }
 
     /**
@@ -1109,8 +1104,7 @@ export class MToonMaterial extends PushMaterial {
             }
         }
 
-        // from 4.2.0
-        // this.detailMap.dispose(forceDisposeTextures);
+        this.detailMap.dispose(forceDisposeTextures);
 
         super.dispose(forceDisposeEffect, forceDisposeTextures, notBoundToMesh);
     }
@@ -1179,8 +1173,7 @@ export class MToonMaterial extends PushMaterial {
         ubo.addUniform('uvAnimationScrollY', 1);
         ubo.addUniform('uvAnimationRotation', 1);
 
-        // from 4.2.0
-        // DetailMapConfiguration.PrepareUniformBuffer(ubo);
+        DetailMapConfiguration.PrepareUniformBuffer(ubo);
 
         ubo.create();
     }
@@ -1226,10 +1219,6 @@ export class MToonMaterial extends PushMaterial {
      * 定数を設定する
      */
     private applyDefines(defines: any): void {
-        if (this._alphaBlend !== defines.ALPHABLEND) {
-            defines.ALPHABLEND = this._alphaBlend;
-            defines.markAsUnprocessed();
-        }
         switch (this._debugMode) {
             case DebugMode.Normal:
                 if (defines.MTOON_DEBUG_NORMAL !== true) {
@@ -1308,55 +1297,46 @@ export class MToonMaterial extends PushMaterial {
     /**
      * @inheritdoc
      */
-    public getAlphaTestTexture(): Nullable<BaseTexture> {
-        return this.diffuseTexture;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public needAlphaBlending() {
-        if (!!(this as any)._disableAlphaBlending) {
+        if (this._disableAlphaBlending) {
             return false;
         }
-        return this._alphaBlend;
+        return this._alphaBlend || (this.alpha < 1.0) || this._shouldUseAlphaFromDiffuseTexture();
     }
 
     /**
      * @inheritdoc
      */
     public needAlphaTesting() {
-        if (!!(this as any)._forceAlphaTest) {
+        if (this._forceAlphaTest) {
             return true;
         }
-        return this._alphaTest;
-    }
-
-    protected _shouldUseAlphaFromDiffuseTexture(): boolean {
-        return this._diffuseTexture != null && this._diffuseTexture.hasAlpha && (this as any)._useAlphaFromDiffuseTexture && (this as any)._transparencyMode !== (Material as any).MATERIAL_OPAQUE;
-    }
-
-    protected _hasAlphaChannel(): boolean {
-        return (this._diffuseTexture != null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
-    }
-
-    protected get _forceAlphaTest(): boolean {
-        if (this.from4_2_0) {
-            // @todo
-            // return super._forceAlphaTest;
-        }
-        return false;
+        return this._alphaTest
+            || (this._hasAlphaChannel() && (this._transparencyMode == null || this._transparencyMode === Material.MATERIAL_ALPHATEST));
     }
 
     /**
-     * Engine version from 4.2.0 to latest
+     * @inheritdoc
      */
-    private get from4_2_0(): boolean {
-        return !!this.engineVersion.match('4.2.0');
+    protected _shouldUseAlphaFromDiffuseTexture(): boolean {
+        return this._diffuseTexture != null
+            && this._diffuseTexture.hasAlpha
+            && this._useAlphaFromDiffuseTexture
+            && this._transparencyMode !== Material.MATERIAL_OPAQUE;
     }
 
-    private get engineVersion(): string {
-        return Engine.Version;
+    /**
+     * @inheritdoc
+     */
+    protected _hasAlphaChannel(): boolean {
+        return (this._diffuseTexture !== null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public getAlphaTestTexture(): Nullable<BaseTexture> {
+        return this.diffuseTexture;
     }
 
     /**

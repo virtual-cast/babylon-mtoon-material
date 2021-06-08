@@ -1,6 +1,6 @@
 #include<__decl__mtoonFragment>
 
-#if defined(BUMP) || !defined(NORMAL)
+#if defined(BUMP) || !defined(NORMAL) || (defined(ALPHATEST) && ALPHATEST)
 #extension GL_OES_standard_derivatives : enable
 #endif
 
@@ -305,6 +305,7 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
     return vec4(_col, _alpha);
 }
 
+#include<bumpFragmentMainFunctions>
 #include<bumpFragmentFunctions>
 #include<clipPlaneFragmentDeclaration>
 #include<logDepthDeclaration>

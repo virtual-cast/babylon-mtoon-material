@@ -93,6 +93,7 @@ async function main() {
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#YDO1F#18
         mat.diffuseTexture = new Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+        mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaBlend = true;
         mtoonMaterials.push(mat);
@@ -102,8 +103,10 @@ async function main() {
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#YDO1F#18
         mat.diffuseTexture = new Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+        mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaTest = true;
+        mat.alphaCutOff = 0.500;
         mtoonMaterials.push(mat);
     }
     {
