@@ -33,9 +33,9 @@ export class MToonMaterialDefines extends MaterialDefines {
     public MAINUV2 = false;
     public DIFFUSE = false;
     public DIFFUSEDIRECTUV = 0;
-    // public DETAIL = false;
-    // public DETAILDIRECTUV = 0;
-    // public DETAIL_NORMALBLENDMETHOD = 0;
+    public DETAIL = false;
+    public DETAILDIRECTUV = 0;
+    public DETAIL_NORMALBLENDMETHOD = 0;
     // public AMBIENT = false;
     // public AMBIENTDIRECTUV = 0;
     // public OPACITY = false;
