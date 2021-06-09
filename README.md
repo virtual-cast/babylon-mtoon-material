@@ -8,9 +8,16 @@
 
 Some settings will be ignored or generates inconsistent lighting.
 
-When you use babylon.js-beta.17 or older, please use [v1.9.0](https://github.com/virtual-cast/babylon-mtoon-material/releases/tag/v1.9.0).
-
 [About MToon](https://vrm.dev/en/univrm/shaders/mtoon/)([ja](https://vrm.dev/univrm/shaders/mtoon/))
+
+## Supported version table
+
+|babylon.js version|babylon-mtoon-material version|
+|---|---|
+|~4.0.0|^1.0.0|
+|~4.1.0|^2.0.0|
+|~4.2.0|^3.0.0|
+|~5.0.0|unreleased(will be ^4.0.0)|
 
 ## Features
 
