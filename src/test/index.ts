@@ -9,7 +9,7 @@ import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
 import { SphereBuilder } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
 import { TorusKnotBuilder } from '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { Scene } from '@babylonjs/core/scene';
 import { MToonMaterial } from '../mtoon-material';
 

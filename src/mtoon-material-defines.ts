@@ -4,6 +4,9 @@ import { MaterialDefines } from '@babylonjs/core/Materials/materialDefines';
  * Material Defines
  */
 export class MToonMaterialDefines extends MaterialDefines {
+    /** @see light-fragment.frag */
+    public CUSTOMUSERLIGHTING = true;
+
     // MToon Specific
     public MTOON_OUTLINE_WIDTH_WORLD = false;
     public MTOON_OUTLINE_WIDTH_SCREEN = false;
@@ -48,8 +51,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public SPECULARDIRECTUV = 0;
     public BUMP = false;
     public BUMPDIRECTUV = 0;
-    // public PARALLAX = false;
-    // public PARALLAXOCCLUSION = false;
+    public PARALLAX = false;
+    public PARALLAXOCCLUSION = false;
     // public SPECULAROVERALPHA = false;
     public CLIPPLANE = false;
     public CLIPPLANE2 = false;
@@ -62,7 +65,6 @@ export class MToonMaterialDefines extends MaterialDefines {
     public ALPHAFROMDIFFUSE = false;
     public POINTSIZE = false;
     public FOG = false;
-    public MULTIVIEW = false;
     // public SPECULARTERM = false;
     // public DIFFUSEFRESNEL = false;
     // public OPACITYFRESNEL = false;
@@ -71,6 +73,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public EMISSIVEFRESNEL = false;
     // public FRESNEL = false;
     public NORMAL = false;
+    // public TANGENT = false;
     public UV1 = false;
     public UV2 = false;
     public VERTEXCOLOR = false;
@@ -121,22 +124,22 @@ export class MToonMaterialDefines extends MaterialDefines {
     public ALPHATEST_AFTERALLALPHACOMPUTATIONS = false;
     public ALPHABLEND = true;
 
-    // public PREPASS = false;
-    // public PREPASS_IRRADIANCE = false;
-    // public PREPASS_IRRADIANCE_INDEX = -1;
-    // public PREPASS_ALBEDO = false;
-    // public PREPASS_ALBEDO_INDEX = -1;
-    // public PREPASS_DEPTH = false;
-    // public PREPASS_DEPTH_INDEX = -1;
-    // public PREPASS_NORMAL = false;
-    // public PREPASS_NORMAL_INDEX = -1;
-    // public PREPASS_POSITION = false;
-    // public PREPASS_POSITION_INDEX = -1;
-    // public PREPASS_VELOCITY = false;
-    // public PREPASS_VELOCITY_INDEX = -1;
-    // public PREPASS_REFLECTIVITY = false;
-    // public PREPASS_REFLECTIVITY_INDEX = -1;
-    // public SCENE_MRT_COUNT = 0;
+    public PREPASS = false;
+    public PREPASS_IRRADIANCE = false;
+    public PREPASS_IRRADIANCE_INDEX = -1;
+    public PREPASS_ALBEDO = false;
+    public PREPASS_ALBEDO_INDEX = -1;
+    public PREPASS_DEPTH = false;
+    public PREPASS_DEPTH_INDEX = -1;
+    public PREPASS_NORMAL = false;
+    public PREPASS_NORMAL_INDEX = -1;
+    public PREPASS_POSITION = false;
+    public PREPASS_POSITION_INDEX = -1;
+    public PREPASS_VELOCITY = false;
+    public PREPASS_VELOCITY_INDEX = -1;
+    public PREPASS_REFLECTIVITY = false;
+    public PREPASS_REFLECTIVITY_INDEX = -1;
+    public SCENE_MRT_COUNT = 0;
 
     // public RGBDLIGHTMAP = false;
     // public RGBDREFLECTION = false;
@@ -155,7 +158,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public SAMPLER3DGREENDEPTH = false;
     // public SAMPLER3DBGRMAP = false;
     // public IMAGEPROCESSINGPOSTPROCESS = false;
-    // public MULTIVIEW = false;
+    public MULTIVIEW = false;
     // /**
     //  * If the reflection texture on this material is in linear color space
     //  * @hidden
@@ -171,7 +174,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     /**
      * @inheritdoc
      */
-    public constructor() {
+    constructor() {
         super();
         this.rebuild();
     }

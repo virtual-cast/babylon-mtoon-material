@@ -52,13 +52,15 @@ uniform Material
     float uvAnimationScrollX;
     float uvAnimationScrollY;
     float uvAnimationRotation;
+
+    vec3 vEyeUp;
+    float alphaCutOff;
+    vec3 vAmbientColor;
+    float aspect;
+    float isOutline;
+    vec4 time;
 };
 
 // babylon specific
-uniform Scene {
-    mat4 viewProjection;
-#ifdef MULTIVIEW
-    mat4 viewProjectionR;
-#endif
-    mat4 view;
-};
+#include<sceneUboDeclaration>
+#include<meshUboDeclaration>

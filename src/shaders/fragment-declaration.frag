@@ -1,5 +1,4 @@
-uniform mat4 viewProjection;
-uniform mat4 view;
+uniform vec4 vEyePosition;
 
 // Colors
 uniform vec4 vDiffuseColor;
@@ -7,6 +6,13 @@ uniform vec3 vEmissiveColor;
 uniform vec3 vShadeColor;
 uniform vec3 vRimColor;
 uniform vec4 vOutlineColor;
+uniform vec3 vAmbientColor;
+
+uniform vec3 vEyeUp;
+uniform float alphaCutOff;
+uniform float visibility;
+uniform float isOutline;
+uniform vec4 time;
 
 // Samplers
 #ifdef DIFFUSE

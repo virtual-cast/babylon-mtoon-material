@@ -26,6 +26,7 @@ attribute vec2 uv2;
 
 // Uniforms
 #include<instancesDeclaration>
+#include<prePassVertexDeclaration>
 
 #ifdef MAINUV1
 varying vec2 vMainUV1;
@@ -58,7 +59,7 @@ varying vec3 vNormalW;
 #include<clipPlaneVertexDeclaration>
 
 #include<fogVertexDeclaration>
-#include<__decl__lightFragment>[0..maxSimultaneousLights]
+#include<__decl__lightVxFragment>[0..maxSimultaneousLights]
 
 #include<morphTargetsVertexGlobalDeclaration>
 #include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]
@@ -92,9 +93,6 @@ varying vec3 vNormalW;
     varying vec2 vUvAnimationMaskUV;
 #endif
 
-uniform float aspect;
-uniform float isOutline;
-
 void main(void) {
 
     vec3 positionUpdated = position;
@@ -105,9 +103,17 @@ void main(void) {
     vec4 tangentUpdated = tangent;
 #endif
 
+#include<morphTargetsVertexGlobal>
 #include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]
 
 #include<instancesVertex>
+
+#if defined(PREPASS) && defined(PREPASS_VELOCITY) && !defined(BONES_VELOCITY_ENABLED)
+    // Compute velocity before bones computation
+    vCurrentPosition = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
+    vPreviousPosition = previousViewProjection * finalPreviousWorld * vec4(positionUpdated, 1.0);
+#endif
+
 #include<bonesVertex>
 
     // Texture coordinates
@@ -180,6 +186,8 @@ void main(void) {
 
     vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);
     vPositionW = vec3(worldPos);
+
+#include<prePassVertex>
 
 #ifdef NORMAL
     mat3 normalWorld = mat3(finalWorld);

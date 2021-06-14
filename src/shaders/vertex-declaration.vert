@@ -4,6 +4,7 @@ uniform mat4 view;
 uniform float outlineWidth;
 uniform float outlineScaledMaxDistance;
 uniform float outlineLightingMix;
+uniform float isOutline;
 
 #ifdef DIFFUSE
 uniform mat4 diffuseMatrix;
