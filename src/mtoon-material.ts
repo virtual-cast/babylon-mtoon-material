@@ -986,7 +986,7 @@ export class MToonMaterial extends PushMaterial {
                 'uvAnimationMaskSampler', 'morphTargets',
             ];
 
-            const uniformBuffers = ['Material', 'Scene'];
+            const uniformBuffers = ['Material', 'Scene', 'Mesh'];
 
             DetailMapConfiguration.AddUniforms(uniforms);
             DetailMapConfiguration.AddSamplers(samplers);
