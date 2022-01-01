@@ -27,8 +27,8 @@
     "main": "dist/index.module.js",
     "dependencies": {},
     "devDependencies": {
-        "@babylonjs/core": "~5.0.0-alpha.25",
-        "@babylonjs/inspector": "~5.0.0-alpha.25",
+        "@babylonjs/core": "~5.0.0-alpha.65",
+        "@babylonjs/inspector": "~5.0.0-alpha.65",
         "@semantic-release/commit-analyzer": "^8.0.1",
         "@semantic-release/git": "^9.0.0",
         "@semantic-release/github": "^7.2.3",
@@ -95,6 +95,6 @@
         ]
     },
     "peerDependencies": {
-        "@babylonjs/core": "~5.0.0-alpha.25"
+        "@babylonjs/core": "~5.0.0-alpha.65"
     }
 }

@@ -81,6 +81,7 @@ export enum CullMode {
  *
  * @see https://github.com/Santarh/MToon/
  * @see https://vrm.dev/univrm/shaders/mtoon/
+ * @see https://doc.babylonjs.com/babylon101/materials
  */
 export class MToonMaterial extends PushMaterial {
 //#region Properties
@@ -208,7 +209,7 @@ export class MToonMaterial extends PushMaterial {
       * babylon.js Ambient light
       */
      @serialize('ambient')
-     public ambientColor = new Color3(0.1, 0.1, 0.1);
+     public ambientColor = new Color3(0.0, 0.0, 0.0);
      /**
       * Emissive color
       */
@@ -342,7 +343,7 @@ export class MToonMaterial extends PushMaterial {
      * Can this material render to prepass
      */
     public get isPrePassCapable(): boolean {
-        return true;
+        return !this.disableDepthWrite;
     }
     /**
      * Can this material render to several textures at once
@@ -353,7 +354,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * Defines the detail map parameters for the material.
      */
-    public readonly detailMap = new DetailMapConfiguration(this._markAllSubMeshesAsTexturesDirty.bind(this));
+    public readonly detailMap: DetailMapConfiguration = new DetailMapConfiguration(this);
 
     protected _renderTargets = new SmartArray<RenderTargetTexture>(16);
     protected _worldViewProjectionMatrix = Matrix.Zero();

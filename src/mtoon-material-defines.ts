@@ -34,8 +34,13 @@ export class MToonMaterialDefines extends MaterialDefines {
     // Misc
     public MAINUV1 = false;
     public MAINUV2 = false;
+    public MAINUV3 = false;
+    public MAINUV4 = false;
+    public MAINUV5 = false;
+    public MAINUV6 = false;
     public DIFFUSE = false;
     public DIFFUSEDIRECTUV = 0;
+    public BAKED_VERTYEX_ANIMATION_TEXTURE = false;
     public DETAIL = false;
     public DETAILDIRECTUV = 0;
     public DETAIL_NORMALBLENDMETHOD = 0;
@@ -76,6 +81,10 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public TANGENT = false;
     public UV1 = false;
     public UV2 = false;
+    public UV3 = false;
+    public UV4 = false;
+    public UV5 = false;
+    public UV6 = false;
     public VERTEXCOLOR = false;
     public VERTEXALPHA = false;
     public NUM_BONE_INFLUENCERS = 0;
@@ -127,8 +136,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     public PREPASS = false;
     public PREPASS_IRRADIANCE = false;
     public PREPASS_IRRADIANCE_INDEX = -1;
-    public PREPASS_ALBEDO = false;
-    public PREPASS_ALBEDO_INDEX = -1;
+    public PREPASS_ALBEDO_SQRT = false;
+    public PREPASS_ALBEDO_SQRT_INDEX = -1;
     public PREPASS_DEPTH = false;
     public PREPASS_DEPTH_INDEX = -1;
     public PREPASS_NORMAL = false;
@@ -158,7 +167,11 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public SAMPLER3DGREENDEPTH = false;
     // public SAMPLER3DBGRMAP = false;
     // public IMAGEPROCESSINGPOSTPROCESS = false;
+    // public SKIPINALCOLORCLAMP = false;
     public MULTIVIEW = false;
+    // public ORDER_INDEPENDENT_TRANSPARENCY = false;
+    // public ORDER_INDEPENDENT_TRANSPARENCY_16BITS = false;
+
     // /**
     //  * If the reflection texture on this material is in linear color space
     //  * @hidden
@@ -174,8 +187,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     /**
      * @inheritdoc
      */
-    constructor() {
-        super();
+    constructor(externalProperties?: { [name: string]: { type: string, default: any } }) {
+        super(externalProperties);
         this.rebuild();
     }
 
