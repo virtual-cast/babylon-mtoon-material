@@ -1,9 +1,10 @@
 import { MaterialDefines } from '@babylonjs/core/Materials/materialDefines';
+import { IImageProcessingConfigurationDefines } from '@babylonjs/core/Materials/imageProcessingConfiguration';
 
 /**
  * Material Defines
  */
-export class MToonMaterialDefines extends MaterialDefines {
+export class MToonMaterialDefines extends MaterialDefines implements IImageProcessingConfigurationDefines {
     /** @see light-fragment.frag */
     public CUSTOMUSERLIGHTING = true;
 
@@ -41,9 +42,6 @@ export class MToonMaterialDefines extends MaterialDefines {
     public DIFFUSE = false;
     public DIFFUSEDIRECTUV = 0;
     public BAKED_VERTYEX_ANIMATION_TEXTURE = false;
-    public DETAIL = false;
-    public DETAILDIRECTUV = 0;
-    public DETAIL_NORMALBLENDMETHOD = 0;
     // public AMBIENT = false;
     // public AMBIENTDIRECTUV = 0;
     // public OPACITY = false;
@@ -93,6 +91,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     public BONES_VELOCITY_ENABLED = false;
     public INSTANCES = false;
     public THIN_INSTANCES = false;
+    // public INSTANCESCOLOR = false;
     // public GLOSSINESS = false;
     // public ROUGHNESS = false;
     // public EMISSIVEASILLUMINATION = false;
@@ -154,35 +153,35 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public RGBDREFLECTION = false;
     // public RGBDREFRACTION = false;
 
-    // public IMAGEPROCESSING = false;
-    // public VIGNETTE = false;
-    // public VIGNETTEBLENDMODEMULTIPLY = false;
-    // public VIGNETTEBLENDMODEOPAQUE = false;
-    // public TONEMAPPING = false;
-    // public TONEMAPPING_ACES = false;
-    // public CONTRAST = false;
-    // public COLORCURVES = false;
-    // public COLORGRADING = false;
-    // public COLORGRADING3D = false;
-    // public SAMPLER3DGREENDEPTH = false;
-    // public SAMPLER3DBGRMAP = false;
-    // public IMAGEPROCESSINGPOSTPROCESS = false;
-    // public SKIPINALCOLORCLAMP = false;
+    public IMAGEPROCESSING = false;
+    public VIGNETTE = false;
+    public VIGNETTEBLENDMODEMULTIPLY = false;
+    public VIGNETTEBLENDMODEOPAQUE = false;
+    public TONEMAPPING = false;
+    public TONEMAPPING_ACES = false;
+    public CONTRAST = false;
+    public COLORCURVES = false;
+    public COLORGRADING = false;
+    public COLORGRADING3D = false;
+    public SAMPLER3DGREENDEPTH = false;
+    public SAMPLER3DBGRMAP = false;
+    public IMAGEPROCESSINGPOSTPROCESS = false;
+    public SKIPFINALCOLORCLAMP = false;
     public MULTIVIEW = false;
-    // public ORDER_INDEPENDENT_TRANSPARENCY = false;
-    // public ORDER_INDEPENDENT_TRANSPARENCY_16BITS = false;
+    public ORDER_INDEPENDENT_TRANSPARENCY = false;
+    public ORDER_INDEPENDENT_TRANSPARENCY_16BITS = false;
 
     // /**
     //  * If the reflection texture on this material is in linear color space
     //  * @hidden
     //  */
-    // public IS_REFLECTION_LINEAR = false;
+    public IS_REFLECTION_LINEAR = false;
     // /**
     //  * If the refraction texture on this material is in linear color space
     //  * @hidden
     //  */
-    // public IS_REFRACTION_LINEAR = false;
-    // public EXPOSURE = false;
+    public IS_REFRACTION_LINEAR = false;
+    public EXPOSURE = false;
 
     /**
      * @inheritdoc

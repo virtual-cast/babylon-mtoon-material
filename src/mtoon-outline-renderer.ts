@@ -11,7 +11,7 @@ import { Constants } from '@babylonjs/core/Engines/constants';
 const BASE_NAME = 'MToonOutline';
 
 /**
- * MToonMaterial を別のパスで描画するレンダラ
+ * MToon outline renderer
  * @see OutlineRenderer
  */
 export class MToonOutlineRenderer implements ISceneComponent {
@@ -27,8 +27,19 @@ export class MToonOutlineRenderer implements ISceneComponent {
      */
     public readonly name: string;
 
+    /**
+     * Defines a zOffset default Factor to prevent zFighting between the overlay and the mesh.
+     */
+     public zOffset = 1;
+
+     /**
+      * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
+      */
+     public zOffsetUnits = 4; // 4 to account for projection a bit by default
+
     private _engine: Engine;
     private _savedDepthWrite = false;
+    private _passIdForDrawWrapper: number[];
 
     /**
      * @inheritdoc
@@ -41,6 +52,10 @@ export class MToonOutlineRenderer implements ISceneComponent {
         this.name = `${BASE_NAME}_${material.name}_${MToonOutlineRenderer.rendererId++}`;
         this.scene._addComponent(this);
         this._engine = this.scene.getEngine();
+        this._passIdForDrawWrapper = [];
+        for (let i = 0; i < 4; ++i) {
+            this._passIdForDrawWrapper[i] = this._engine.createRenderPassId(`Outline Renderer (${i})`);
+        }
     }
 
     /**
@@ -71,17 +86,27 @@ export class MToonOutlineRenderer implements ISceneComponent {
      * @inheritdoc
      */
     public dispose(): void {
-        // Nothing to do here
+        for (let i = 0; i < this._passIdForDrawWrapper.length; ++i) {
+            this._engine.releaseRenderPassId(this._passIdForDrawWrapper[i]);
+        }
     }
 
     /**
-     * アウトラインを描画する
+     * Renders the outline in the canvas.
+     * @param subMesh Defines the sumesh to render
+     * @param batch Defines the batch of meshes in case of instances
+     * @param useOverlay Defines if the rendering is for the overlay or the outline
+     * @param renderPassId Render pass id to use to render the mesh
      */
-    private render(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch, useOverlay = false): void {
+    private render(subMesh: SubMesh, batch: _InstancesBatch, useOverlay: boolean = false, renderPassId?: number): void {
+        renderPassId = renderPassId ?? this._passIdForDrawWrapper[0];
+        const scene = this.scene;
+        const engine = scene.getEngine();
         const effect = subMesh.effect;
         if (!effect || !effect.isReady() || !this.scene.activeCamera) {
             return;
         }
+        // TODO: subMesh._getDrawWrapper
 
         const ownerMesh = subMesh.getMesh();
         const replacementMesh = ownerMesh._internalAbstractMeshDataInfo._actAsRegularMesh ? ownerMesh : null;
@@ -153,18 +178,20 @@ export class MToonOutlineRenderer implements ISceneComponent {
             this._engine.setStencilFunction(Constants.ALWAYS);
             this._engine.setStencilMask(MToonOutlineRenderer._StencilReference);
             this._engine.setStencilFunctionReference(MToonOutlineRenderer._StencilReference);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch, /* This sets offset to 0 */ true);
+            this._engine.stencilStateComposer.useStencilGlobalOnly = true;
+            this.render(subMesh, batch, /* This sets offset to 0 */ true, this._passIdForDrawWrapper[1]);
 
             this._engine.setColorWrite(true);
             this._engine.setStencilFunction(Constants.NOTEQUAL);
         }
 
-        // 深度ナシで後ろに描画
+        // Draw the outline using the above stencil if needed to avoid drawing within the mesh
         this._engine.setDepthWrite(false);
-        this.render(subMesh.getRenderingMesh(), subMesh, batch);
+        this.render(subMesh, batch, false, this._passIdForDrawWrapper[0]);
         this._engine.setDepthWrite(this._savedDepthWrite);
 
-        if (material.needAlphaBlendingForMesh(mesh)) {
+        if (material && material.needAlphaBlendingForMesh(mesh)) {
+            this._engine.stencilStateComposer.useStencilGlobalOnly = false;
             this._engine.restoreStencilState();
         }
     }
@@ -181,7 +208,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
             // 深度アリで再度書き込む
             this._engine.setDepthWrite(true);
             this._engine.setColorWrite(false);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch);
+            this.render(subMesh, batch, false, this._passIdForDrawWrapper[2]);
             this._engine.setColorWrite(true);
         }
     }
@@ -193,9 +220,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
         if (!this._engine.getCaps().instancedArrays) {
             return false;
         }
-        let hasThinInstances = false;
-        // from 4.2.0
-        hasThinInstances = (subMesh.getRenderingMesh() as any).hasThinInstances;
+        const hasThinInstances = subMesh.getRenderingMesh().hasThinInstances;
         return (batch.visibleInstances[subMesh._id] !== null)
             && (typeof batch.visibleInstances[subMesh._id] !== 'undefined')
             || hasThinInstances;

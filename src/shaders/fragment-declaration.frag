@@ -9,6 +9,7 @@ uniform vec4 vOutlineColor;
 uniform vec3 vAmbientColor;
 
 uniform vec3 vEyeUp;
+uniform float aspect;
 uniform float alphaCutOff;
 uniform float visibility;
 uniform float isOutline;

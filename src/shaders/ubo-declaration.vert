@@ -1,5 +1,4 @@
-// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に WebGL2 の場合展開される
-// @see effect.ts
+// it will be replaced to UboDeclaration(WebGL2) or VertexDeclaration(WebGL1).
 
 layout(std140, column_major) uniform;
 

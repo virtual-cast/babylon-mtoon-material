@@ -74,7 +74,7 @@ async function main() {
     }
     {
         const mat = new MToonMaterial('MtoonMaterialNormal', scene);
-        mat.outlineWidthMode = 1;
+        mat.outlineWidthMode = 2;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
         const diffuse = new Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;

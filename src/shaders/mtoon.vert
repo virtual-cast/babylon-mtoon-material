@@ -1,10 +1,11 @@
-// この include は特別で、 UboDeclaration または VertexDeclaration のどちらかに置換される
+// it is based on default.vertex.fx
+// This include is special, it will be replaced to UboDeclaration(WebGL2) or VertexDeclaration(WebGL1).
 // @see effect.ts
 #include<__decl__mtoonVertex>
 
-// 基本的に default.vertex.fx を踏襲している
-
 // Attributes
+
+#define CUSTOM_VERTEX_BEGIN
 
 attribute vec3 position;
 #ifdef NORMAL
@@ -16,42 +17,53 @@ attribute vec4 tangent;
 #ifdef UV1
 attribute vec2 uv;
 #endif
-#ifdef UV2
-attribute vec2 uv2;
+#include<uvAttributeDeclaration>[2..7]
+#ifdef VERTEXCOLOR
+attribute vec4 color;
 #endif
 
 #include<helperFunctions>
 
 #include<bonesDeclaration>
+#include<bakedVertexAnimationDeclaration>
 
 // Uniforms
 #include<instancesDeclaration>
 #include<prePassVertexDeclaration>
 
-#ifdef MAINUV1
-varying vec2 vMainUV1;
-#endif
+#include<mainUVVaryingDeclaration>[1..7]
 
-#ifdef MAINUV2
-varying vec2 vMainUV2;
-#endif
+#include<samplerVertexDeclaration>(_DEFINENAME_,DIFFUSE,_VARYINGNAME_,Diffuse)
+// # include<samplerVertexDeclaration>(_DEFINENAME_,DETAIL,_VARYINGNAME_,Detail)
+// # include<samplerVertexDeclaration>(_DEFINENAME_,AMBIENT,_VARYINGNAME_,Ambient)
+// # include<samplerVertexDeclaration>(_DEFINENAME_,OPACITY,_VARYINGNAME_,Opacity)
+#include<samplerVertexDeclaration>(_DEFINENAME_,EMISSIVE,_VARYINGNAME_,Emissive)
+// # include<samplerVertexDeclaration>(_DEFINENAME_,LIGHTMAP,_VARYINGNAME_,Lightmap)
+// #if defined(SPECULARTERM)
+// # include<samplerVertexDeclaration>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular)
+// #endif
+#include<samplerVertexDeclaration>(_DEFINENAME_,BUMP,_VARYINGNAME_,Bump)
+#include<samplerVertexDeclaration>(_DEFINENAME_,SHADE,_VARYINGNAME_,Shade)
+#include<samplerVertexDeclaration>(_DEFINENAME_,RECEIVE_SHADOW,_VARYINGNAME_,ReceiveShadow)
+#include<samplerVertexDeclaration>(_DEFINENAME_,SHADING_GRADE,_VARYINGNAME_,ShadingGrade)
+#include<samplerVertexDeclaration>(_DEFINENAME_,RIM,_VARYINGNAME_,Rim)
+#include<samplerVertexDeclaration>(_DEFINENAME_,MATCAP,_VARYINGNAME_,MatCap)
+#include<samplerVertexDeclaration>(_DEFINENAME_,OUTLINE_WIDTH,_VARYINGNAME_,OutlineWidth)
+#include<samplerVertexDeclaration>(_DEFINENAME_,UV_ANIMATION_MASK,_VARYINGNAME_,UvAnimationMask)
 
-#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0
-varying vec2 vDiffuseUV;
-#endif
-
-#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0
-varying vec2 vEmissiveUV;
-#endif
-
-#if defined(BUMP) && BUMPDIRECTUV == 0
-varying vec2 vBumpUV;
+// Additional Uniforms
+#ifdef OUTLINE_WIDTH
+    uniform sampler2D outlineWidthSampler;
 #endif
 
 // Output
 varying vec3 vPositionW;
 #ifdef NORMAL
 varying vec3 vNormalW;
+#endif
+
+#if defined(VERTEXCOLOR) || defined(INSTANCESCOLOR)
+varying vec4 vColor;
 #endif
 
 #include<bumpVertexDeclaration>
@@ -64,36 +76,20 @@ varying vec3 vNormalW;
 #include<morphTargetsVertexGlobalDeclaration>
 #include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]
 
+// #ifdef REFLECTIONMAP_SKYBOX
+// varying vec3 vPositionUVW;
+// #endif
+
+// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)
+// varying vec3 vDirectionW;
+// #endif
+
 #include<logDepthDeclaration>
-
-
-// Additional Uniforms
-#if defined(SHADE) && SHADEDIRECTUV == 0
-    varying vec2 vShadeUV;
-#endif
-#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0
-    varying vec2 vReceiveShadowUV;
-#endif
-#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0
-    varying vec2 vShadingGradeUV;
-#endif
-#if defined(RIM) && RIMDIRECTUV == 0
-    varying vec2 vRimUV;
-#endif
-#if defined(MATCAP) && MATCAPDIRECTUV == 0
-    varying vec2 vMatCapUV;
-#endif
-#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0
-    varying vec2 vOutlineWidthUV;
-#endif
-#ifdef OUTLINE_WIDTH
-    uniform sampler2D outlineWidthSampler;
-#endif
-#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0
-    varying vec2 vUvAnimationMaskUV;
-#endif
+#define CUSTOM_VERTEX_DEFINITIONS
 
 void main(void) {
+
+    #define CUSTOM_VERTEX_MAIN_BEGIN
 
     vec3 positionUpdated = position;
 #ifdef NORMAL
@@ -102,9 +98,20 @@ void main(void) {
 #ifdef TANGENT
     vec4 tangentUpdated = tangent;
 #endif
+#ifdef UV1
+    vec2 uvUpdated = uv;
+#endif
 
 #include<morphTargetsVertexGlobal>
 #include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]
+
+// #ifdef REFLECTIONMAP_SKYBOX
+//     vPositionUVW = positionUpdated;
+// #endif
+
+#define CUSTOM_VERTEX_UPDATE_POSITION
+
+#define CUSTOM_VERTEX_UPDATE_NORMAL
 
 #include<instancesVertex>
 
@@ -115,32 +122,55 @@ void main(void) {
 #endif
 
 #include<bonesVertex>
+#include<bakedVertexAnimation>
 
     // Texture coordinates
 #ifndef UV1
-    vec2 uv = vec2(0., 0.);
+    vec2 uvUpdated = vec2(0., 0.);
 #endif
-#ifndef UV2
-    vec2 uv2 = vec2(0., 0.);
-#endif
-
 #ifdef MAINUV1
-    vMainUV1 = uv;
+    vMainUV1 = uvUpdated;
 #endif
-
-#ifdef MAINUV2
-    vMainUV2 = uv2;
-#endif
+#include<uvVariableDeclaration>[2..7]
 
     float outlineTex = 1.0;
     if (isOutline == 1.0) {
 #ifdef OUTLINE_WIDTH
     #if OUTLINE_WIDTHDIRECTUV == 0
-        if (vOutlineWidthInfos.x == 0.) {
-            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));
-        } else {
+        if (vOutlineWidthInfos.x == 0.)
+        {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uvUpdated, 1.0, 0.0));
+        }
+        #ifdef UV2
+        else if (vOutlineWidthInfos.x == 1.)
+        {
             vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));
         }
+        #endif
+        #ifdef UV3
+        else if (vOutlineWidthInfos.x == 2.)
+        {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv3, 1.0, 0.0));
+        }
+        #endif
+        #ifdef UV4
+        else if (vOutlineWidthInfos.x == 3.)
+        {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv4, 1.0, 0.0));
+        }
+        #endif
+        #ifdef UV5
+        else if (vOutlineWidthInfos.x == 4.)
+        {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv5, 1.0, 0.0));
+        }
+        #endif
+        #ifdef UV6
+        else if (vOutlineWidthInfos.x == 5.)
+        {
+            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv6, 1.0, 0.0));
+        }
+        #endif
     #elif defined(MAINUV1)
         vec2 vOutlineWidthUV = vMainUV1;
     #elif defined(MAINUV2)
@@ -152,135 +182,98 @@ void main(void) {
 #endif
 
 #if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)
-        // ワールド座標の normal 分だけ移動する
-        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
+        // move slightly world normal
+        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.1 * outlineWidth * outlineTex;
         positionUpdated.xyz += outlineOffset;
 #endif
     } // End isOutline == 1.0
 
-    vec4 vertex = vec4(1.0);
-#ifdef MULTIVIEW
-    if (gl_ViewID_OVR == 0u) {
-        vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
-    } else {
-        vertex = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);
-    }
-#else
-    vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);
-#endif
-
-#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)
-    if (isOutline == 1.0) {
-        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
-        projectedNormal *= min(vertex.w, outlineScaledMaxDistance);
-        projectedNormal.x *= aspect;
-        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera
-    }
-#endif
-
-    if (isOutline == 1.0) {
-        vertex.z += 1E-2 * vertex.w; // anti-artifact magic from three-vrm
-    }
-
-    gl_Position = vertex;
-
     vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);
-    vPositionW = vec3(worldPos);
-
-#include<prePassVertex>
 
 #ifdef NORMAL
     mat3 normalWorld = mat3(finalWorld);
 
-    #ifdef NONUNIFORMSCALING
-        normalWorld = transposeMat3(inverseMat3(normalWorld));
+    #if defined(INSTANCES) && defined(THIN_INSTANCES)
+        vNormalW = normalUpdated / vec3(dot(normalWorld[0], normalWorld[0]), dot(normalWorld[1], normalWorld[1]), dot(normalWorld[2], normalWorld[2]));
+        vNormalW = normalize(normalWorld * vNormalW);
+    #else
+        #ifdef NONUNIFORMSCALING
+            normalWorld = transposeMat3(inverseMat3(normalWorld));
+        #endif
+
+        vNormalW = normalize(normalWorld * normalUpdated);
     #endif
-
-    vNormalW = normalize(normalWorld * normalUpdated);
 #endif
 
-#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0
-    if (vDiffuseInfos.x == 0.)
-    {
-        vDiffuseUV = vec2(diffuseMatrix * vec4(uv, 1.0, 0.0));
+#define CUSTOM_VERTEX_UPDATE_WORLDPOS
+
+#ifdef MULTIVIEW
+    if (gl_ViewID_OVR == 0u) {
+        gl_Position = viewProjection * worldPos;
+    } else {
+        gl_Position = viewProjectionR * worldPos;
     }
-    else
-    {
-        vDiffuseUV = vec2(diffuseMatrix * vec4(uv2, 1.0, 0.0));
-    }
+#else
+    gl_Position = viewProjection * worldPos;
 #endif
 
-#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0
-    if (vEmissiveInfos.x == 0.)
-    {
-        vEmissiveUV = vec2(emissiveMatrix * vec4(uv, 1.0, 0.0));
-    }
-    else
-    {
-        vEmissiveUV = vec2(emissiveMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
+    vPositionW = vec3(worldPos);
 
-#if defined(BUMP) && BUMPDIRECTUV == 0
-    if (vBumpInfos.x == 0.)
-    {
-        vBumpUV = vec2(bumpMatrix * vec4(uv, 1.0, 0.0));
-    }
-    else
-    {
-        vBumpUV = vec2(bumpMatrix * vec4(uv2, 1.0, 0.0));
+#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)
+    if (isOutline == 1.0) {
+        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
+        projectedNormal *= min(worldPos.w, outlineScaledMaxDistance);
+        projectedNormal.x *= aspect;
+        worldPos.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera
     }
 #endif
 
-#if defined(SHADE) && SHADEDIRECTUV == 0
-    if (vShadeInfos.x == 0.) {
-        vShadeUV = vec2(shadeMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vShadeUV = vec2(shadeMatrix * vec4(uv2, 1.0, 0.0));
+    if (isOutline == 1.0) {
+        worldPos.z += 1E-2 * worldPos.w; // anti-artifact magic from three-vrm
     }
-#endif
-#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0
-    if (vReceiveShadowInfos.x == 0.) {
-        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
-#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0
-    if (vShadingGradeInfos.x == 0.) {
-        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
-#if defined(RIM) && RIMDIRECTUV == 0
-    if (vRimInfos.x == 0.) {
-        vRimUV = vec2(rimMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vRimUV = vec2(rimMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
-#if defined(MATCAP) && MATCAPDIRECTUV == 0
-    if (vMatCapInfos.x == 0.) {
-        vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
-#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0
-    if (vUvAnimationMaskInfos.x == 0.) {
-        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv, 1.0, 0.0));
-    } else {
-        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv2, 1.0, 0.0));
-    }
-#endif
+
+    gl_Position = viewProjection * worldPos;
+
+    worldPos = finalWorld * vec4(positionUpdated, 1.0);
+    vPositionW = vec3(worldPos);
+
+#include<prePassVertex>
+
+// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)
+//     vDirectionW = normalize(vec3(finalWorld * vec4(positionUpdated, 0.0)));
+// #endif
+
+    #include<samplerVertexImplementation>(_DEFINENAME_,DIFFUSE,_VARYINGNAME_,Diffuse,_MATRIXNAME_,diffuse,_INFONAME_,DiffuseInfos.x)
+    // # include<samplerVertexImplementation>(_DEFINENAME_,DETAIL,_VARYINGNAME_,Detail,_MATRIXNAME_,detail,_INFONAME_,DetailInfos.x)
+    // # include<samplerVertexImplementation>(_DEFINENAME_,AMBIENT,_VARYINGNAME_,Ambient,_MATRIXNAME_,ambient,_INFONAME_,AmbientInfos.x)
+    // # include<samplerVertexImplementation>(_DEFINENAME_,OPACITY,_VARYINGNAME_,Opacity,_MATRIXNAME_,opacity,_INFONAME_,OpacityInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,EMISSIVE,_VARYINGNAME_,Emissive,_MATRIXNAME_,emissive,_INFONAME_,EmissiveInfos.x)
+    // # include<samplerVertexImplementation>(_DEFINENAME_,LIGHTMAP,_VARYINGNAME_,Lightmap,_MATRIXNAME_,lightmap,_INFONAME_,LightmapInfos.x)
+    // #if defined(SPECULARTERM)
+    // # include<samplerVertexImplementation>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular,_MATRIXNAME_,specular,_INFONAME_,SpecularInfos.x)
+    // #endif
+    #include<samplerVertexImplementation>(_DEFINENAME_,BUMP,_VARYINGNAME_,Bump,_MATRIXNAME_,bump,_INFONAME_,BumpInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,SHADE,_VARYINGNAME_,Shade,_MATRIXNAME_,shade,_INFONAME_,ShadeInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,RECEIVE_SHADOW,_VARYINGNAME_,ReceiveShadow,_MATRIXNAME_,receiveShadow,_INFONAME_,ReceiveShadowInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,SHADING_GRADE,_VARYINGNAME_,ShadingGrade,_MATRIXNAME_,shadingGrade,_INFONAME_,ShadingGradeInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,RIM,_VARYINGNAME_,Rim,_MATRIXNAME_,rim,_INFONAME_,RimInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,MATCAP,_VARYINGNAME_,MatCap,_MATRIXNAME_,matCap,_INFONAME_,MatCapInfos.x)
+    #include<samplerVertexImplementation>(_DEFINENAME_,UV_ANIMATION_MASK,_VARYINGNAME_,UvAnimationMask,_MATRIXNAME_,uvAnimationMask,_INFONAME_,uvAnimationMaskInfos.x)
 
 #include<bumpVertex>
 #include<clipPlaneVertex>
 #include<fogVertex>
 #include<shadowsVertex>[0..maxSimultaneousLights]
 
+#ifdef VERTEXCOLOR
+    vColor = color;
+#elif defined(INSTANCESCOLOR) && INSTANCESCOLOR
+    vColor = instanceColor;
+#endif
+
 #include<pointCloudVertex>
 #include<logDepthVertex>
+
+#define CUSTOM_VERTEX_MAIN_END
 
 }
