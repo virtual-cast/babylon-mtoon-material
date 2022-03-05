@@ -10,3 +10,6 @@ insert_final_newline = true
 
 [*.yml]
 indent_size = 2
+
+[*.{frag,vert}]
+end_of_line = lf

@@ -7,9 +7,9 @@ import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator'
 import { Material } from '@babylonjs/core/Materials/material';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
-import { SphereBuilder } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
-import { TorusKnotBuilder } from '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
-import { VertexBuffer } from '@babylonjs/core/Meshes/buffer';
+import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
+import { CreateTorusKnot } from '@babylonjs/core/Meshes/Builders/torusKnotBuilder';
+import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { Scene } from '@babylonjs/core/scene';
 import { MToonMaterial } from '../mtoon-material';
 
@@ -54,11 +54,11 @@ async function main() {
     pointLight.setEnabled(false);
 
     // Meshes
-    const standardMaterialSphere = SphereBuilder.CreateSphere('StandardMaterialSphere1', {}, scene);
+    const standardMaterialSphere = CreateSphere('StandardMaterialSphere1', {}, scene);
     standardMaterialSphere.position = new Vector3(1.2, 1.2, 0);
     standardMaterialSphere.receiveShadows = true;
 
-    const shadowCaster = TorusKnotBuilder.CreateTorusKnot('ShadowCaster', {}, scene);
+    const shadowCaster = CreateTorusKnot('ShadowCaster', {}, scene);
     shadowCaster.position = new Vector3(-10.0, 5.0, 0.0);
     shadowCaster.setEnabled(debugProperties.shadow);
     if (debugProperties.shadow) {
@@ -74,7 +74,7 @@ async function main() {
     }
     {
         const mat = new MToonMaterial('MtoonMaterialNormal', scene);
-        mat.outlineWidthMode = 1;
+        mat.outlineWidthMode = 2;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
         const diffuse = new Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;
@@ -185,7 +185,7 @@ async function main() {
         mat.sideOrientation = Material.CounterClockWiseSideOrientation;
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
-        const sphere = SphereBuilder.CreateSphere(`${mat.name}_Sphere`, {}, scene);
+        const sphere = CreateSphere(`${mat.name}_Sphere`, {}, scene);
         sphere.position = new Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;
         sphere.material = mat;
@@ -197,7 +197,7 @@ async function main() {
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
         mat.outlineWidthMode = 1;
-        const sphere = SphereBuilder.CreateSphere('MToonMaterialNoNormal_Sphere', {}, scene);
+        const sphere = CreateSphere('MToonMaterialNoNormal_Sphere', {}, scene);
         sphere.position = new Vector3(2.4, 1.2, 0);
         sphere.receiveShadows = true;
         sphere.material = mat;

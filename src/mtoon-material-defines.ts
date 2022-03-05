@@ -1,9 +1,13 @@
 import { MaterialDefines } from '@babylonjs/core/Materials/materialDefines';
+import { IImageProcessingConfigurationDefines } from '@babylonjs/core/Materials/imageProcessingConfiguration';
 
 /**
  * Material Defines
  */
-export class MToonMaterialDefines extends MaterialDefines {
+export class MToonMaterialDefines extends MaterialDefines implements IImageProcessingConfigurationDefines {
+    /** @see light-fragment.frag */
+    public CUSTOMUSERLIGHTING = true;
+
     // MToon Specific
     public MTOON_OUTLINE_WIDTH_WORLD = false;
     public MTOON_OUTLINE_WIDTH_SCREEN = false;
@@ -31,11 +35,13 @@ export class MToonMaterialDefines extends MaterialDefines {
     // Misc
     public MAINUV1 = false;
     public MAINUV2 = false;
+    public MAINUV3 = false;
+    public MAINUV4 = false;
+    public MAINUV5 = false;
+    public MAINUV6 = false;
     public DIFFUSE = false;
     public DIFFUSEDIRECTUV = 0;
-    public DETAIL = false;
-    public DETAILDIRECTUV = 0;
-    public DETAIL_NORMALBLENDMETHOD = 0;
+    public BAKED_VERTYEX_ANIMATION_TEXTURE = false;
     // public AMBIENT = false;
     // public AMBIENTDIRECTUV = 0;
     // public OPACITY = false;
@@ -48,8 +54,8 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public SPECULARDIRECTUV = 0;
     public BUMP = false;
     public BUMPDIRECTUV = 0;
-    // public PARALLAX = false;
-    // public PARALLAXOCCLUSION = false;
+    public PARALLAX = false;
+    public PARALLAXOCCLUSION = false;
     // public SPECULAROVERALPHA = false;
     public CLIPPLANE = false;
     public CLIPPLANE2 = false;
@@ -62,7 +68,6 @@ export class MToonMaterialDefines extends MaterialDefines {
     public ALPHAFROMDIFFUSE = false;
     public POINTSIZE = false;
     public FOG = false;
-    public MULTIVIEW = false;
     // public SPECULARTERM = false;
     // public DIFFUSEFRESNEL = false;
     // public OPACITYFRESNEL = false;
@@ -71,8 +76,13 @@ export class MToonMaterialDefines extends MaterialDefines {
     // public EMISSIVEFRESNEL = false;
     // public FRESNEL = false;
     public NORMAL = false;
+    // public TANGENT = false;
     public UV1 = false;
     public UV2 = false;
+    public UV3 = false;
+    public UV4 = false;
+    public UV5 = false;
+    public UV6 = false;
     public VERTEXCOLOR = false;
     public VERTEXALPHA = false;
     public NUM_BONE_INFLUENCERS = 0;
@@ -81,6 +91,7 @@ export class MToonMaterialDefines extends MaterialDefines {
     public BONES_VELOCITY_ENABLED = false;
     public INSTANCES = false;
     public THIN_INSTANCES = false;
+    // public INSTANCESCOLOR = false;
     // public GLOSSINESS = false;
     // public ROUGHNESS = false;
     // public EMISSIVEASILLUMINATION = false;
@@ -121,58 +132,62 @@ export class MToonMaterialDefines extends MaterialDefines {
     public ALPHATEST_AFTERALLALPHACOMPUTATIONS = false;
     public ALPHABLEND = true;
 
-    // public PREPASS = false;
-    // public PREPASS_IRRADIANCE = false;
-    // public PREPASS_IRRADIANCE_INDEX = -1;
-    // public PREPASS_ALBEDO = false;
-    // public PREPASS_ALBEDO_INDEX = -1;
-    // public PREPASS_DEPTH = false;
-    // public PREPASS_DEPTH_INDEX = -1;
-    // public PREPASS_NORMAL = false;
-    // public PREPASS_NORMAL_INDEX = -1;
-    // public PREPASS_POSITION = false;
-    // public PREPASS_POSITION_INDEX = -1;
-    // public PREPASS_VELOCITY = false;
-    // public PREPASS_VELOCITY_INDEX = -1;
-    // public PREPASS_REFLECTIVITY = false;
-    // public PREPASS_REFLECTIVITY_INDEX = -1;
-    // public SCENE_MRT_COUNT = 0;
+    public PREPASS = false;
+    public PREPASS_IRRADIANCE = false;
+    public PREPASS_IRRADIANCE_INDEX = -1;
+    public PREPASS_ALBEDO_SQRT = false;
+    public PREPASS_ALBEDO_SQRT_INDEX = -1;
+    public PREPASS_DEPTH = false;
+    public PREPASS_DEPTH_INDEX = -1;
+    public PREPASS_NORMAL = false;
+    public PREPASS_NORMAL_INDEX = -1;
+    public PREPASS_POSITION = false;
+    public PREPASS_POSITION_INDEX = -1;
+    public PREPASS_VELOCITY = false;
+    public PREPASS_VELOCITY_INDEX = -1;
+    public PREPASS_REFLECTIVITY = false;
+    public PREPASS_REFLECTIVITY_INDEX = -1;
+    public SCENE_MRT_COUNT = 0;
 
     // public RGBDLIGHTMAP = false;
     // public RGBDREFLECTION = false;
     // public RGBDREFRACTION = false;
 
-    // public IMAGEPROCESSING = false;
-    // public VIGNETTE = false;
-    // public VIGNETTEBLENDMODEMULTIPLY = false;
-    // public VIGNETTEBLENDMODEOPAQUE = false;
-    // public TONEMAPPING = false;
-    // public TONEMAPPING_ACES = false;
-    // public CONTRAST = false;
-    // public COLORCURVES = false;
-    // public COLORGRADING = false;
-    // public COLORGRADING3D = false;
-    // public SAMPLER3DGREENDEPTH = false;
-    // public SAMPLER3DBGRMAP = false;
-    // public IMAGEPROCESSINGPOSTPROCESS = false;
-    // public MULTIVIEW = false;
+    public IMAGEPROCESSING = false;
+    public VIGNETTE = false;
+    public VIGNETTEBLENDMODEMULTIPLY = false;
+    public VIGNETTEBLENDMODEOPAQUE = false;
+    public TONEMAPPING = false;
+    public TONEMAPPING_ACES = false;
+    public CONTRAST = false;
+    public COLORCURVES = false;
+    public COLORGRADING = false;
+    public COLORGRADING3D = false;
+    public SAMPLER3DGREENDEPTH = false;
+    public SAMPLER3DBGRMAP = false;
+    public IMAGEPROCESSINGPOSTPROCESS = false;
+    public SKIPFINALCOLORCLAMP = false;
+    public MULTIVIEW = false;
+    public ORDER_INDEPENDENT_TRANSPARENCY = false;
+    public ORDER_INDEPENDENT_TRANSPARENCY_16BITS = false;
+
     // /**
     //  * If the reflection texture on this material is in linear color space
     //  * @hidden
     //  */
-    // public IS_REFLECTION_LINEAR = false;
+    public IS_REFLECTION_LINEAR = false;
     // /**
     //  * If the refraction texture on this material is in linear color space
     //  * @hidden
     //  */
-    // public IS_REFRACTION_LINEAR = false;
-    // public EXPOSURE = false;
+    public IS_REFRACTION_LINEAR = false;
+    public EXPOSURE = false;
 
     /**
      * @inheritdoc
      */
-    public constructor() {
-        super();
+    constructor(externalProperties?: { [name: string]: { type: string, default: any } }) {
+        super(externalProperties);
         this.rebuild();
     }
 

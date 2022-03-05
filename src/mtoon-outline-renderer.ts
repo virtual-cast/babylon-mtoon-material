@@ -7,11 +7,12 @@ import { Nullable } from '@babylonjs/core/types';
 import { Matrix } from '@babylonjs/core/Maths/math';
 import { MToonMaterial } from './mtoon-material';
 import { Constants } from '@babylonjs/core/Engines/constants';
+import { Material } from '@babylonjs/core/Materials/material';
 
 const BASE_NAME = 'MToonOutline';
 
 /**
- * MToonMaterial を別のパスで描画するレンダラ
+ * MToon outline renderer
  * @see OutlineRenderer
  */
 export class MToonOutlineRenderer implements ISceneComponent {
@@ -27,20 +28,35 @@ export class MToonOutlineRenderer implements ISceneComponent {
      */
     public readonly name: string;
 
+    /**
+     * Defines a zOffset default Factor to prevent zFighting between the overlay and the mesh.
+     */
+    public zOffset = 1;
+
+     /**
+      * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
+      */
+    public zOffsetUnits = 4; // 4 to account for projection a bit by default
+
     private _engine: Engine;
     private _savedDepthWrite = false;
+    private _passIdForDrawWrapper: number[];
 
     /**
      * @inheritdoc
      * MToonMaterial ごとにインスタンスを生成する
      */
     public constructor(
-        public scene: Scene,
-        public material: MToonMaterial,
+        public readonly scene: Scene,
+        public readonly material: MToonMaterial,
     ) {
         this.name = `${BASE_NAME}_${material.name}_${MToonOutlineRenderer.rendererId++}`;
         this.scene._addComponent(this);
         this._engine = this.scene.getEngine();
+        this._passIdForDrawWrapper = [];
+        for (let i = 0; i < 4; ++i) {
+            this._passIdForDrawWrapper[i] = this._engine.createRenderPassId(`Outline Renderer (${i})`);
+        }
     }
 
     /**
@@ -71,15 +87,32 @@ export class MToonOutlineRenderer implements ISceneComponent {
      * @inheritdoc
      */
     public dispose(): void {
-        // Nothing to do here
+        for (let i = 0; i < this._passIdForDrawWrapper.length; ++i) {
+            this._engine.releaseRenderPassId(this._passIdForDrawWrapper[i]);
+        }
     }
 
     /**
-     * アウトラインを描画する
+     * Renders the outline in the canvas.
+     * @param subMesh Defines the sumesh to render
+     * @param batch Defines the batch of meshes in case of instances
+     * @param useOverlay Defines if the rendering is for the overlay or the outline
+     * @param renderPassId Render pass id to use to render the mesh
      */
-    private render(mesh: Mesh, subMesh: SubMesh, batch: _InstancesBatch, useOverlay = false): void {
+    private render(subMesh: SubMesh, batch: _InstancesBatch, useOverlay: boolean = false, renderPassId?: number): void {
+        renderPassId = renderPassId ?? this._passIdForDrawWrapper[0];
+        const scene = this.scene;
         const effect = subMesh.effect;
         if (!effect || !effect.isReady() || !this.scene.activeCamera) {
+            return;
+        }
+
+        const drawWrapper = subMesh._getDrawWrapper(renderPassId, true);
+        if (!drawWrapper) {
+            return;
+        }
+        drawWrapper.setEffect(effect);
+        if (!drawWrapper.effect || !drawWrapper.effect.isReady()) {
             return;
         }
 
@@ -88,47 +121,38 @@ export class MToonOutlineRenderer implements ISceneComponent {
         const renderingMesh = subMesh.getRenderingMesh();
         const effectiveMesh = replacementMesh ? replacementMesh : renderingMesh;
 
-        this.material.applyOutlineCullMode();
-        this._engine.enableEffect(effect);
-        renderingMesh._bind(subMesh, effect, this.material.fillMode);
-
-        this._engine.setZOffset(-1);
-
-        // レンダリング実行
-        if (Engine.Version.startsWith('4.0') || Engine.Version.startsWith('4.1')) {
-            // for 4.0, 4.1
-            (renderingMesh as any)._processRendering(
-                subMesh,
-                effect,
-                this.material.fillMode,
-                batch,
-                this.isHardwareInstancedRendering(subMesh, batch),
-                (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
-                    effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
-                    effect.setMatrix('world', world);
-                    effect.setFloat('isOutline', 1.0);
-                },
-                this.material,
-            );
-        } else {
-            // for 4.2.0-alpha.0 +
-            (renderingMesh as any)._processRendering(
-                effectiveMesh,
-                subMesh,
-                effect,
-                this.material.fillMode,
-                batch,
-                this.isHardwareInstancedRendering(subMesh, batch),
-                (isInstance: boolean, world: Matrix, effectiveMaterial: MToonMaterial) => {
-                    effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
-                    effect.setMatrix('world', world);
-                    effect.setFloat('isOutline', 1.0);
-                },
-                this.material,
-            );
+        if (!scene.activeCamera) {
+            return;
         }
 
+        this.material.applyOutlineCullMode();
+        this._engine.enableEffect(drawWrapper);
+        if (!this.isHardwareInstancedRendering(subMesh, batch)) {
+            renderingMesh._bind(subMesh, effect, this.material.fillMode);
+        }
+
+        this._engine.setZOffset(-this.zOffset);
+        this._engine.setZOffsetUnits(-this.zOffsetUnits);
+
+        renderingMesh._processRendering(
+            effectiveMesh,
+            subMesh,
+            effect,
+            this.material.fillMode,
+            batch,
+            this.isHardwareInstancedRendering(subMesh, batch),
+            (isInstance: boolean, world: Matrix, effectiveMaterial?: Material) => {
+                if (effectiveMaterial) {
+                    effectiveMaterial.bindForSubMesh(world, effectiveMesh as Mesh, subMesh);
+                }
+                effect.setMatrix('world', world);
+                effect.setFloat('isOutline', 1.0);
+            },
+            this.material,
+        );
+
         this._engine.setZOffset(0);
+        this._engine.setZOffsetUnits(0);
         this.material.restoreOutlineCullMode();
     }
 
@@ -153,18 +177,20 @@ export class MToonOutlineRenderer implements ISceneComponent {
             this._engine.setStencilFunction(Constants.ALWAYS);
             this._engine.setStencilMask(MToonOutlineRenderer._StencilReference);
             this._engine.setStencilFunctionReference(MToonOutlineRenderer._StencilReference);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch, /* This sets offset to 0 */ true);
+            this._engine.stencilStateComposer.useStencilGlobalOnly = true;
+            this.render(subMesh, batch, /* This sets offset to 0 */ true, this._passIdForDrawWrapper[1]);
 
             this._engine.setColorWrite(true);
             this._engine.setStencilFunction(Constants.NOTEQUAL);
         }
 
-        // 深度ナシで後ろに描画
+        // Draw the outline using the above stencil if needed to avoid drawing within the mesh
         this._engine.setDepthWrite(false);
-        this.render(subMesh.getRenderingMesh(), subMesh, batch);
+        this.render(subMesh, batch, false, this._passIdForDrawWrapper[0]);
         this._engine.setDepthWrite(this._savedDepthWrite);
 
-        if (material.needAlphaBlendingForMesh(mesh)) {
+        if (material && material.needAlphaBlendingForMesh(mesh)) {
+            this._engine.stencilStateComposer.useStencilGlobalOnly = false;
             this._engine.restoreStencilState();
         }
     }
@@ -181,7 +207,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
             // 深度アリで再度書き込む
             this._engine.setDepthWrite(true);
             this._engine.setColorWrite(false);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch);
+            this.render(subMesh, batch, false, this._passIdForDrawWrapper[2]);
             this._engine.setColorWrite(true);
         }
     }
@@ -193,12 +219,14 @@ export class MToonOutlineRenderer implements ISceneComponent {
         if (!this._engine.getCaps().instancedArrays) {
             return false;
         }
-        let hasThinInstances = false;
-        // from 4.2.0
-        hasThinInstances = (subMesh.getRenderingMesh() as any).hasThinInstances;
-        return (batch.visibleInstances[subMesh._id] !== null)
-            && (typeof batch.visibleInstances[subMesh._id] !== 'undefined')
-            || hasThinInstances;
+        if (batch.visibleInstances[subMesh._id] === null) {
+            return false;
+        }
+        if (typeof batch.visibleInstances[subMesh._id] === 'undefined') {
+            return false;
+        }
+
+        return subMesh.getRenderingMesh().hasThinInstances;
     }
 
      /**

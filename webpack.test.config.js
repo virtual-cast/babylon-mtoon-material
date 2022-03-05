@@ -27,7 +27,9 @@ module.exports = {
         extensions: ['.js', '.ts', '.vert', '.frag'],
     },
     devServer: {
-        contentBase: resolve(__dirname, 'test'),
+        static: {
+            directory: resolve(__dirname, 'test'),
+        },
         port: 8080,
     },
     optimization: {

@@ -13,15 +13,20 @@ vec2 uvOffset = vec2(0.0, 0.0);
     #if defined(TANGENT) && defined(NORMAL)
         mat3 TBN = vTBN;
     #elif defined(BUMP)
-        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, mainUv);
+        // vec2 TBNUV = gl_FrontFacing ? vBumpUV : -vBumpUV;
+        vec2 TBNUV = gl_FrontFacing ? mainUv : -mainUv;
+        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, TBNUV, vTangentSpaceParams);
     #else
-        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, vDetailUV, vec2(1., 1.));
+        vec2 TBNUV = gl_FrontFacing ? vDetailUV : -vDetailUV;
+        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, TBNUV, vec2(1., 1.));
     #endif
 #elif defined(ANISOTROPIC)
     #if defined(TANGENT) && defined(NORMAL)
         mat3 TBN = vTBN;
     #else
-        mat3 TBN = cotangent_frame(normalW, vPositionW, vMainUV1, vec2(1., 1.));
+        // flip the uv for the backface
+        vec2 TBNUV = gl_FrontFacing ? vMainUV1 : -vMainUV1;
+        mat3 TBN = cotangent_frame(normalW, vPositionW, TBNUV, vec2(1., 1.));
     #endif
 #endif
 
@@ -29,6 +34,7 @@ vec2 uvOffset = vec2(0.0, 0.0);
     mat3 invTBN = transposeMat3(TBN);
 
     #ifdef PARALLAXOCCLUSION
+        // uvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, vBumpUV, vBumpInfos.z);
         uvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, mainUv, vBumpInfos.z);
     #else
         uvOffset = parallaxOffset(invTBN * viewDirectionW, vBumpInfos.z);
@@ -44,11 +50,14 @@ vec2 uvOffset = vec2(0.0, 0.0);
 
 #ifdef BUMP
     #ifdef OBJECTSPACE_NORMALMAP
+        // normalW = normalize(texture2D(bumpSampler, vBumpUV).xyz  * 2.0 - 1.0);
         normalW = normalize(texture2D(bumpSampler, mainUv).xyz  * 2.0 - 1.0);
         normalW = normalize(mat3(normalMatrix) * normalW);
     #elif !defined(DETAIL)
-        normalW = perturbNormal(TBN, mainUv + uvOffset);
+        // normalW = perturbNormal(TBN, texture2D(bumpSampler, vBumpUV + uvOffset).xyz, vBumpInfos.y);
+        normalW = perturbNormal(TBN, texture2D(bumpSampler, mainUv + uvOffset).xyz, vBumpInfos.y);
     #else
+        // vec3 bumpNormal = texture2D(bumpSampler, vBumpUV + uvOffset).xyz * 2.0 - 1.0;
         vec3 bumpNormal = texture2D(bumpSampler, mainUv + uvOffset).xyz * 2.0 - 1.0;
         // Reference for normal blending: https://blog.selfshadow.com/publications/blending-in-detail/
         #if DETAIL_NORMALBLENDMETHOD == 0 // whiteout
