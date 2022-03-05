@@ -183,7 +183,7 @@ void main(void) {
 
 #if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)
         // move slightly world normal
-        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.1 * outlineWidth * outlineTex;
+        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
         positionUpdated.xyz += outlineOffset;
 #endif
     } // End isOutline == 1.0

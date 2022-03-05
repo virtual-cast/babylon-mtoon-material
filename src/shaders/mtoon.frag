@@ -1,8 +1,6 @@
 #include<__decl__mtoonFragment>
 
-#if defined(BUMP) || !defined(NORMAL)
 #extension GL_OES_standard_derivatives : enable
-#endif
 
 #include<prePassDeclaration>[SCENE_MRT_COUNT]
 #include<oitDeclaration>

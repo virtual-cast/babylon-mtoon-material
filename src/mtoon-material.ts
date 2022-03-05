@@ -996,7 +996,7 @@ export class MToonMaterial extends PushMaterial {
         MaterialHelper.PrepareDefinesForMultiview(scene, defines);
 
         // PrePass
-        const oit = this.needAlphaBlendingForMesh(mesh) && scene.useOrderIndependentTransparency;
+        const oit = this.needAlphaBlendingForMesh(mesh) && (scene as any).useOrderIndependentTransparency;
         MaterialHelper.PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
 
         // Order independant transparency
@@ -1498,8 +1498,9 @@ export class MToonMaterial extends PushMaterial {
             }
 
             // OIT with depth peeling
-            if (this.getScene().useOrderIndependentTransparency && this.needAlphaBlendingForMesh(mesh)) {
-                this.getScene().depthPeelingRenderer!.bind(effect);
+            const anyScene = (scene as any);
+            if (anyScene.useOrderIndependentTransparency && this.needAlphaBlendingForMesh(mesh) && anyScene.depthPeelingRenderer) {
+                anyScene.depthPeelingRenderer.bind(effect);
             }
 
             this._eventInfo.subMesh = subMesh;
