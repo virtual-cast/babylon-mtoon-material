@@ -17,7 +17,7 @@ Some settings will be ignored or generates inconsistent lighting.
 |~4.0.0|^1.0.0|
 |~4.1.0|^2.0.0|
 |~4.2.0|^3.0.0|
-|~5.0.0|unreleased(will be ^4.0.0)|
+|~5.0.0-rc.0|^4.0.0|
 
 ## Features
 
