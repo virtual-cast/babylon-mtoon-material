@@ -180,7 +180,7 @@ __webpack_require__.r(__webpack_exports__);
 /**
  * MToonMaterial に Inspector 上で調整可能なパラメータを設定する
  * @param material
- * @link https://doc.babylonjs.com/how_to/debug_layer#extensibility
+ * @link https://doc.babylonjs.com/toolsAndResources/tools/inspector#extensibility
  */
 function getInspectableCustomProperties() {
     return [
@@ -407,55 +407,13 @@ __webpack_require__.r(__webpack_exports__);
  */
 var MToonMaterialDefines = /** @class */ (function (_super) {
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MToonMaterialDefines, _super);
-    // public PREPASS = false;
-    // public PREPASS_IRRADIANCE = false;
-    // public PREPASS_IRRADIANCE_INDEX = -1;
-    // public PREPASS_ALBEDO = false;
-    // public PREPASS_ALBEDO_INDEX = -1;
-    // public PREPASS_DEPTH = false;
-    // public PREPASS_DEPTH_INDEX = -1;
-    // public PREPASS_NORMAL = false;
-    // public PREPASS_NORMAL_INDEX = -1;
-    // public PREPASS_POSITION = false;
-    // public PREPASS_POSITION_INDEX = -1;
-    // public PREPASS_VELOCITY = false;
-    // public PREPASS_VELOCITY_INDEX = -1;
-    // public PREPASS_REFLECTIVITY = false;
-    // public PREPASS_REFLECTIVITY_INDEX = -1;
-    // public SCENE_MRT_COUNT = 0;
-    // public RGBDLIGHTMAP = false;
-    // public RGBDREFLECTION = false;
-    // public RGBDREFRACTION = false;
-    // public IMAGEPROCESSING = false;
-    // public VIGNETTE = false;
-    // public VIGNETTEBLENDMODEMULTIPLY = false;
-    // public VIGNETTEBLENDMODEOPAQUE = false;
-    // public TONEMAPPING = false;
-    // public TONEMAPPING_ACES = false;
-    // public CONTRAST = false;
-    // public COLORCURVES = false;
-    // public COLORGRADING = false;
-    // public COLORGRADING3D = false;
-    // public SAMPLER3DGREENDEPTH = false;
-    // public SAMPLER3DBGRMAP = false;
-    // public IMAGEPROCESSINGPOSTPROCESS = false;
-    // public MULTIVIEW = false;
-    // /**
-    //  * If the reflection texture on this material is in linear color space
-    //  * @hidden
-    //  */
-    // public IS_REFLECTION_LINEAR = false;
-    // /**
-    //  * If the refraction texture on this material is in linear color space
-    //  * @hidden
-    //  */
-    // public IS_REFRACTION_LINEAR = false;
-    // public EXPOSURE = false;
     /**
      * @inheritdoc
      */
-    function MToonMaterialDefines() {
-        var _this = _super.call(this) || this;
+    function MToonMaterialDefines(externalProperties) {
+        var _this = _super.call(this, externalProperties) || this;
+        /** @see light-fragment.frag */
+        _this.CUSTOMUSERLIGHTING = true;
         // MToon Specific
         _this.MTOON_OUTLINE_WIDTH_WORLD = false;
         _this.MTOON_OUTLINE_WIDTH_SCREEN = false;
@@ -481,11 +439,13 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         // Misc
         _this.MAINUV1 = false;
         _this.MAINUV2 = false;
+        _this.MAINUV3 = false;
+        _this.MAINUV4 = false;
+        _this.MAINUV5 = false;
+        _this.MAINUV6 = false;
         _this.DIFFUSE = false;
         _this.DIFFUSEDIRECTUV = 0;
-        _this.DETAIL = false;
-        _this.DETAILDIRECTUV = 0;
-        _this.DETAIL_NORMALBLENDMETHOD = 0;
+        _this.BAKED_VERTYEX_ANIMATION_TEXTURE = false;
         // public AMBIENT = false;
         // public AMBIENTDIRECTUV = 0;
         // public OPACITY = false;
@@ -498,8 +458,8 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         // public SPECULARDIRECTUV = 0;
         _this.BUMP = false;
         _this.BUMPDIRECTUV = 0;
-        // public PARALLAX = false;
-        // public PARALLAXOCCLUSION = false;
+        _this.PARALLAX = false;
+        _this.PARALLAXOCCLUSION = false;
         // public SPECULAROVERALPHA = false;
         _this.CLIPPLANE = false;
         _this.CLIPPLANE2 = false;
@@ -512,7 +472,6 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.ALPHAFROMDIFFUSE = false;
         _this.POINTSIZE = false;
         _this.FOG = false;
-        _this.MULTIVIEW = false;
         // public SPECULARTERM = false;
         // public DIFFUSEFRESNEL = false;
         // public OPACITYFRESNEL = false;
@@ -521,8 +480,13 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         // public EMISSIVEFRESNEL = false;
         // public FRESNEL = false;
         _this.NORMAL = false;
+        // public TANGENT = false;
         _this.UV1 = false;
         _this.UV2 = false;
+        _this.UV3 = false;
+        _this.UV4 = false;
+        _this.UV5 = false;
+        _this.UV6 = false;
         _this.VERTEXCOLOR = false;
         _this.VERTEXALPHA = false;
         _this.NUM_BONE_INFLUENCERS = 0;
@@ -531,6 +495,7 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.BONES_VELOCITY_ENABLED = false;
         _this.INSTANCES = false;
         _this.THIN_INSTANCES = false;
+        // public INSTANCESCOLOR = false;
         // public GLOSSINESS = false;
         // public ROUGHNESS = false;
         // public EMISSIVEASILLUMINATION = false;
@@ -570,6 +535,53 @@ var MToonMaterialDefines = /** @class */ (function (_super) {
         _this.PREMULTIPLYALPHA = false; // https://playground.babylonjs.com#LNVJJ7
         _this.ALPHATEST_AFTERALLALPHACOMPUTATIONS = false;
         _this.ALPHABLEND = true;
+        _this.PREPASS = false;
+        _this.PREPASS_IRRADIANCE = false;
+        _this.PREPASS_IRRADIANCE_INDEX = -1;
+        _this.PREPASS_ALBEDO_SQRT = false;
+        _this.PREPASS_ALBEDO_SQRT_INDEX = -1;
+        _this.PREPASS_DEPTH = false;
+        _this.PREPASS_DEPTH_INDEX = -1;
+        _this.PREPASS_NORMAL = false;
+        _this.PREPASS_NORMAL_INDEX = -1;
+        _this.PREPASS_POSITION = false;
+        _this.PREPASS_POSITION_INDEX = -1;
+        _this.PREPASS_VELOCITY = false;
+        _this.PREPASS_VELOCITY_INDEX = -1;
+        _this.PREPASS_REFLECTIVITY = false;
+        _this.PREPASS_REFLECTIVITY_INDEX = -1;
+        _this.SCENE_MRT_COUNT = 0;
+        // public RGBDLIGHTMAP = false;
+        // public RGBDREFLECTION = false;
+        // public RGBDREFRACTION = false;
+        _this.IMAGEPROCESSING = false;
+        _this.VIGNETTE = false;
+        _this.VIGNETTEBLENDMODEMULTIPLY = false;
+        _this.VIGNETTEBLENDMODEOPAQUE = false;
+        _this.TONEMAPPING = false;
+        _this.TONEMAPPING_ACES = false;
+        _this.CONTRAST = false;
+        _this.COLORCURVES = false;
+        _this.COLORGRADING = false;
+        _this.COLORGRADING3D = false;
+        _this.SAMPLER3DGREENDEPTH = false;
+        _this.SAMPLER3DBGRMAP = false;
+        _this.IMAGEPROCESSINGPOSTPROCESS = false;
+        _this.SKIPFINALCOLORCLAMP = false;
+        _this.MULTIVIEW = false;
+        _this.ORDER_INDEPENDENT_TRANSPARENCY = false;
+        _this.ORDER_INDEPENDENT_TRANSPARENCY_16BITS = false;
+        // /**
+        //  * If the reflection texture on this material is in linear color space
+        //  * @hidden
+        //  */
+        _this.IS_REFLECTION_LINEAR = false;
+        // /**
+        //  * If the refraction texture on this material is in linear color space
+        //  * @hidden
+        //  */
+        _this.IS_REFRACTION_LINEAR = false;
+        _this.EXPOSURE = false;
         _this.rebuild();
         return _this;
     }
@@ -598,21 +610,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "CullMode", function() { return CullMode; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MToonMaterial", function() { return MToonMaterial; });
 /* harmony import */ var tslib__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! tslib */ "./node_modules/tslib/tslib.es6.js");
-/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
-/* harmony import */ var _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babylonjs/core/Materials/effect */ "./node_modules/@babylonjs/core/Materials/effect.js");
-/* harmony import */ var _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babylonjs/core/Materials/effectFallbacks */ "./node_modules/@babylonjs/core/Materials/effectFallbacks.js");
-/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
-/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
-/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
-/* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
-/* harmony import */ var _babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Meshes/buffer */ "./node_modules/@babylonjs/core/Meshes/buffer.js");
-/* harmony import */ var _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Misc/decorators */ "./node_modules/@babylonjs/core/Misc/decorators.js");
-/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
-/* harmony import */ var _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Materials/prePassConfiguration */ "./node_modules/@babylonjs/core/Materials/prePassConfiguration.js");
-/* harmony import */ var _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Materials/material.detailMapConfiguration */ "./node_modules/@babylonjs/core/Materials/material.detailMapConfiguration.js");
-/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
-/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
-/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
+/* harmony import */ var _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Misc/decorators */ "./node_modules/@babylonjs/core/Misc/decorators.js");
+/* harmony import */ var _babylonjs_core_Misc_smartArray__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babylonjs/core/Misc/smartArray */ "./node_modules/@babylonjs/core/Misc/smartArray.js");
+/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
+/* harmony import */ var _babylonjs_core_Maths_math_vector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Maths/math.vector */ "./node_modules/@babylonjs/core/Maths/math.vector.js");
+/* harmony import */ var _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Maths/math.color */ "./node_modules/@babylonjs/core/Maths/math.color.js");
+/* harmony import */ var _babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Buffers/buffer */ "./node_modules/@babylonjs/core/Buffers/buffer.js");
+/* harmony import */ var _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Materials/prePassConfiguration */ "./node_modules/@babylonjs/core/Materials/prePassConfiguration.js");
+/* harmony import */ var _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Materials/imageProcessingConfiguration */ "./node_modules/@babylonjs/core/Materials/imageProcessingConfiguration.js");
+/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
+/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
+/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
+/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
+/* harmony import */ var _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Materials/effectFallbacks */ "./node_modules/@babylonjs/core/Materials/effectFallbacks.js");
+/* harmony import */ var _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Materials/effect */ "./node_modules/@babylonjs/core/Materials/effect.js");
+/* harmony import */ var _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/core/Materials/material.detailMapConfiguration */ "./node_modules/@babylonjs/core/Materials/material.detailMapConfiguration.js");
+/* harmony import */ var _babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @babylonjs/core/Materials/materialPluginEvent */ "./node_modules/@babylonjs/core/Materials/materialPluginEvent.js");
+/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
+/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
+/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
 
 
 
@@ -629,16 +645,22 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-// シェーダ文字列を取得
+
+
+
+
+var onCreatedEffectParameters = { effect: null, subMesh: null };
+// get shader string
 var UboDeclaration = __webpack_require__(/*! ./shaders/ubo-declaration.vert */ "./src/shaders/ubo-declaration.vert").default;
 var VertexDeclaration = __webpack_require__(/*! ./shaders/vertex-declaration.vert */ "./src/shaders/vertex-declaration.vert").default;
 var FragmentDeclaration = __webpack_require__(/*! ./shaders/fragment-declaration.frag */ "./src/shaders/fragment-declaration.frag").default;
+var FragmentFunctions = __webpack_require__(/*! ./shaders/mtoon-fragment-functions.frag */ "./src/shaders/mtoon-fragment-functions.frag").default;
 var BumpFragment = __webpack_require__(/*! ./shaders/bump-fragment.frag */ "./src/shaders/bump-fragment.frag").default;
 var LightFragment = __webpack_require__(/*! ./shaders/light-fragment.frag */ "./src/shaders/light-fragment.frag").default;
 var VertexShader = __webpack_require__(/*! ./shaders/mtoon.vert */ "./src/shaders/mtoon.vert").default;
 var FragmentShader = __webpack_require__(/*! ./shaders/mtoon.frag */ "./src/shaders/mtoon.frag").default;
 /**
- * デバッグモード
+ * Debug shading mode
  */
 var DebugMode;
 (function (DebugMode) {
@@ -647,7 +669,7 @@ var DebugMode;
     DebugMode[DebugMode["LitShadeRate"] = 2] = "LitShadeRate";
 })(DebugMode || (DebugMode = {}));
 /**
- * アウトラインカラーモード
+ * Outline color mode
  */
 var OutlineColorMode;
 (function (OutlineColorMode) {
@@ -655,7 +677,7 @@ var OutlineColorMode;
     OutlineColorMode[OutlineColorMode["MixedLighting"] = 1] = "MixedLighting";
 })(OutlineColorMode || (OutlineColorMode = {}));
 /**
- * アウトライン幅モード
+ * Outline width mode
  */
 var OutlineWidthMode;
 (function (OutlineWidthMode) {
@@ -664,7 +686,7 @@ var OutlineWidthMode;
     OutlineWidthMode[OutlineWidthMode["ScreenCoordinates"] = 2] = "ScreenCoordinates";
 })(OutlineWidthMode || (OutlineWidthMode = {}));
 /**
- * Cull モード
+ * Cull mode
  */
 var CullMode;
 (function (CullMode) {
@@ -672,23 +694,24 @@ var CullMode;
     CullMode[CullMode["Front"] = 1] = "Front";
     CullMode[CullMode["Back"] = 2] = "Back";
 })(CullMode || (CullMode = {}));
-var onCreatedEffectParameters = { effect: null, subMesh: null };
 /**
- * MToonMaterial
- *
  * MToon は日本のアニメ的表現をすることを目標としています。
  * 主色 (Lit Color) と陰色 (Shade Color) の 2 色を、Lighting パラメータや光源環境に応じて混合することでそれを実現します。
  * VRM での出力パラメータとプロパティのマッピングは下記となります。
  *
- * @link https://github.com/Santarh/MToon/
- * @link https://vrm.dev/univrm/shaders/mtoon/
+ * MToon aims for making Japanese anime expressions.
+ * It is achieved by mixing Lit Color and Shade Color based on Lighting parameters and light source environment.
+ *
+ * @see https://github.com/Santarh/MToon/
+ * @see https://vrm.dev/univrm/shaders/mtoon/
+ * @see https://doc.babylonjs.com/babylon101/materials
  */
 var MToonMaterial = /** @class */ (function (_super) {
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__extends"])(MToonMaterial, _super);
     //#endregion
     //#endregion
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     function MToonMaterial(name, scene) {
         var _this = _super.call(this, name, scene) || this;
@@ -696,132 +719,164 @@ var MToonMaterial = /** @class */ (function (_super) {
         //#region Textures
         _this._diffuseTexture = null;
         /**
-         * 通常色テクスチャ
+         * The basic texture of the material as viewed under a light.
          */
         _this.diffuseTexture = null;
         _this._emissiveTexture = null;
         /**
-         * 発光テクスチャ
+         * Define texture of the material as if self lit.
+         * This will be mixed in the final result even in the absence of light.
          */
         _this.emissiveTexture = null;
         _this._bumpTexture = null;
         /**
-         * バンプマップテクスチャ
+         * Bump mapping is a technique to simulate bump and dents on a rendered surface.
+         * These are made by creating a normal map from an image. The means to do this can be found on the web, a search for 'normal map generator' will bring up free and paid for methods of doing this.
+         * @see https://doc.babylonjs.com/how_to/more_materials#bump-map
          */
         _this.bumpTexture = null;
         _this._shadeTexture = null;
         /**
-         * 陰になる部分の色テクスチャ
+         * The basic texture of the material as viewed does not receive a light
          */
         _this.shadeTexture = null;
         _this._receiveShadowTexture = null;
         /**
-         * どれだけ影を受け付けるかのテクスチャ
+         * Receiving shadow rate with texture
          * receiveShadowRate * texture.a
          */
         _this.receiveShadowTexture = null;
         _this._shadingGradeTexture = null;
         /**
-         * 陰部分の暗さテクスチャ
+         * Shading grade rate
          * shadingGradeRate * (1.0 - texture.r))
          */
         _this.shadingGradeTexture = null;
         _this._rimTexture = null;
         /**
-         * Parametric Rim Lighting テクスチャ
+         * Parametric Rim Lighting
          */
         _this.rimTexture = null;
         _this._matCapTexture = null;
         /**
-         * MatCap ライティングテクスチャ
+         * MatCap Lighting
          */
         _this.matCapTexture = null;
         _this._outlineWidthTexture = null;
         /**
-         * アウトラインの幅の調整テクスチャ
+         * Adjust outline width
          */
         _this.outlineWidthTexture = null;
         _this._uvAnimationMaskTexture = null;
         /**
-         * UV アニメーションマスクテクスチャ
+         * UV animation mask
          */
         _this.uvAnimationMaskTexture = null;
         //#endregion
-        //#region babylon parameters
+        //#region Colors
         /**
-         * 対応最大ライト数
+         * Multiplier of diffuseTexture
          */
-        _this.maxSimultaneousLights = 16;
+        _this.diffuseColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](1.0, 1.0, 1.0);
         /**
-         * Specular 非対応
+         * babylon.js Ambient light
+         */
+        _this.ambientColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0.0, 0.0, 0.0);
+        /**
+         * Emissive color
+         */
+        _this.emissiveColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0.0, 0.0, 0.0);
+        /**
+         * Multiplier of shadeTexture
+         */
+        _this.shadeColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0.97, 0.81, 0.86);
+        /**
+         * Rim color
+         */
+        _this.rimColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0.0, 0.0, 0.0);
+        /**
+         * Outline color
+         */
+        _this.outlineColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0.0, 0.0, 0.0);
+        //#endregion
+        //#region StandardMaterial parameters
+        /**
+         * If true, the emissive value is added into the end result, otherwise it is multiplied in.
+         */
+        _this.useEmissiveAsIllumination = false;
+        /**
+         * If true, some kind of energy conservation will prevent the end result to be more than 1 by reducing
+         * the emissive level when the final color is close to one.
+         */
+        _this.linkEmissiveWithDiffuse = false;
+        /**
+         * Specifies that the material will keeps the reflection highlights over a transparent surface (only the most luminous ones).
+         * A car glass is a good exemple of that. When the street lights reflects on it you can not see what is behind.
+         */
+        _this.useReflectionOverAlpha = false;
+        _this._disableLighting = false;
+        /**
+         * Allows using an object space normal map (instead of tangent space).
+         * No support
+         */
+        _this.useObjectSpaceNormalMap = false;
+        /**
+         * Is parallax enabled or not.
+         * @see https://doc.babylonjs.com/how_to/using_parallax_mapping
+         * No support
+         */
+        _this.useParallax = false;
+        /**
+         * Is parallax occlusion enabled or not.
+         * If true, the outcome is way more realistic than traditional Parallax but you can expect a performance hit that worthes consideration.
+         * @see https://doc.babylonjs.com/how_to/using_parallax_mapping
+         * No support
+         */
+        _this.useParallaxOcclusion = false;
+        /**
+         * No support for specular
          */
         _this.specularSupported = false;
         /**
-         * 頂点カラー非対応
+         * In case of light mapping, define whether the map contains light or shadow informations.
+         * No support
+         */
+        _this.useLightmapAsShadowmap = false;
+        /**
+         * No support for vertex colors
          */
         _this.useVertexColor = false;
         /**
-         * シェーダボーンは利用可能
+         * Support for bones in shader
          */
         _this.useBones = true;
         /**
-         * シェーダモーフターゲットは利用可能
+         * Support for morph targets in shader
          */
         _this.useMorphTargets = true;
         /**
-         * 頂点アルファは非対応
+         * No support for vertex alpha
          */
         _this.useVertexAlpha = false;
-        _this._useLogarithmicDepth = false;
-        _this._disableLighting = false;
         /**
-         * ライティングを無効にするかどうか
+         * Defines the alpha limits in alpha test mode.
          */
-        _this.disableLighting = false;
-        _this._twoSidedLighting = false;
-        /**
-         * 両面ライティングを行うかどうか
-         */
-        _this.twoSidedLighting = false;
+        _this.alphaCutOff = 0.4;
         _this._useAlphaFromDiffuseTexture = true;
+        _this._maxSimultaneousLights = 4;
         /**
-         * アルファテスト時のカットしきい値
+         * inverted state equals with Unity
          */
-        _this.alphaCutOff = 0.5;
-        _this._rebuildInParallel = false;
-        _this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_12__["DetailMapConfiguration"](_this._markAllSubMeshesAsTexturesDirty.bind(_this));
-        //#endregion
-        //#region Colors
+        _this._invertNormalMapX = true;
         /**
-         * diffuseTexture に乗算される色
+         * inverted state equals with Unity
          */
-        _this.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](1.0, 1.0, 1.0);
-        /**
-         * 環境光
-         */
-        _this.ambientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.1, 0.1, 0.1);
-        /**
-         * シーンの AmbientColor と掛け合わせた後の色
-         * @see bindForSubMesh
-         * @hidden
-         */
-        _this.globalAmbientColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
-        /**
-         * 純粋加算される発光色
-         */
-        _this.emissiveColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
-        /**
-         * shadeTexture に乗算される色
-         */
-        _this.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.97, 0.81, 0.86);
-        /**
-         * Rim の色
-         */
-        _this.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
-        /**
-         * アウトラインの色
-         */
-        _this.outlineColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Color3"](0.0, 0.0, 0.0);
+        _this._invertNormalMapY = true;
+        _this._twoSidedLighting = false;
+        _this._renderTargets = new _babylonjs_core_Misc_smartArray__WEBPACK_IMPORTED_MODULE_2__["SmartArray"](16);
+        _this._worldViewProjectionMatrix = _babylonjs_core_Maths_math_vector__WEBPACK_IMPORTED_MODULE_4__["Matrix"].Zero();
+        _this._globalAmbientColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__["Color3"](0, 0, 0);
+        _this._cacheHasRenderTargetTextures = false;
         //#endregion
         //#region MToon parameters
         _this._bumpScale = 1.0;
@@ -851,25 +906,43 @@ var MToonMaterial = /** @class */ (function (_super) {
         _this._outlineCullMode = CullMode.Front;
         _this.outlineCullMode = CullMode.Front;
         _this.storedCullMode = CullMode.Back;
-        _this.prePassConfiguration = new _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_11__["PrePassConfiguration"]();
-        // シェーダストアに登録する
-        if (!_babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonUboDeclaration) {
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonLightFragment = LightFragment;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].IncludesShadersStore.mtoonBumpFragment = BumpFragment;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_2__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
+        _this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_15__["DetailMapConfiguration"](_this);
+        // Setup the default processing configuration to the scene.
+        _this._attachImageProcessingConfiguration(null);
+        _this.prePassConfiguration = new _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"]();
+        _this.getRenderTargetTextures = function () {
+            _this._renderTargets.reset();
+            // if (StandardMaterial.ReflectionTextureEnabled && this._reflectionTexture && this._reflectionTexture.isRenderTarget) {
+            //     this._renderTargets.push(<RenderTargetTexture>this._reflectionTexture);
+            // }
+            // if (StandardMaterial.RefractionTextureEnabled && this._refractionTexture && this._refractionTexture.isRenderTarget) {
+            //     this._renderTargets.push(<RenderTargetTexture>this._refractionTexture);
+            // }
+            _this._eventInfo.renderTargets = _this._renderTargets;
+            _this._callbackPluginEventFillRenderTargetTextures(_this._eventInfo);
+            return _this._renderTargets;
+        };
+        // Register shaders to ShadersStore
+        if (!_babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonUboDeclaration) {
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonFragmentFunctions = FragmentFunctions;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonLightFragment = LightFragment;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonBumpFragment = BumpFragment;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
         }
-        // Inspector にプロパティを追加
+        // Add properties to Inspactor
         _this.inspectableCustomProperties = _this.inspectableCustomProperties || [];
-        _this.inspectableCustomProperties.concat(Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_13__["getInspectableCustomProperties"])());
+        _this.inspectableCustomProperties.concat(Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_17__["getInspectableCustomProperties"])());
         return _this;
     }
     Object.defineProperty(MToonMaterial.prototype, "appendedTextures", {
         /**
-         * テクスチャ参照の一覧
+         * the list of textures
+         *
+         * @returns {Array<Nullable<BaseTexture>>}
          */
         get: function () {
             return [
@@ -890,7 +963,9 @@ var MToonMaterial = /** @class */ (function (_super) {
     });
     Object.defineProperty(MToonMaterial.prototype, "appendedActiveTextures", {
         /**
-         * アクティブなテクスチャ参照の一覧
+         * the list of active textures
+         *
+         * @returns {BaseTexture[]}
          */
         get: function () {
             return this.appendedTextures.filter(function (t) { return t !== null; });
@@ -898,34 +973,191 @@ var MToonMaterial = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
-    Object.defineProperty(MToonMaterial.prototype, "useLogarithmicDepth", {
+    Object.defineProperty(MToonMaterial.prototype, "imageProcessingConfiguration", {
         /**
-         * Logarithmic depth
-         * @link http://doc.babylonjs.com/how_to/using_logarithmic_depth_buffer
+         * Gets the image processing configuration used either in this material.
          */
         get: function () {
-            return this._useLogarithmicDepth;
+            return this._imageProcessingConfiguration;
         },
+        /**
+         * Sets the Default image processing configuration used either in the this material.
+         *
+         * If sets to null, the scene one is in use.
+         */
         set: function (value) {
-            var newValue = value && this.getScene().getEngine().getCaps().fragmentDepthSupported;
-            if (this._useLogarithmicDepth !== newValue) {
-                this._useLogarithmicDepth = newValue;
-                this._markAllSubMeshesAsMiscDirty();
-            }
+            this._attachImageProcessingConfiguration(value);
+            // Ensure the effect will be rebuilt.
+            this._markAllSubMeshesAsTexturesDirty();
         },
         enumerable: false,
         configurable: true
     });
+    /**
+     * Attaches a new image processing configuration to the Standard Material.
+     * @param configuration
+     */
+    MToonMaterial.prototype._attachImageProcessingConfiguration = function (configuration) {
+        var _this = this;
+        if (configuration === this._imageProcessingConfiguration) {
+            return;
+        }
+        // Detaches observer
+        if (this._imageProcessingConfiguration && this._imageProcessingObserver) {
+            this._imageProcessingConfiguration.onUpdateParameters.remove(this._imageProcessingObserver);
+        }
+        // Pick the scene configuration if needed
+        if (!configuration) {
+            this._imageProcessingConfiguration = this.getScene().imageProcessingConfiguration;
+        }
+        else {
+            this._imageProcessingConfiguration = configuration;
+        }
+        // Attaches observer
+        if (this._imageProcessingConfiguration) {
+            this._imageProcessingObserver = this._imageProcessingConfiguration.onUpdateParameters.add(function () {
+                _this._markAllSubMeshesAsImageProcessingDirty();
+            });
+        }
+    };
     Object.defineProperty(MToonMaterial.prototype, "isPrePassCapable", {
+        /**
+         * Can this material render to prepass
+         */
         get: function () {
-            return false;
+            return !this.disableDepthWrite;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraColorCurvesEnabled", {
+        /**
+         * Gets whether the color curves effect is enabled.
+         */
+        get: function () {
+            return this.imageProcessingConfiguration.colorCurvesEnabled;
+        },
+        /**
+         * Sets whether the color curves effect is enabled.
+         */
+        set: function (value) {
+            this.imageProcessingConfiguration.colorCurvesEnabled = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraColorGradingEnabled", {
+        /**
+         * Gets whether the color grading effect is enabled.
+         */
+        get: function () {
+            return this.imageProcessingConfiguration.colorGradingEnabled;
+        },
+        /**
+         * Gets whether the color grading effect is enabled.
+         */
+        set: function (value) {
+            this.imageProcessingConfiguration.colorGradingEnabled = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraToneMappingEnabled", {
+        /**
+         * Gets whether tonemapping is enabled or not.
+         */
+        get: function () {
+            return this._imageProcessingConfiguration.toneMappingEnabled;
+        },
+        /**
+         * Sets whether tonemapping is enabled or not
+         */
+        set: function (value) {
+            this._imageProcessingConfiguration.toneMappingEnabled = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraExposure", {
+        /**
+         * The camera exposure used on this material.
+         * This property is here and not in the camera to allow controlling exposure without full screen post process.
+         * This corresponds to a photographic exposure.
+         */
+        get: function () {
+            return this._imageProcessingConfiguration.exposure;
+        },
+        /**
+         * The camera exposure used on this material.
+         * This property is here and not in the camera to allow controlling exposure without full screen post process.
+         * This corresponds to a photographic exposure.
+         */
+        set: function (value) {
+            this._imageProcessingConfiguration.exposure = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraContrast", {
+        /**
+         * Gets The camera contrast used on this material.
+         */
+        get: function () {
+            return this._imageProcessingConfiguration.contrast;
+        },
+        /**
+         * Sets The camera contrast used on this material.
+         */
+        set: function (value) {
+            this._imageProcessingConfiguration.contrast = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraColorGradingTexture", {
+        /**
+         * Gets the Color Grading 2D Lookup Texture.
+         */
+        get: function () {
+            return this._imageProcessingConfiguration.colorGradingTexture;
+        },
+        /**
+         * Sets the Color Grading 2D Lookup Texture.
+         */
+        set: function (value) {
+            this._imageProcessingConfiguration.colorGradingTexture = value;
+        },
+        enumerable: false,
+        configurable: true
+    });
+    Object.defineProperty(MToonMaterial.prototype, "cameraColorCurves", {
+        /**
+         * The color grading curves provide additional color adjustmnent that is applied after any color grading transform (3D LUT).
+         * They allow basic adjustment of saturation and small exposure adjustments, along with color filter tinting to provide white balance adjustment or more stylistic effects.
+         * These are similar to controls found in many professional imaging or colorist software. The global controls are applied to the entire image. For advanced tuning, extra controls are provided to adjust the shadow, midtone and highlight areas of the image;
+         * corresponding to low luminance, medium luminance, and high luminance areas respectively.
+         */
+        get: function () {
+            return this._imageProcessingConfiguration.colorCurves;
+        },
+        /**
+         * The color grading curves provide additional color adjustment that is applied after any color grading transform (3D LUT).
+         * They allow basic adjustment of saturation and small exposure adjustments, along with color filter tinting to provide white balance adjustment or more stylistic effects.
+         * These are similar to controls found in many professional imaging or colorist software. The global controls are applied to the entire image. For advanced tuning, extra controls are provided to adjust the shadow, midtone and highlight areas of the image;
+         * corresponding to low luminance, medium luminance, and high luminance areas respectively.
+         */
+        set: function (value) {
+            this._imageProcessingConfiguration.colorCurves = value;
         },
         enumerable: false,
         configurable: true
     });
     Object.defineProperty(MToonMaterial.prototype, "canRenderToMRT", {
+        /**
+         * Can this material render to several textures at once
+         */
         get: function () {
-            return false;
+            return true;
         },
         enumerable: false,
         configurable: true
@@ -1113,14 +1345,14 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._alphaTest = value;
             if (value) {
                 if (this.alphaBlend) {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_ALPHATESTANDBLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATESTANDBLEND;
                 }
                 else {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_ALPHATEST;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATEST;
                 }
             }
             else {
-                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_OPAQUE;
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1136,14 +1368,14 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (value) {
                 this.backFaceCulling = true;
                 if (this.alphaTest) {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_ALPHATESTANDBLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATESTANDBLEND;
                 }
                 else {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_ALPHABLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHABLEND;
                 }
             }
             else {
-                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_OPAQUE;
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1160,7 +1392,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 /**
                  * このマテリアル用のアウトラインレンダラーを生成する
                  */
-                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_15__["MToonOutlineRenderer"](this.getScene(), this);
+                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_18__["MToonOutlineRenderer"](this.getScene(), this);
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1177,19 +1409,19 @@ var MToonMaterial = /** @class */ (function (_super) {
                 case CullMode.Off:
                     // 両面を描画する
                     this.backFaceCulling = false;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
                 case CullMode.Front:
                     // 表面を描画しない(=裏面だけ描画する)
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].CounterClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].CounterClockWiseSideOrientation;
                     this.twoSidedLighting = true;
                     break;
                 case CullMode.Back:
                     // 裏面を描画しない(=表面だけ描画する) デフォルト
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
             }
@@ -1222,45 +1454,138 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         return this.outlineRenderer.name;
     };
+    Object.defineProperty(MToonMaterial.prototype, "hasRenderTargetTextures", {
+        /**
+         * Gets a boolean indicating that current material needs to register RTT
+         */
+        get: function () {
+            // if (StandardMaterial.ReflectionTextureEnabled && this._reflectionTexture && this._reflectionTexture.isRenderTarget) {
+            //     return true;
+            // }
+            // if (StandardMaterial.RefractionTextureEnabled && this._refractionTexture && this._refractionTexture.isRenderTarget) {
+            //     return true;
+            // }
+            return false;
+        },
+        enumerable: false,
+        configurable: true
+    });
     /**
-     * @inheritdoc
-     * SubMesh が利用可能かどうかチェックする
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.getClassName = function () {
+        return 'MToonMaterial';
+    };
+    Object.defineProperty(MToonMaterial.prototype, "useLogarithmicDepth", {
+        /**
+         * In case the depth buffer does not allow enough depth precision for your scene (might be the case in large scenes)
+         * You can try switching to logarithmic depth.
+         * @see https://doc.babylonjs.com/how_to/using_logarithmic_depth_buffer
+         */
+        get: function () {
+            return this._useLogarithmicDepth;
+        },
+        set: function (value) {
+            var newValue = value && this.getScene().getEngine().getCaps().fragmentDepthSupported;
+            if (this._useLogarithmicDepth !== newValue) {
+                this._useLogarithmicDepth = newValue;
+                this._markAllSubMeshesAsMiscDirty();
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.needAlphaBlending = function () {
+        if (this._disableAlphaBlending) {
+            return false;
+        }
+        // return (this.alpha < 1.0) || (this._opacityTexture != null) || this._shouldUseAlphaFromDiffuseTexture() || this._opacityFresnelParameters && this._opacityFresnelParameters.isEnabled;
+        return (this.alpha < 1.0) || this._shouldUseAlphaFromDiffuseTexture();
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.needAlphaTesting = function () {
+        if (this._forceAlphaTest) {
+            return true;
+        }
+        if (this._alphaTest) {
+            return true;
+        }
+        return this._hasAlphaChannel() && (this._transparencyMode == null || this._transparencyMode === _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATEST);
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype._shouldUseAlphaFromDiffuseTexture = function () {
+        return this._diffuseTexture != null
+            && this._diffuseTexture.hasAlpha
+            && this._useAlphaFromDiffuseTexture
+            && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype._hasAlphaChannel = function () {
+        return (this._diffuseTexture !== null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.getAlphaTestTexture = function () {
+        return this._diffuseTexture;
+    };
+    /**
+     * {@inheritdoc}
      */
     MToonMaterial.prototype.isReadyForSubMesh = function (mesh, subMesh, useInstances) {
         if (useInstances === void 0) { useInstances = false; }
+        if (!this._uniformBufferLayoutBuilt) {
+            this.buildUniformLayout();
+        }
         if (subMesh.effect && this.isFrozen) {
             if (subMesh.effect._wasPreviouslyReady) {
                 return true;
             }
         }
-        if (!subMesh._materialDefines) {
-            subMesh.materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_14__["MToonMaterialDefines"]();
+        if (!subMesh.materialDefines) {
+            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__["MaterialPluginEvent"].GetDefineNames, this._eventInfo);
+            subMesh.materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_19__["MToonMaterialDefines"]();
         }
         var scene = this.getScene();
-        var defines = subMesh._materialDefines;
+        var defines = subMesh.materialDefines;
         if (this._isReadyForSubMesh(subMesh)) {
             return true;
         }
         var engine = scene.getEngine();
         // Lights
-        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this.maxSimultaneousLights, this._disableLighting);
+        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this._maxSimultaneousLights, this._disableLighting);
         if (this.outlineWidthMode !== OutlineWidthMode.None) {
-            // アウトライン描画のためには normal が必要
+            // Normals is needed when rendering outline
             defines._needNormals = true;
         }
         this.applyDefines(defines);
         // Multiview
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
+        // PrePass
+        var oit = this.needAlphaBlendingForMesh(mesh) && scene.useOrderIndependentTransparency;
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
+        // Order independant transparency
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForOIT(scene, defines, oit);
         // Textures
-        // defines の変更はシェーダのリコンパイルを必要とするため、必要最小限にする
-        // そのため若干冗長な記述となっている
         if (defines._areTexturesDirty) {
+            this._eventInfo.hasRenderTargetTextures = false;
+            this._callbackPluginEventHasRenderTargetTextures(this._eventInfo);
+            this._cacheHasRenderTargetTextures = this._eventInfo.hasRenderTargetTextures;
             defines._needUVs = false;
-            defines.MAINUV1 = false;
-            defines.MAINUV2 = false;
+            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
+                defines["MAINUV" + i] = false;
+            }
             if (scene.texturesEnabled) {
-                // 追加テクスチャの用意を確認する
+                // Check texture is ready
                 if (!this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE')
                     || !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE')
                     || !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE')
@@ -1277,7 +1602,10 @@ var MToonMaterial = /** @class */ (function (_super) {
                     if (!this._bumpTexture.isReady()) {
                         return false;
                     }
-                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
+                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
+                    defines.PARALLAX = this.useParallax;
+                    defines.PARALLAXOCCLUSION = this.useParallaxOcclusion;
+                    defines.OBJECTSPACE_NORMALMAP = this.useObjectSpaceNormalMap;
                 }
                 else {
                     defines.BUMP = false;
@@ -1296,29 +1624,52 @@ var MToonMaterial = /** @class */ (function (_super) {
                 defines.BUMP = false;
                 defines.UV_ANIMATION_MASK = false;
             }
-            defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
+            defines.ALPHAFROMDIFFUSE = this._shouldUseAlphaFromDiffuseTexture();
+            // defines.EMISSIVEASILLUMINATION = this._useEmissiveAsIllumination;
+            // defines.LINKEMISSIVEWITHDIFFUSE = this._linkEmissiveWithDiffuse;
+            // defines.SPECULAROVERALPHA = this._useSpecularOverAlpha;
+            defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
             defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = this.transparencyMode !== null;
-            defines.ALPHABLEND = this.transparencyMode === null || this.needAlphaBlendingForMesh(mesh);
+            defines.ALPHABLEND = this.transparencyMode === null || this.needAlphaBlendingForMesh(mesh); // check on null for backward compatibility
         }
-        if (!this.detailMap.isReadyForSubMesh(defines, scene)) {
+        this._eventInfo.isReadyForSubMesh = true;
+        this._eventInfo.defines = defines;
+        this._callbackPluginEventIsReadyForSubMesh(this._eventInfo);
+        if (!this._eventInfo.isReadyForSubMesh) {
             return false;
         }
+        if (defines._areImageProcessingDirty && this._imageProcessingConfiguration) {
+            if (!this._imageProcessingConfiguration.isReady()) {
+                return false;
+            }
+            this._imageProcessingConfiguration.prepareDefines(defines);
+            // defines.IS_REFLECTION_LINEAR = (this.reflectionTexture != null && !this.reflectionTexture.gammaSpace);
+            // defines.IS_REFRACTION_LINEAR = (this.refractionTexture != null && !this.refractionTexture.gammaSpace);
+        }
         // Misc.
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest, defines);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest, defines);
         // Attribs
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
         // Values that need to be evaluated on every frame
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances, null, subMesh.getRenderingMesh().hasThinInstances);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances, null, subMesh.getRenderingMesh().hasThinInstances);
         // External config
-        this.detailMap.prepareDefines(defines, scene);
+        this._eventInfo.defines = defines;
+        this._eventInfo.mesh = mesh;
+        this._callbackPluginEventPrepareDefines(this._eventInfo);
         // Get correct effect
         if (defines.isDirty) {
             var lightDisposed = defines._areLightsDisposed;
             defines.markAsProcessed();
             // Fallbacks
-            var fallbacks = new _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_3__["EffectFallbacks"]();
+            var fallbacks = new _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_13__["EffectFallbacks"]();
             if (defines.BUMP) {
                 fallbacks.addFallback(0, 'BUMP');
+            }
+            if (defines.PARALLAX) {
+                fallbacks.addFallback(1, "PARALLAX");
+            }
+            if (defines.PARALLAXOCCLUSION) {
+                fallbacks.addFallback(0, "PARALLAXOCCLUSION");
             }
             if (defines.FOG) {
                 fallbacks.addFallback(1, 'FOG');
@@ -1329,34 +1680,41 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (defines.LOGARITHMICDEPTH) {
                 fallbacks.addFallback(0, 'LOGARITHMICDEPTH');
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this.maxSimultaneousLights);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this._maxSimultaneousLights);
             if (defines.MULTIVIEW) {
                 fallbacks.addFallback(0, 'MULTIVIEW');
             }
             // Attributes
-            var attribs = [_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].PositionKind];
+            var attribs = [_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].PositionKind];
             if (defines.NORMAL) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].NormalKind);
+                attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].NormalKind);
             }
             if (defines.TANGENT) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].TangentKind);
+                attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].TangentKind);
             }
-            if (defines.UV1) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].UVKind);
+            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
+                if (defines["UV" + i]) {
+                    attribs.push("uv".concat(i === 1 ? "" : i));
+                }
             }
-            if (defines.UV2) {
-                attribs.push(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_8__["VertexBuffer"].UV2Kind);
+            if (defines.INSTANCESCOLOR) {
+                attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].ColorInstanceKind);
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
             var shaderName = 'mtoon';
             var uniforms = [
-                'world', 'view', 'viewProjection', 'vLightsType',
-                'visibility', 'mBones',
-                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
+                // StandardMaterial uniforms
+                'world', 'view', 'viewProjection', 'vEyePosition', 'vLightsType', 'vAmbientColor', 'visibility',
                 'vFogInfos', 'vFogColor', 'pointSize',
-                'alphaCutOff', 'logarithmicDepthConstant', 'vTangentSpaceParams', 'boneTextureWidth',
+                'mBones',
+                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
+                // "diffuseLeftColor", "diffuseRightColor", "opacityParts", "reflectionLeftColor", "reflectionRightColor", "emissiveLeftColor", "emissiveRightColor", "refractionLeftColor", "refractionRightColor",
+                // "vReflectionPosition", "vReflectionSize", "vRefractionPosition", "vRefractionSize",
+                'logarithmicDepthConstant', 'vTangentSpaceParams', 'alphaCutOff', 'boneTextureWidth',
+                'morphTargetTextureInfo', 'morphTargetTextureIndices',
+                // Texture uniforms
                 'vDiffuseColor', 'vDiffuseInfos', 'diffuseMatrix',
                 'vEmissiveColor', 'vEmissiveInfos', 'emissiveMatrix',
                 'vBumpInfos', 'bumpMatrix',
@@ -1366,34 +1724,45 @@ var MToonMaterial = /** @class */ (function (_super) {
                 'vRimColor', 'vRimInfos', 'RimMatrix',
                 'vMatCapInfos', 'MatCapMatrix',
                 'vOutlineColor', 'vOutlineWidthInfos', 'outlineWidthMatrix',
+                // MToon uniforms
                 'aspect', 'isOutline',
                 'shadingGradeRate', 'receiveShadowRate', 'shadeShift', 'shadeToony',
                 'rimLightingMix', 'rimFresnelPower', 'rimLift',
                 'lightColorAttenuation', 'indirectLightIntensity',
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
                 'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
-                'vEyePosition', 'vEyeUp', 'time',
-                "morphTargetTextureInfo", "morphTargetTextureIndices"
+                'vEyeUp', 'time',
             ];
             var samplers = [
-                'diffuseSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler',
+                // StandardMaterial samplers
+                'diffuseSampler', 'ambientSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler', 'morphTargets', 'oitDepthSampler', 'oitFrontColorSampler',
+                // MToon samplers
                 'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
                 'rimSampler', 'matCapSampler', 'outlineWidthSampler',
-                'uvAnimationMaskSampler', 'morphTargets',
+                'uvAnimationMaskSampler',
             ];
-            var uniformBuffers = ['Material', 'Scene'];
-            _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_12__["DetailMapConfiguration"].AddUniforms(uniforms);
-            _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_12__["DetailMapConfiguration"].AddSamplers(samplers);
-            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_11__["PrePassConfiguration"].AddUniforms(uniforms);
-            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_11__["PrePassConfiguration"].AddSamplers(samplers);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareUniformsAndSamplersList({
+            var uniformBuffers = ['Material', 'Scene', 'Mesh'];
+            this._eventInfo.fallbacks = fallbacks;
+            this._eventInfo.fallbackRank = 0;
+            this._eventInfo.defines = defines;
+            this._eventInfo.uniforms = uniforms;
+            this._eventInfo.samplers = samplers;
+            this._eventInfo.uniformBuffersNames = uniformBuffers;
+            this._eventInfo.customCode = undefined;
+            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__["MaterialPluginEvent"].PrepareEffect, this._eventInfo);
+            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"].AddUniforms(uniforms);
+            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"].AddSamplers(samplers);
+            if (_babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"]) {
+                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"].PrepareUniforms(uniforms, defines);
+                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"].PrepareSamplers(samplers, defines);
+            }
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareUniformsAndSamplersList({
                 uniformsNames: uniforms,
                 uniformBuffersNames: uniformBuffers,
                 samplers: samplers,
                 defines: defines,
-                maxSimultaneousLights: this.maxSimultaneousLights,
+                maxSimultaneousLights: this._maxSimultaneousLights,
             });
-            this.applyDefines(defines);
             var csnrOptions = {};
             var join = defines.toString();
             var previousEffect = subMesh.effect;
@@ -1407,10 +1776,11 @@ var MToonMaterial = /** @class */ (function (_super) {
                 onCompiled: this.onCompiled,
                 onError: this.onError,
                 indexParameters: {
-                    maxSimultaneousLights: this.maxSimultaneousLights,
+                    maxSimultaneousLights: this._maxSimultaneousLights,
                     maxSimultaneousMorphTargets: defines.NUM_MORPH_INFLUENCERS,
                 },
                 processFinalCode: csnrOptions.processFinalCode,
+                processCodeAfterIncludes: this._eventInfo.customCode,
                 multiTarget: defines.PREPASS,
             }, engine);
             if (effect) {
@@ -1422,7 +1792,6 @@ var MToonMaterial = /** @class */ (function (_super) {
                 // Use previous effect while new one is compiling
                 if (this.allowShaderHotSwapping && previousEffect && !effect.isReady()) {
                     effect = previousEffect;
-                    this._rebuildInParallel = true;
                     defines.markAsUnprocessed();
                     if (lightDisposed) {
                         // re register in case it takes more than one frame.
@@ -1431,10 +1800,8 @@ var MToonMaterial = /** @class */ (function (_super) {
                     }
                 }
                 else {
-                    this._rebuildInParallel = false;
                     scene.resetCachedMaterial();
-                    subMesh.setEffect(effect, defines);
-                    this.buildUniformLayout();
+                    subMesh.setEffect(effect, defines, this._materialContext);
                 }
             }
         }
@@ -1446,186 +1813,11 @@ var MToonMaterial = /** @class */ (function (_super) {
         return true;
     };
     /**
-     * @inheritdoc
-     * 現在の値をシェーダにバインドする
-     * このメソッドは毎フレームごとに呼ばれるため、冗長でも高速化を優先する
-     */
-    MToonMaterial.prototype.bindForSubMesh = function (world, mesh, subMesh) {
-        var scene = this.getScene();
-        var defines = subMesh._materialDefines;
-        var effect = subMesh.effect;
-        if (!defines || !effect) {
-            return;
-        }
-        this._activeEffect = effect;
-        // Matrices
-        if (!defines.INSTANCES || defines.THIN_INSTANCES) {
-            this.bindOnlyWorldMatrix(world);
-        }
-        // PrePass
-        this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
-        // Normal Matrix
-        if (defines.OBJECTSPACE_NORMALMAP) {
-            world.toNormalMatrix(this._normalMatrix);
-            this.bindOnlyNormalMatrix(this._normalMatrix);
-        }
-        var mustRebind = scene.isCachedMaterialInvalid(this, effect, mesh.visibility);
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindBonesParameters(mesh, effect);
-        var ubo = this._uniformBuffer;
-        if (mustRebind) {
-            ubo.bindToEffect(effect, 'Material');
-            this.bindViewProjection(effect);
-            if (!ubo.useUbo || !this.isFrozen || !ubo.isSync) {
-                if (scene.texturesEnabled) {
-                    this.bindTexture(this._diffuseTexture, effect, 'diffuse', 'vDiffuseInfos');
-                    this.bindTexture(this._emissiveTexture, effect, 'emissive', 'vEmissiveInfos');
-                    if (this._bumpTexture) {
-                        ubo.updateFloat3('vBumpInfos', this._bumpTexture.coordinatesIndex, 1.0 / this._bumpTexture.level, this._bumpScale);
-                        var matrix = this._bumpTexture.getTextureMatrix();
-                        if (!matrix.isIdentityAs3x2()) {
-                            ubo.updateMatrix("bumpMatrix", matrix);
-                        }
-                        effect.setTexture("bumpSampler", this._bumpTexture);
-                        // bumpTexture は babylon.js のデフォルトと反対の状態である
-                        if (scene._mirroredCameraPosition) {
-                            ubo.updateFloat2('vTangentSpaceParams', 1.0, 1.0);
-                        }
-                        else {
-                            ubo.updateFloat2('vTangentSpaceParams', -1.0, -1.0);
-                        }
-                    }
-                    this.bindTexture(this._shadeTexture, effect, 'shade', 'vShadeInfos');
-                    this.bindTexture(this._receiveShadowTexture, effect, 'receiveShadow', 'vReceiveShadowInfos');
-                    this.bindTexture(this._shadingGradeTexture, effect, 'shadingGrade', 'vShadingGradeInfos');
-                    this.bindTexture(this._rimTexture, effect, 'rim', 'vRimInfos');
-                    this.bindTexture(this._matCapTexture, effect, 'matCap', 'vMatCapInfos');
-                    this.bindTexture(this._outlineWidthTexture, effect, 'outlineWidth', 'vOutlineWidthInfos');
-                    this.bindTexture(this._uvAnimationMaskTexture, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
-                }
-                if (this._hasAlphaChannel()) {
-                    effect.setFloat('alphaCutOff', this.alphaCutOff);
-                }
-            }
-            // Point size
-            if (this.pointsCloud) {
-                ubo.updateFloat('pointSize', this.pointSize);
-            }
-            // MToon uniforms
-            ubo.updateFloat('receiveShadowRate', this._receiveShadowRate);
-            ubo.updateFloat('shadingGradeRate', this._shadingGradeRate);
-            ubo.updateFloat('shadeShift', this._shadeShift);
-            ubo.updateFloat('shadeToony', this._shadeToony);
-            ubo.updateFloat('lightColorAttenuation', this._lightColorAttenuation);
-            ubo.updateFloat('indirectLightIntensity', this._indirectLightIntensity);
-            ubo.updateFloat('rimLightingMix', this._rimLightingMix);
-            ubo.updateFloat('rimFresnelPower', this._rimFresnelPower);
-            ubo.updateFloat('rimLift', this._rimLift);
-            ubo.updateFloat('outlineWidth', this._outlineWidth);
-            ubo.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
-            ubo.updateFloat('outlineLightingMix', this._outlineLightingMix);
-            ubo.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
-            ubo.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
-            ubo.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
-            this.detailMap.bindForSubMesh(ubo, scene, this.isFrozen);
-            // Clip plane
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindClipPlane(effect, scene);
-            // Colors
-            scene.ambientColor.multiplyToRef(this.ambientColor, this.globalAmbientColor);
-            effect.setColor3('vAmbientColor', this.globalAmbientColor);
-            ubo.updateColor4('vDiffuseColor', this.diffuseColor, this.alpha);
-            ubo.updateColor3('vEmissiveColor', this.emissiveColor);
-            ubo.updateColor3('vShadeColor', this.shadeColor);
-            ubo.updateColor3('vRimColor', this.rimColor);
-            ubo.updateColor4('vOutlineColor', this.outlineColor, 1.0);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindEyePosition(effect, scene);
-            effect.setVector3('vEyeUp', scene.activeCamera.upVector);
-        }
-        if (mustRebind || !this.isFrozen) {
-            // `freeze` しない限り毎回更新される値
-            if (scene.lightsEnabled && !this.disableLighting) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this.maxSimultaneousLights, this._rebuildInParallel);
-            }
-            // View
-            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_10__["Scene"].FOGMODE_NONE) {
-                this.bindView(effect);
-            }
-            // Fog
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
-            // Morph targets
-            if (defines.NUM_MORPH_INFLUENCERS) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
-            }
-            // Log. depth
-            if (this.useLogarithmicDepth) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].BindLogDepth(defines, effect, scene);
-            }
-        }
-        effect.setFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera));
-        effect.setFloat('isOutline', 0.0);
-        var t = window.performance.now() / 1000;
-        effect.setVector4('time', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__["Vector4"](t / 20, t, t * 2, t * 3));
-        this._afterBind(mesh, this._activeEffect);
-        ubo.update();
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.getAnimatables = function () {
-        var results = [];
-        for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
-            var texture = _a[_i];
-            if (texture.animations && texture.animations.length > 0) {
-                results.push(texture);
-            }
-        }
-        this.detailMap.getAnimatables(results);
-        return results;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.getActiveTextures = function () {
-        var activeTextures = _super.prototype.getActiveTextures.call(this).concat(this.appendedActiveTextures);
-        this.detailMap.getActiveTextures(activeTextures);
-        return activeTextures;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.hasTexture = function (texture) {
-        if (_super.prototype.hasTexture.call(this, texture)) {
-            return true;
-        }
-        else if (this.appendedActiveTextures.length > 0) {
-            for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
-                var tex = _a[_i];
-                if (tex === texture) {
-                    return true;
-                }
-            }
-        }
-        return this.detailMap.hasTexture(texture);
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.dispose = function (forceDisposeEffect, forceDisposeTextures, notBoundToMesh) {
-        delete this.outlineRenderer;
-        if (forceDisposeTextures) {
-            for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
-                var texture = _a[_i];
-                texture.dispose();
-            }
-        }
-        this.detailMap.dispose(forceDisposeTextures);
-        _super.prototype.dispose.call(this, forceDisposeEffect, forceDisposeTextures, notBoundToMesh);
-    };
-    /**
-     * UniformBufferObject のレイアウトを決定する
-     * シェーダー内の `uniform Material` と同じ順序で add する必要がある
-     * UBO を利用すると効率的に変数をシェーダに渡せるが、 WebGL v2 のみ対応
-     * babylon.js では WebGL v1 の場合自動でフォールバックしてくれる
-     * 第二引数は float の数
+     * Determine the layout of the UniformBufferObject
+     * Must be added in the same order as the `uniform Material` in the shader
+     * UBOs can be used to efficiently pass variables to shaders, but only WebGL v2 is supported.
+     * babylon.js automatically falls back on WebGL v1
+     * The second argument is the number of floats
      */
     MToonMaterial.prototype.buildUniformLayout = function () {
         var ubo = this._uniformBuffer;
@@ -1671,29 +1863,245 @@ var MToonMaterial = /** @class */ (function (_super) {
         ubo.addUniform('uvAnimationScrollX', 1);
         ubo.addUniform('uvAnimationScrollY', 1);
         ubo.addUniform('uvAnimationRotation', 1);
-        _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_12__["DetailMapConfiguration"].PrepareUniformBuffer(ubo);
-        ubo.create();
+        ubo.addUniform('vEyeUp', 3);
+        ubo.addUniform('alphaCutOff', 1);
+        ubo.addUniform('vAmbientColor', 3);
+        ubo.addUniform('aspect', 1);
+        ubo.addUniform('isOutline', 1);
+        ubo.addUniform('time', 4);
+        ubo.addUniform('visibility', 1);
+        _super.prototype.buildUniformLayout.call(this);
     };
     /**
-     * テクスチャ情報をバインドする
+     * {@inheritdoc}
+     * Binds current shader variables
+     * This method is called every frame, so even if it is redundant, it prefers speed.
+     */
+    MToonMaterial.prototype.bindForSubMesh = function (world, mesh, subMesh) {
+        var _a;
+        var scene = this.getScene();
+        var defines = subMesh.materialDefines;
+        var effect = subMesh.effect;
+        if (!defines || !effect) {
+            return;
+        }
+        this._activeEffect = effect;
+        // Matrices Mesh.
+        mesh.getMeshUniformBuffer().bindToEffect(effect, "Mesh");
+        mesh.transferToEffect(world);
+        // Binding unconditionally
+        this._uniformBuffer.bindToEffect(effect, "Material");
+        this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
+        this._eventInfo.subMesh = subMesh;
+        this._callbackPluginEventHardBindForSubMesh(this._eventInfo);
+        // Normal Matrix
+        if (defines.OBJECTSPACE_NORMALMAP) {
+            world.toNormalMatrix(this._normalMatrix);
+            this.bindOnlyNormalMatrix(this._normalMatrix);
+        }
+        var mustRebind = this._mustRebind(scene, effect, mesh.visibility);
+        // Bones
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindBonesParameters(mesh, effect);
+        var ubo = this._uniformBuffer;
+        if (mustRebind) {
+            this.bindViewProjection(effect);
+            if (!ubo.useUbo || !this.isFrozen || !ubo.isSync) {
+                if (scene.texturesEnabled) {
+                    this.bindTexture(this._diffuseTexture, ubo, effect, 'diffuse', 'vDiffuseInfos');
+                    this.bindTexture(this._emissiveTexture, ubo, effect, 'emissive', 'vEmissiveInfos');
+                    if (this._bumpTexture && scene.getEngine().getCaps().standardDerivatives) {
+                        ubo.updateFloat3('vBumpInfos', this._bumpTexture.coordinatesIndex, 1.0 / this._bumpTexture.level, this._bumpScale);
+                        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindTextureMatrix(this._bumpTexture, ubo, "bump");
+                        effect.setTexture("bumpSampler", this._bumpTexture);
+                        // bumpTexture は babylon.js のデフォルトと反対の状態である
+                        if (scene._mirroredCameraPosition) {
+                            ubo.updateFloat2('vTangentSpaceParams', this._invertNormalMapX ? 1.0 : -1.0, this._invertNormalMapY ? 1.0 : -1.0);
+                        }
+                        else {
+                            ubo.updateFloat2('vTangentSpaceParams', this._invertNormalMapX ? -1.0 : 1.0, this._invertNormalMapY ? -1.0 : 1.0);
+                        }
+                    }
+                    this.bindTexture(this._shadeTexture, ubo, effect, 'shade', 'vShadeInfos');
+                    this.bindTexture(this._receiveShadowTexture, ubo, effect, 'receiveShadow', 'vReceiveShadowInfos');
+                    this.bindTexture(this._shadingGradeTexture, ubo, effect, 'shadingGrade', 'vShadingGradeInfos');
+                    this.bindTexture(this._rimTexture, ubo, effect, 'rim', 'vRimInfos');
+                    this.bindTexture(this._matCapTexture, ubo, effect, 'matCap', 'vMatCapInfos');
+                    this.bindTexture(this._outlineWidthTexture, ubo, effect, 'outlineWidth', 'vOutlineWidthInfos');
+                    this.bindTexture(this._uvAnimationMaskTexture, ubo, effect, 'uvAnimationMask', 'vUvAnimationMaskInfos');
+                    if (this._hasAlphaChannel()) {
+                        ubo.updateFloat('alphaCutOff', this.alphaCutOff);
+                    }
+                }
+                // Point size
+                if (this.pointsCloud) {
+                    ubo.updateFloat('pointSize', this.pointSize);
+                }
+                // MToon uniforms
+                ubo.updateFloat('receiveShadowRate', this._receiveShadowRate);
+                ubo.updateFloat('shadingGradeRate', this._shadingGradeRate);
+                ubo.updateFloat('shadeShift', this._shadeShift);
+                ubo.updateFloat('shadeToony', this._shadeToony);
+                ubo.updateFloat('lightColorAttenuation', this._lightColorAttenuation);
+                ubo.updateFloat('indirectLightIntensity', this._indirectLightIntensity);
+                ubo.updateFloat('rimLightingMix', this._rimLightingMix);
+                ubo.updateFloat('rimFresnelPower', this._rimFresnelPower);
+                ubo.updateFloat('rimLift', this._rimLift);
+                ubo.updateFloat('outlineWidth', this._outlineWidth);
+                ubo.updateFloat('outlineScaledMaxDistance', this._outlineScaledMaxDistance);
+                ubo.updateFloat('outlineLightingMix', this._outlineLightingMix);
+                ubo.updateFloat('uvAnimationScrollX', this._uvAnimationScrollX);
+                ubo.updateFloat('uvAnimationScrollY', this._uvAnimationScrollY);
+                ubo.updateFloat('uvAnimationRotation', this._uvAnimationRotation);
+                // Colors
+                scene.ambientColor.multiplyToRef(this.ambientColor, this._globalAmbientColor);
+                ubo.updateColor3('vAmbientColor', this._globalAmbientColor);
+                ubo.updateColor4('vDiffuseColor', this.diffuseColor, this.alpha);
+                ubo.updateColor3('vEmissiveColor', this.emissiveColor);
+                ubo.updateColor3('vShadeColor', this.shadeColor);
+                ubo.updateColor3('vRimColor', this.rimColor);
+                ubo.updateColor4('vOutlineColor', this.outlineColor, 1.0);
+                ubo.updateVector3('vEyeUp', scene.activeCamera.upVector);
+            }
+            // OIT with depth peeling
+            var anyScene = scene;
+            if (anyScene.useOrderIndependentTransparency && this.needAlphaBlendingForMesh(mesh) && anyScene.depthPeelingRenderer) {
+                anyScene.depthPeelingRenderer.bind(effect);
+            }
+            this._eventInfo.subMesh = subMesh;
+            this._callbackPluginEventBindForSubMesh(this._eventInfo);
+            // Clip plane
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindClipPlane(effect, scene);
+            // Colors
+            this.bindEyePosition(effect);
+        }
+        else if (scene.getEngine()._features.needToAlwaysBindUniformBuffers) {
+            this._needToBindSceneUbo = true;
+        }
+        if (mustRebind || !this.isFrozen) {
+            // Lights
+            if (scene.lightsEnabled && !this._disableLighting) {
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this._maxSimultaneousLights);
+            }
+            // View
+            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_3__["Scene"].FOGMODE_NONE || mesh.receiveShadows) {
+                this.bindView(effect);
+            }
+            // Fog
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
+            // Morph targets
+            if (defines.NUM_MORPH_INFLUENCERS) {
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
+            }
+            if (defines.BAKED_VERTEX_ANIMATION_TEXTURE) {
+                (_a = mesh.bakedVertexAnimationManager) === null || _a === void 0 ? void 0 : _a.bind(effect, defines.INSTANCES);
+            }
+            // Log. depth
+            if (this.useLogarithmicDepth) {
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindLogDepth(defines, effect, scene);
+            }
+            // image processing
+            if (this._imageProcessingConfiguration && !this._imageProcessingConfiguration.applyByPostProcess) {
+                this._imageProcessingConfiguration.bind(this._activeEffect);
+            }
+            // MToon bindings
+            ubo.updateFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera));
+            ubo.updateFloat('isOutline', 0.0);
+            // this variable is compatible with [Unity's _Time](https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html)
+            var t = window.performance.now() / 1000;
+            ubo.updateVector4('time', new _babylonjs_core_Maths_math_vector__WEBPACK_IMPORTED_MODULE_4__["Vector4"](t / 20, t, t * 2, t * 3));
+        }
+        this._afterBind(mesh, this._activeEffect);
+        ubo.update();
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.getAnimatables = function () {
+        var results = _super.prototype.getAnimatables.call(this);
+        for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
+            var texture = _a[_i];
+            if (texture.animations && texture.animations.length > 0) {
+                results.push(texture);
+            }
+        }
+        return results;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.getActiveTextures = function () {
+        var activeTextures = _super.prototype.getActiveTextures.call(this).concat(this.appendedActiveTextures);
+        return activeTextures;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.hasTexture = function (texture) {
+        if (_super.prototype.hasTexture.call(this, texture)) {
+            return true;
+        }
+        for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
+            var tex = _a[_i];
+            if (tex === texture) {
+                return true;
+            }
+        }
+        return false;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.dispose = function (forceDisposeEffect, forceDisposeTextures) {
+        delete this.outlineRenderer;
+        if (forceDisposeTextures) {
+            for (var _i = 0, _a = this.appendedActiveTextures; _i < _a.length; _i++) {
+                var texture = _a[_i];
+                texture.dispose();
+            }
+        }
+        if (this._imageProcessingConfiguration && this._imageProcessingObserver) {
+            this._imageProcessingConfiguration.onUpdateParameters.remove(this._imageProcessingObserver);
+        }
+        _super.prototype.dispose.call(this, forceDisposeEffect, forceDisposeTextures);
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.prototype.clone = function (name) {
+        var _this = this;
+        var result = _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["SerializationHelper"].Clone(function () { return new MToonMaterial(name, _this.getScene()); }, this);
+        result.name = name;
+        result.id = name;
+        this.stencil.copyTo(result.stencil);
+        return result;
+    };
+    /**
+     * {@inheritdoc}
+     */
+    MToonMaterial.Parse = function (source, scene, rootUrl) {
+        var material = _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["SerializationHelper"].Parse(function () { return new MToonMaterial(source.name, scene); }, source, scene, rootUrl);
+        if (source.stencil) {
+            material.stencil.parse(source.stencil, scene, rootUrl);
+        }
+        return material;
+    };
+    /**
+     * 独自メソッド: テクスチャ情報をバインドする
      * @param texture
      * @param effect
      * @param name
      * @param infoName
      */
-    MToonMaterial.prototype.bindTexture = function (texture, effect, name, infoName) {
+    MToonMaterial.prototype.bindTexture = function (texture, ubo, effect, name, infoName) {
         if (!texture) {
             return;
         }
         this._uniformBuffer.updateFloat2(infoName, texture.coordinatesIndex, texture.level);
-        var matrix = texture.getTextureMatrix();
-        if (!matrix.isIdentityAs3x2()) {
-            this._uniformBuffer.updateMatrix(name + "Matrix", matrix);
-        }
-        effect.setTexture(name + "Sampler", texture);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindTextureMatrix(texture, ubo, name);
+        effect.setTexture("".concat(name, "Sampler"), texture);
     };
     /**
-     * テクスチャの用意が終わっているか確認する
+     * 独自メソッド: テクスチャの用意が終わっているか確認する
      * @param texture
      * @param defines
      * @param key
@@ -1706,11 +2114,11 @@ var MToonMaterial = /** @class */ (function (_super) {
         if (!texture.isReadyOrNotBlocking()) {
             return false;
         }
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_5__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
         return true;
     };
     /**
-     * 定数を設定する
+     * 独自メソッド: 定数を設定する
      */
     MToonMaterial.prototype.applyDefines = function (defines) {
         switch (this._debugMode) {
@@ -1779,255 +2187,212 @@ var MToonMaterial = /** @class */ (function (_super) {
                 break;
         }
     };
-    //#region Misc
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.getClassName = function () {
-        return 'MToonMaterial';
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.needAlphaBlending = function () {
-        if (this._disableAlphaBlending) {
-            return false;
-        }
-        return this._alphaBlend || (this.alpha < 1.0) || this._shouldUseAlphaFromDiffuseTexture();
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.needAlphaTesting = function () {
-        if (this._forceAlphaTest) {
-            return true;
-        }
-        return this._alphaTest
-            || (this._hasAlphaChannel() && (this._transparencyMode == null || this._transparencyMode === _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_ALPHATEST));
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype._shouldUseAlphaFromDiffuseTexture = function () {
-        return this._diffuseTexture != null
-            && this._diffuseTexture.hasAlpha
-            && this._useAlphaFromDiffuseTexture
-            && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_4__["Material"].MATERIAL_OPAQUE;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype._hasAlphaChannel = function () {
-        return (this._diffuseTexture !== null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.getAlphaTestTexture = function () {
-        return this.diffuseTexture;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.clone = function (name) {
-        var _this = this;
-        var result = _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Clone(function () { return new MToonMaterial(name, _this.getScene()); }, this);
-        result.name = name;
-        result.id = name;
-        return result;
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.prototype.serialize = function () {
-        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Serialize(this);
-    };
-    /**
-     * @inheritdoc
-     */
-    MToonMaterial.Parse = function (parsedMaterial, scene, rootUrl) {
-        return _babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["SerializationHelper"].Parse(function () { return new MToonMaterial(parsedMaterial.name, scene); }, parsedMaterial, scene, rootUrl);
-    };
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('diffuseTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('diffuseTexture')
     ], MToonMaterial.prototype, "_diffuseTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesAndMiscDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesAndMiscDirty')
     ], MToonMaterial.prototype, "diffuseTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('emissiveTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('emissiveTexture')
     ], MToonMaterial.prototype, "_emissiveTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "emissiveTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('bumpTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('bumpTexture')
     ], MToonMaterial.prototype, "_bumpTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "bumpTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('shadeTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('shadeTexture')
     ], MToonMaterial.prototype, "_shadeTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "shadeTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('receiveShadowTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('receiveShadowTexture')
     ], MToonMaterial.prototype, "_receiveShadowTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "receiveShadowTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('shadingGradeTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('shadingGradeTexture')
     ], MToonMaterial.prototype, "_shadingGradeTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "shadingGradeTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('rimTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('rimTexture')
     ], MToonMaterial.prototype, "_rimTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "rimTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('matCapTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('matCapTexture')
     ], MToonMaterial.prototype, "_matCapTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "matCapTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('outlineWidthTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('outlineWidthTexture')
     ], MToonMaterial.prototype, "_outlineWidthTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "outlineWidthTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsTexture"])('outlineWidthTexture')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsTexture"])('outlineWidthTexture')
     ], MToonMaterial.prototype, "_uvAnimationMaskTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
     ], MToonMaterial.prototype, "uvAnimationMaskTexture", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
-    ], MToonMaterial.prototype, "useLogarithmicDepth", null);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('disableLighting')
-    ], MToonMaterial.prototype, "_disableLighting", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
-    ], MToonMaterial.prototype, "disableLighting", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('twoSidedLighting')
-    ], MToonMaterial.prototype, "_twoSidedLighting", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
-    ], MToonMaterial.prototype, "twoSidedLighting", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('useAlphaFromDiffuseTexture')
-    ], MToonMaterial.prototype, "_useAlphaFromDiffuseTexture", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])("_markAllSubMeshesAsTexturesAndMiscDirty")
-    ], MToonMaterial.prototype, "useAlphaFromDiffuseTexture", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])(),
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
-    ], MToonMaterial.prototype, "alphaCutOff", void 0);
-    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serializeAsColor3"])('diffuse')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serializeAsColor3"])('diffuse')
     ], MToonMaterial.prototype, "diffuseColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('ambient')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('ambient')
     ], MToonMaterial.prototype, "ambientColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('emissive')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('emissive')
     ], MToonMaterial.prototype, "emissiveColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('shade')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('shade')
     ], MToonMaterial.prototype, "shadeColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('rim')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('rim')
     ], MToonMaterial.prototype, "rimColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('outline')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('outline')
     ], MToonMaterial.prototype, "outlineColor", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesDirty")
+    ], MToonMaterial.prototype, "useEmissiveAsIllumination", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesDirty")
+    ], MToonMaterial.prototype, "linkEmissiveWithDiffuse", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesDirty")
+    ], MToonMaterial.prototype, "useReflectionOverAlpha", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('disableLighting')
+    ], MToonMaterial.prototype, "_disableLighting", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsLightsDirty')
+    ], MToonMaterial.prototype, "disableLighting", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
+    ], MToonMaterial.prototype, "alphaCutOff", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('useAlphaFromDiffuseTexture')
+    ], MToonMaterial.prototype, "_useAlphaFromDiffuseTexture", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesAndMiscDirty")
+    ], MToonMaterial.prototype, "useAlphaFromDiffuseTexture", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])("maxSimultaneousLights")
+    ], MToonMaterial.prototype, "_maxSimultaneousLights", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsLightsDirty")
+    ], MToonMaterial.prototype, "maxSimultaneousLights", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])("invertNormalMapX")
+    ], MToonMaterial.prototype, "_invertNormalMapX", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesDirty")
+    ], MToonMaterial.prototype, "invertNormalMapX", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])("invertNormalMapY")
+    ], MToonMaterial.prototype, "_invertNormalMapY", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])("_markAllSubMeshesAsTexturesDirty")
+    ], MToonMaterial.prototype, "invertNormalMapY", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('twoSidedLighting')
+    ], MToonMaterial.prototype, "_twoSidedLighting", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsTexturesDirty')
+    ], MToonMaterial.prototype, "twoSidedLighting", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "bumpScale", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "receiveShadowRate", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "shadingGradeRate", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "shadeShift", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "shadeToony", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "lightColorAttenuation", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "indirectLightIntensity", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "rimLightingMix", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "rimFresnelPower", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "rimLift", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "outlineWidth", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "outlineScaledMaxDistance", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "outlineLightingMix", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationScrollX", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationScrollY", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "uvAnimationRotation", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('alphaTest')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('alphaTest')
     ], MToonMaterial.prototype, "_alphaTest", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "alphaTest", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "alphaBlend", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])('debugMode')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])('debugMode')
     ], MToonMaterial.prototype, "_debugMode", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "debugMode", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "outlineColorMode", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "cullMode", null);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["serialize"])()
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "_outlineCullMode", void 0);
     Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
-        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_9__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["expandToProperty"])('_markAllSubMeshesAsMiscDirty')
     ], MToonMaterial.prototype, "outlineCullMode", void 0);
+    Object(tslib__WEBPACK_IMPORTED_MODULE_0__["__decorate"])([
+        Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
+    ], MToonMaterial.prototype, "useLogarithmicDepth", null);
     return MToonMaterial;
-}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_6__["PushMaterial"]));
+}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_10__["PushMaterial"]));
 
 
 
@@ -2043,15 +2408,13 @@ var MToonMaterial = /** @class */ (function (_super) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MToonOutlineRenderer", function() { return MToonOutlineRenderer; });
-/* harmony import */ var _babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Engines/engine */ "./node_modules/@babylonjs/core/Engines/engine.js");
-/* harmony import */ var _babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/sceneComponent */ "./node_modules/@babylonjs/core/sceneComponent.js");
-/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
-
+/* harmony import */ var _babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/sceneComponent */ "./node_modules/@babylonjs/core/sceneComponent.js");
+/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
 
 
 var BASE_NAME = 'MToonOutline';
 /**
- * MToonMaterial を別のパスで描画するレンダラ
+ * MToon outline renderer
  * @see OutlineRenderer
  */
 var MToonOutlineRenderer = /** @class */ (function () {
@@ -2062,18 +2425,30 @@ var MToonOutlineRenderer = /** @class */ (function () {
     function MToonOutlineRenderer(scene, material) {
         this.scene = scene;
         this.material = material;
+        /**
+         * Defines a zOffset default Factor to prevent zFighting between the overlay and the mesh.
+         */
+        this.zOffset = 1;
+        /**
+         * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
+         */
+        this.zOffsetUnits = 4; // 4 to account for projection a bit by default
         this._savedDepthWrite = false;
-        this.name = BASE_NAME + "_" + material.name + "_" + MToonOutlineRenderer.rendererId++;
+        this.name = "".concat(BASE_NAME, "_").concat(material.name, "_").concat(MToonOutlineRenderer.rendererId++);
         this.scene._addComponent(this);
         this._engine = this.scene.getEngine();
+        this._passIdForDrawWrapper = [];
+        for (var i = 0; i < 4; ++i) {
+            this._passIdForDrawWrapper[i] = this._engine.createRenderPassId("Outline Renderer (".concat(i, ")"));
+        }
     }
     /**
      * @inheritdoc
      * シーン描画前後にレンダリング処理を登録する
      */
     MToonOutlineRenderer.prototype.register = function () {
-        this.scene._beforeRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_1__["SceneComponentConstants"].STEP_BEFORERENDERINGMESH_OUTLINE, this, this._beforeRenderingMesh);
-        this.scene._afterRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_1__["SceneComponentConstants"].STEP_AFTERRENDERINGMESH_OUTLINE, this, this._afterRenderingMesh);
+        this.scene._beforeRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__["SceneComponentConstants"].STEP_BEFORERENDERINGMESH_OUTLINE, this, this._beforeRenderingMesh);
+        this.scene._afterRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__["SceneComponentConstants"].STEP_AFTERRENDERINGMESH_OUTLINE, this, this._afterRenderingMesh);
     };
     /**
      * @inheritdoc
@@ -2085,43 +2460,56 @@ var MToonOutlineRenderer = /** @class */ (function () {
      * @inheritdoc
      */
     MToonOutlineRenderer.prototype.dispose = function () {
-        // Nothing to do here
+        for (var i = 0; i < this._passIdForDrawWrapper.length; ++i) {
+            this._engine.releaseRenderPassId(this._passIdForDrawWrapper[i]);
+        }
     };
     /**
-     * アウトラインを描画する
+     * Renders the outline in the canvas.
+     * @param subMesh Defines the sumesh to render
+     * @param batch Defines the batch of meshes in case of instances
+     * @param useOverlay Defines if the rendering is for the overlay or the outline
+     * @param renderPassId Render pass id to use to render the mesh
      */
-    MToonOutlineRenderer.prototype.render = function (mesh, subMesh, batch, useOverlay) {
+    MToonOutlineRenderer.prototype.render = function (subMesh, batch, useOverlay, renderPassId) {
         if (useOverlay === void 0) { useOverlay = false; }
+        renderPassId = renderPassId !== null && renderPassId !== void 0 ? renderPassId : this._passIdForDrawWrapper[0];
+        var scene = this.scene;
         var effect = subMesh.effect;
         if (!effect || !effect.isReady() || !this.scene.activeCamera) {
+            return;
+        }
+        var drawWrapper = subMesh._getDrawWrapper(renderPassId, true);
+        if (!drawWrapper) {
+            return;
+        }
+        drawWrapper.setEffect(effect);
+        if (!drawWrapper.effect || !drawWrapper.effect.isReady()) {
             return;
         }
         var ownerMesh = subMesh.getMesh();
         var replacementMesh = ownerMesh._internalAbstractMeshDataInfo._actAsRegularMesh ? ownerMesh : null;
         var renderingMesh = subMesh.getRenderingMesh();
         var effectiveMesh = replacementMesh ? replacementMesh : renderingMesh;
+        if (!scene.activeCamera) {
+            return;
+        }
         this.material.applyOutlineCullMode();
-        this._engine.enableEffect(effect);
-        renderingMesh._bind(subMesh, effect, this.material.fillMode);
-        this._engine.setZOffset(-1);
-        // レンダリング実行
-        if (_babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__["Engine"].Version.startsWith('4.0') || _babylonjs_core_Engines_engine__WEBPACK_IMPORTED_MODULE_0__["Engine"].Version.startsWith('4.1')) {
-            // for 4.0, 4.1
-            renderingMesh._processRendering(subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh, batch), function (isInstance, world, effectiveMaterial) {
-                effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
-                effect.setMatrix('world', world);
-                effect.setFloat('isOutline', 1.0);
-            }, this.material);
+        this._engine.enableEffect(drawWrapper);
+        if (!this.isHardwareInstancedRendering(subMesh, batch)) {
+            renderingMesh._bind(subMesh, effect, this.material.fillMode);
         }
-        else {
-            // for 4.2.0-alpha.0 +
-            renderingMesh._processRendering(effectiveMesh, subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh, batch), function (isInstance, world, effectiveMaterial) {
-                effectiveMaterial.bindForSubMesh(world, mesh, subMesh);
-                effect.setMatrix('world', world);
-                effect.setFloat('isOutline', 1.0);
-            }, this.material);
-        }
+        this._engine.setZOffset(-this.zOffset);
+        this._engine.setZOffsetUnits(-this.zOffsetUnits);
+        renderingMesh._processRendering(effectiveMesh, subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh, batch), function (isInstance, world, effectiveMaterial) {
+            if (effectiveMaterial) {
+                effectiveMaterial.bindForSubMesh(world, effectiveMesh, subMesh);
+            }
+            effect.setMatrix('world', world);
+            effect.setFloat('isOutline', 1.0);
+        }, this.material);
         this._engine.setZOffset(0);
+        this._engine.setZOffsetUnits(0);
         this.material.restoreOutlineCullMode();
     };
     /**
@@ -2140,19 +2528,21 @@ var MToonOutlineRenderer = /** @class */ (function () {
             this._engine.setDepthWrite(false);
             this._engine.setColorWrite(false);
             this._engine.setStencilBuffer(true);
-            this._engine.setStencilOperationPass(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_2__["Constants"].REPLACE);
-            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_2__["Constants"].ALWAYS);
+            this._engine.setStencilOperationPass(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].REPLACE);
+            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].ALWAYS);
             this._engine.setStencilMask(MToonOutlineRenderer._StencilReference);
             this._engine.setStencilFunctionReference(MToonOutlineRenderer._StencilReference);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch, /* This sets offset to 0 */ true);
+            this._engine.stencilStateComposer.useStencilGlobalOnly = true;
+            this.render(subMesh, batch, /* This sets offset to 0 */ true, this._passIdForDrawWrapper[1]);
             this._engine.setColorWrite(true);
-            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_2__["Constants"].NOTEQUAL);
+            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__["Constants"].NOTEQUAL);
         }
-        // 深度ナシで後ろに描画
+        // Draw the outline using the above stencil if needed to avoid drawing within the mesh
         this._engine.setDepthWrite(false);
-        this.render(subMesh.getRenderingMesh(), subMesh, batch);
+        this.render(subMesh, batch, false, this._passIdForDrawWrapper[0]);
         this._engine.setDepthWrite(this._savedDepthWrite);
-        if (material.needAlphaBlendingForMesh(mesh)) {
+        if (material && material.needAlphaBlendingForMesh(mesh)) {
+            this._engine.stencilStateComposer.useStencilGlobalOnly = false;
             this._engine.restoreStencilState();
         }
     };
@@ -2167,7 +2557,7 @@ var MToonOutlineRenderer = /** @class */ (function () {
             // 深度アリで再度書き込む
             this._engine.setDepthWrite(true);
             this._engine.setColorWrite(false);
-            this.render(subMesh.getRenderingMesh(), subMesh, batch);
+            this.render(subMesh, batch, false, this._passIdForDrawWrapper[2]);
             this._engine.setColorWrite(true);
         }
     };
@@ -2178,12 +2568,13 @@ var MToonOutlineRenderer = /** @class */ (function () {
         if (!this._engine.getCaps().instancedArrays) {
             return false;
         }
-        var hasThinInstances = false;
-        // from 4.2.0
-        hasThinInstances = subMesh.getRenderingMesh().hasThinInstances;
-        return (batch.visibleInstances[subMesh._id] !== null)
-            && (typeof batch.visibleInstances[subMesh._id] !== 'undefined')
-            || hasThinInstances;
+        if (batch.visibleInstances[subMesh._id] === null) {
+            return false;
+        }
+        if (typeof batch.visibleInstances[subMesh._id] === 'undefined') {
+            return false;
+        }
+        return subMesh.getRenderingMesh().hasThinInstances;
     };
     /**
     * このメッシュでアウトラインを描画するかどうか
@@ -2217,7 +2608,7 @@ var MToonOutlineRenderer = /** @class */ (function () {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// replace vBumpUV to mainUv\r\nvec2 uvOffset = vec2(0.0, 0.0);\r\n\r\n#if defined(BUMP) || defined(PARALLAX) || defined(DETAIL)\r\n    #ifdef NORMALXYSCALE\r\n        float normalScale = 1.0;\r\n    #elif defined(BUMP)\r\n        float normalScale = vBumpInfos.y;\r\n    #else\r\n        float normalScale = 1.0;\r\n    #endif\r\n\r\n    #if defined(TANGENT) && defined(NORMAL)\r\n        mat3 TBN = vTBN;\r\n    #elif defined(BUMP)\r\n        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, mainUv);\r\n    #else\r\n        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, vDetailUV, vec2(1., 1.));\r\n    #endif\r\n#elif defined(ANISOTROPIC)\r\n    #if defined(TANGENT) && defined(NORMAL)\r\n        mat3 TBN = vTBN;\r\n    #else\r\n        mat3 TBN = cotangent_frame(normalW, vPositionW, vMainUV1, vec2(1., 1.));\r\n    #endif\r\n#endif\r\n\r\n#ifdef PARALLAX\r\n    mat3 invTBN = transposeMat3(TBN);\r\n\r\n    #ifdef PARALLAXOCCLUSION\r\n        uvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, mainUv, vBumpInfos.z);\r\n    #else\r\n        uvOffset = parallaxOffset(invTBN * viewDirectionW, vBumpInfos.z);\r\n    #endif\r\n#endif\r\n\r\n#ifdef DETAIL\r\n    vec4 detailColor = texture2D(detailSampler, vDetailUV + uvOffset);\r\n    vec2 detailNormalRG = detailColor.wy * 2.0 - 1.0;\r\n    float detailNormalB = sqrt(1. - saturate(dot(detailNormalRG, detailNormalRG)));\r\n    vec3 detailNormal = vec3(detailNormalRG, detailNormalB);\r\n#endif\r\n\r\n#ifdef BUMP\r\n    #ifdef OBJECTSPACE_NORMALMAP\r\n        normalW = normalize(texture2D(bumpSampler, mainUv).xyz  * 2.0 - 1.0);\r\n        normalW = normalize(mat3(normalMatrix) * normalW);\r\n    #elif !defined(DETAIL)\r\n        normalW = perturbNormal(TBN, mainUv + uvOffset);\r\n    #else\r\n        vec3 bumpNormal = texture2D(bumpSampler, mainUv + uvOffset).xyz * 2.0 - 1.0;\r\n        // Reference for normal blending: https://blog.selfshadow.com/publications/blending-in-detail/\r\n        #if DETAIL_NORMALBLENDMETHOD == 0 // whiteout\r\n            detailNormal.xy *= vDetailInfos.z;\r\n            vec3 blendedNormal = normalize(vec3(bumpNormal.xy + detailNormal.xy, bumpNormal.z * detailNormal.z));\r\n        #elif DETAIL_NORMALBLENDMETHOD == 1 // RNM\r\n            detailNormal.xy *= vDetailInfos.z;\r\n            bumpNormal += vec3(0.0, 0.0, 1.0);\r\n            detailNormal *= vec3(-1.0, -1.0, 1.0);\r\n            vec3 blendedNormal = bumpNormal * dot(bumpNormal, detailNormal) / bumpNormal.z - detailNormal;\r\n        #endif\r\n        normalW = perturbNormalBase(TBN, blendedNormal, vBumpInfos.y);\r\n    #endif\r\n#elif defined(DETAIL)\r\n        detailNormal.xy *= vDetailInfos.z;\r\n        normalW = perturbNormalBase(TBN, detailNormal, vDetailInfos.z);\r\n#endif\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// replace vBumpUV to mainUv\nvec2 uvOffset = vec2(0.0, 0.0);\n\n#if defined(BUMP) || defined(PARALLAX) || defined(DETAIL)\n    #ifdef NORMALXYSCALE\n        float normalScale = 1.0;\n    #elif defined(BUMP)\n        float normalScale = vBumpInfos.y;\n    #else\n        float normalScale = 1.0;\n    #endif\n\n    #if defined(TANGENT) && defined(NORMAL)\n        mat3 TBN = vTBN;\n    #elif defined(BUMP)\n        // vec2 TBNUV = gl_FrontFacing ? vBumpUV : -vBumpUV;\n        vec2 TBNUV = gl_FrontFacing ? mainUv : -mainUv;\n        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, TBNUV, vTangentSpaceParams);\n    #else\n        vec2 TBNUV = gl_FrontFacing ? vDetailUV : -vDetailUV;\n        mat3 TBN = cotangent_frame(normalW * normalScale, vPositionW, TBNUV, vec2(1., 1.));\n    #endif\n#elif defined(ANISOTROPIC)\n    #if defined(TANGENT) && defined(NORMAL)\n        mat3 TBN = vTBN;\n    #else\n        // flip the uv for the backface\n        vec2 TBNUV = gl_FrontFacing ? vMainUV1 : -vMainUV1;\n        mat3 TBN = cotangent_frame(normalW, vPositionW, TBNUV, vec2(1., 1.));\n    #endif\n#endif\n\n#ifdef PARALLAX\n    mat3 invTBN = transposeMat3(TBN);\n\n    #ifdef PARALLAXOCCLUSION\n        // uvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, vBumpUV, vBumpInfos.z);\n        uvOffset = parallaxOcclusion(invTBN * -viewDirectionW, invTBN * normalW, mainUv, vBumpInfos.z);\n    #else\n        uvOffset = parallaxOffset(invTBN * viewDirectionW, vBumpInfos.z);\n    #endif\n#endif\n\n#ifdef DETAIL\n    vec4 detailColor = texture2D(detailSampler, vDetailUV + uvOffset);\n    vec2 detailNormalRG = detailColor.wy * 2.0 - 1.0;\n    float detailNormalB = sqrt(1. - saturate(dot(detailNormalRG, detailNormalRG)));\n    vec3 detailNormal = vec3(detailNormalRG, detailNormalB);\n#endif\n\n#ifdef BUMP\n    #ifdef OBJECTSPACE_NORMALMAP\n        // normalW = normalize(texture2D(bumpSampler, vBumpUV).xyz  * 2.0 - 1.0);\n        normalW = normalize(texture2D(bumpSampler, mainUv).xyz  * 2.0 - 1.0);\n        normalW = normalize(mat3(normalMatrix) * normalW);\n    #elif !defined(DETAIL)\n        // normalW = perturbNormal(TBN, texture2D(bumpSampler, vBumpUV + uvOffset).xyz, vBumpInfos.y);\n        normalW = perturbNormal(TBN, texture2D(bumpSampler, mainUv + uvOffset).xyz, vBumpInfos.y);\n    #else\n        // vec3 bumpNormal = texture2D(bumpSampler, vBumpUV + uvOffset).xyz * 2.0 - 1.0;\n        vec3 bumpNormal = texture2D(bumpSampler, mainUv + uvOffset).xyz * 2.0 - 1.0;\n        // Reference for normal blending: https://blog.selfshadow.com/publications/blending-in-detail/\n        #if DETAIL_NORMALBLENDMETHOD == 0 // whiteout\n            detailNormal.xy *= vDetailInfos.z;\n            vec3 blendedNormal = normalize(vec3(bumpNormal.xy + detailNormal.xy, bumpNormal.z * detailNormal.z));\n        #elif DETAIL_NORMALBLENDMETHOD == 1 // RNM\n            detailNormal.xy *= vDetailInfos.z;\n            bumpNormal += vec3(0.0, 0.0, 1.0);\n            detailNormal *= vec3(-1.0, -1.0, 1.0);\n            vec3 blendedNormal = bumpNormal * dot(bumpNormal, detailNormal) / bumpNormal.z - detailNormal;\n        #endif\n        normalW = perturbNormalBase(TBN, blendedNormal, vBumpInfos.y);\n    #endif\n#elif defined(DETAIL)\n        detailNormal.xy *= vDetailInfos.z;\n        normalW = perturbNormalBase(TBN, detailNormal, vDetailInfos.z);\n#endif\n");
 
 /***/ }),
 
@@ -2230,7 +2621,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("uniform mat4 viewProjection;\r\nuniform mat4 view;\r\n\r\n// Colors\r\nuniform vec4 vDiffuseColor;\r\nuniform vec3 vEmissiveColor;\r\nuniform vec3 vShadeColor;\r\nuniform vec3 vRimColor;\r\nuniform vec4 vOutlineColor;\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform vec2 vTangentSpaceParams;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\n#endif\r\n\r\n#ifdef UV_ANIMATION_MASK\r\nuniform vec2 vUvAnimationMaskInfos;\r\n#endif\r\n\r\n// MToon params\r\nuniform float shadingGradeRate;\r\nuniform float receiveShadowRate;\r\nuniform float shadeShift;\r\nuniform float shadeToony;\r\nuniform float lightColorAttenuation;\r\nuniform float indirectLightIntensity;\r\nuniform float rimLightingMix;\r\nuniform float rimFresnelPower;\r\nuniform float rimLift;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\nuniform float uvAnimationScrollX;\r\nuniform float uvAnimationScrollY;\r\nuniform float uvAnimationRotation;\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("uniform vec4 vEyePosition;\n\n// Colors\nuniform vec4 vDiffuseColor;\nuniform vec3 vEmissiveColor;\nuniform vec3 vShadeColor;\nuniform vec3 vRimColor;\nuniform vec4 vOutlineColor;\nuniform vec3 vAmbientColor;\n\nuniform vec3 vEyeUp;\nuniform float aspect;\nuniform float alphaCutOff;\nuniform float visibility;\nuniform float isOutline;\nuniform vec4 time;\n\n// Samplers\n#ifdef DIFFUSE\nuniform vec2 vDiffuseInfos;\n#endif\n\n#ifdef EMISSIVE\nuniform vec2 vEmissiveInfos;\n#endif\n\n#ifdef BUMP\nuniform vec3 vBumpInfos;\nuniform vec2 vTangentSpaceParams;\n#endif\n\n#ifdef SHADE\nuniform vec2 vShadeInfos;\n#endif\n\n#ifdef RECEIVE_SHADOW\nuniform vec2 vReceiveShadowInfos;\n#endif\n\n#ifdef SHADING_GRADE\nuniform vec2 vShadingGradeInfos;\n#endif\n\n#ifdef RIM\nuniform vec2 vRimInfos;\n#endif\n\n#ifdef MATCAP\nuniform vec2 vMatCapInfos;\n#endif\n\n#ifdef OUTLINE_WIDTH\nuniform vec2 vOutlineWidthInfos;\n#endif\n\n#ifdef UV_ANIMATION_MASK\nuniform vec2 vUvAnimationMaskInfos;\n#endif\n\n// MToon params\nuniform float shadingGradeRate;\nuniform float receiveShadowRate;\nuniform float shadeShift;\nuniform float shadeToony;\nuniform float lightColorAttenuation;\nuniform float indirectLightIntensity;\nuniform float rimLightingMix;\nuniform float rimFresnelPower;\nuniform float rimLift;\nuniform float outlineWidth;\nuniform float outlineScaledMaxDistance;\nuniform float outlineLightingMix;\nuniform float uvAnimationScrollX;\nuniform float uvAnimationScrollY;\nuniform float uvAnimationRotation;\n");
 
 /***/ }),
 
@@ -2243,7 +2634,20 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("#ifdef LIGHT{X}\r\n    #ifdef SHADOW{X}\r\n        #ifdef SHADOWCLOSEESM{X}\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithCloseESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithCloseESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWESM{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPOISSON{X})\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowWithPoissonSamplingCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadowWithPoissonSampling(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCF{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCF1(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCF3(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCF5(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #elif defined(SHADOWPCSS{X})\r\n            #if defined(SHADOWLOWQUALITY{X})\r\n                shadow = computeShadowWithPCSS16(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #elif defined(SHADOWMEDIUMQUALITY{X})\r\n                shadow = computeShadowWithPCSS32(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #else\r\n                shadow = computeShadowWithPCSS64(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #else\r\n            #if defined(SHADOWCUBE{X})\r\n                shadow = computeShadowCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.depthValues);\r\n            #else\r\n                shadow = computeShadow(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\r\n            #endif\r\n        #endif\r\n    #else\r\n        shadow = 1.;\r\n    #endif\r\n\r\n    // ここで MToon のライティングを適用\r\n    #ifdef SPOTLIGHT{X}\r\n        lightDirection = computeSpotLightDirection(light{X}.vLightData);\r\n    #elif defined(HEMILIGHT{X})\r\n        lightDirection = computeHemisphericLightDirection(light{X}.vLightData, normalW.xyz);\r\n    #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})\r\n        lightDirection = computeLightDirection(light{X}.vLightData);\r\n    #endif\r\n    mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, mainUv, lightDirection, light{X}.vLightDiffuse.rgba, shadow);\r\n    diffuseBase += mtoonDiffuse.rgb;\r\n    alpha = min(alpha, mtoonDiffuse.a);\r\n    #if defined(ALPHATEST) && ALPHATEST\r\n        alpha = (alpha - alphaCutOff) / max(fwidth(alpha), EPS_COL) + 0.5; // Alpha to Coverage\r\n        if (alpha < alphaCutOff) {\r\n            discard;\r\n        }\r\n        alpha = 1.0; // Discarded, otherwise it should be assumed to have full opacity\r\n    #else\r\n        if (alpha - 0.0001 < 0.000) { // Slightly improves rendering with layered transparency\r\n            discard;\r\n        }\r\n    #endif\r\n#endif\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("#ifdef LIGHT{X}\n    #if defined(SHADOWONLY) || defined(LIGHTMAP) && defined(LIGHTMAPEXCLUDED{X}) && defined(LIGHTMAPNOSPECULAR{X})\n        //No light calculation\n    #else\n        #ifdef PBR\n            // Compute Pre Lighting infos\n            #ifdef SPOTLIGHT{X}\n                preInfo = computePointAndSpotPreLightingInfo(light{X}.vLightData, viewDirectionW, normalW);\n            #elif defined(POINTLIGHT{X})\n                preInfo = computePointAndSpotPreLightingInfo(light{X}.vLightData, viewDirectionW, normalW);\n            #elif defined(HEMILIGHT{X})\n                preInfo = computeHemisphericPreLightingInfo(light{X}.vLightData, viewDirectionW, normalW);\n            #elif defined(DIRLIGHT{X})\n                preInfo = computeDirectionalPreLightingInfo(light{X}.vLightData, viewDirectionW, normalW);\n            #endif\n\n            preInfo.NdotV = NdotV;\n\n            // Compute Attenuation infos\n            #ifdef SPOTLIGHT{X}\n                #ifdef LIGHT_FALLOFF_GLTF{X}\n                    preInfo.attenuation = computeDistanceLightFalloff_GLTF(preInfo.lightDistanceSquared, light{X}.vLightFalloff.y);\n                    preInfo.attenuation *= computeDirectionalLightFalloff_GLTF(light{X}.vLightDirection.xyz, preInfo.L, light{X}.vLightFalloff.z, light{X}.vLightFalloff.w);\n                #elif defined(LIGHT_FALLOFF_PHYSICAL{X})\n                    preInfo.attenuation = computeDistanceLightFalloff_Physical(preInfo.lightDistanceSquared);\n                    preInfo.attenuation *= computeDirectionalLightFalloff_Physical(light{X}.vLightDirection.xyz, preInfo.L, light{X}.vLightDirection.w);\n                #elif defined(LIGHT_FALLOFF_STANDARD{X})\n                    preInfo.attenuation = computeDistanceLightFalloff_Standard(preInfo.lightOffset, light{X}.vLightFalloff.x);\n                    preInfo.attenuation *= computeDirectionalLightFalloff_Standard(light{X}.vLightDirection.xyz, preInfo.L, light{X}.vLightDirection.w, light{X}.vLightData.w);\n                #else\n                    preInfo.attenuation = computeDistanceLightFalloff(preInfo.lightOffset, preInfo.lightDistanceSquared, light{X}.vLightFalloff.x, light{X}.vLightFalloff.y);\n                    preInfo.attenuation *= computeDirectionalLightFalloff(light{X}.vLightDirection.xyz, preInfo.L, light{X}.vLightDirection.w, light{X}.vLightData.w, light{X}.vLightFalloff.z, light{X}.vLightFalloff.w);\n                #endif\n            #elif defined(POINTLIGHT{X})\n                #ifdef LIGHT_FALLOFF_GLTF{X}\n                    preInfo.attenuation = computeDistanceLightFalloff_GLTF(preInfo.lightDistanceSquared, light{X}.vLightFalloff.y);\n                #elif defined(LIGHT_FALLOFF_PHYSICAL{X})\n                    preInfo.attenuation = computeDistanceLightFalloff_Physical(preInfo.lightDistanceSquared);\n                #elif defined(LIGHT_FALLOFF_STANDARD{X})\n                    preInfo.attenuation = computeDistanceLightFalloff_Standard(preInfo.lightOffset, light{X}.vLightFalloff.x);\n                #else\n                    preInfo.attenuation = computeDistanceLightFalloff(preInfo.lightOffset, preInfo.lightDistanceSquared, light{X}.vLightFalloff.x, light{X}.vLightFalloff.y);\n                #endif\n            #else\n                preInfo.attenuation = 1.0;\n            #endif\n\n            // Simulates Light radius for diffuse and spec term\n            // clear coat is using a dedicated roughness\n            #ifdef HEMILIGHT{X}\n                preInfo.roughness = roughness;\n            #else\n                preInfo.roughness = adjustRoughnessFromLightProperties(roughness, light{X}.vLightSpecular.a, preInfo.lightDistance);\n            #endif\n\n            // Diffuse contribution\n            #ifdef HEMILIGHT{X}\n                info.diffuse = computeHemisphericDiffuseLighting(preInfo, light{X}.vLightDiffuse.rgb, light{X}.vLightGround);\n            #elif defined(SS_TRANSLUCENCY)\n                info.diffuse = computeDiffuseAndTransmittedLighting(preInfo, light{X}.vLightDiffuse.rgb, subSurfaceOut.transmittance);\n            #else\n                info.diffuse = computeDiffuseLighting(preInfo, light{X}.vLightDiffuse.rgb);\n            #endif\n\n            // Specular contribution\n            #ifdef SPECULARTERM\n                #ifdef ANISOTROPIC\n                    info.specular = computeAnisotropicSpecularLighting(preInfo, viewDirectionW, normalW, anisotropicOut.anisotropicTangent, anisotropicOut.anisotropicBitangent, anisotropicOut.anisotropy, clearcoatOut.specularEnvironmentR0, specularEnvironmentR90, AARoughnessFactors.x, light{X}.vLightDiffuse.rgb);\n                #else\n                    info.specular = computeSpecularLighting(preInfo, normalW, clearcoatOut.specularEnvironmentR0, specularEnvironmentR90, AARoughnessFactors.x, light{X}.vLightDiffuse.rgb);\n                #endif\n            #endif\n\n            // Sheen contribution\n            #ifdef SHEEN\n                #ifdef SHEEN_LINKWITHALBEDO\n                    // BE Carefull: Sheen intensity is replacing the roughness value.\n                    preInfo.roughness = sheenOut.sheenIntensity;\n                #else\n                    #ifdef HEMILIGHT{X}\n                        preInfo.roughness = sheenOut.sheenRoughness;\n                    #else\n                        preInfo.roughness = adjustRoughnessFromLightProperties(sheenOut.sheenRoughness, light{X}.vLightSpecular.a, preInfo.lightDistance);\n                    #endif\n                #endif\n                info.sheen = computeSheenLighting(preInfo, normalW, sheenOut.sheenColor, specularEnvironmentR90, AARoughnessFactors.x, light{X}.vLightDiffuse.rgb);\n            #endif\n\n            // Clear Coat contribution\n            #ifdef CLEARCOAT\n                // Simulates Light radius\n                #ifdef HEMILIGHT{X}\n                    preInfo.roughness = clearcoatOut.clearCoatRoughness;\n                #else\n                    preInfo.roughness = adjustRoughnessFromLightProperties(clearcoatOut.clearCoatRoughness, light{X}.vLightSpecular.a, preInfo.lightDistance);\n                #endif\n\n                info.clearCoat = computeClearCoatLighting(preInfo, clearcoatOut.clearCoatNormalW, clearcoatOut.clearCoatAARoughnessFactors.x, clearcoatOut.clearCoatIntensity, light{X}.vLightDiffuse.rgb);\n\n                #ifdef CLEARCOAT_TINT\n                    // Absorption\n                    absorption = computeClearCoatLightingAbsorption(clearcoatOut.clearCoatNdotVRefract, preInfo.L, clearcoatOut.clearCoatNormalW, clearcoatOut.clearCoatColor, clearcoatOut.clearCoatThickness, clearcoatOut.clearCoatIntensity);\n                    info.diffuse *= absorption;\n                    #ifdef SPECULARTERM\n                        info.specular *= absorption;\n                    #endif\n                #endif\n\n                // Apply energy conservation on diffuse and specular term.\n                info.diffuse *= info.clearCoat.w;\n                #ifdef SPECULARTERM\n                    info.specular *= info.clearCoat.w;\n                #endif\n                #ifdef SHEEN\n                    info.sheen *= info.clearCoat.w;\n                #endif\n            #endif\n        #else\n            #ifdef SPOTLIGHT{X}\n                info = computeSpotLighting(viewDirectionW, normalW, light{X}.vLightData, light{X}.vLightDirection, light{X}.vLightDiffuse.rgb, light{X}.vLightSpecular.rgb, light{X}.vLightDiffuse.a, glossiness);\n            #elif defined(HEMILIGHT{X})\n                info = computeHemisphericLighting(viewDirectionW, normalW, light{X}.vLightData, light{X}.vLightDiffuse.rgb, light{X}.vLightSpecular.rgb, light{X}.vLightGround, glossiness);\n            #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})\n                info = computeLighting(viewDirectionW, normalW, light{X}.vLightData, light{X}.vLightDiffuse.rgb, light{X}.vLightSpecular.rgb, light{X}.vLightDiffuse.a, glossiness);\n            #endif\n        #endif\n\n        #ifdef PROJECTEDLIGHTTEXTURE{X}\n            info.diffuse *= computeProjectionTextureDiffuseLighting(projectionLightSampler{X}, textureProjectionMatrix{X});\n        #endif\n    #endif\n\n    #ifdef SHADOW{X}\n        #ifdef SHADOWCSM{X}\n            for (int i = 0; i < SHADOWCSMNUM_CASCADES{X}; i++)\n            {\n                #ifdef SHADOWCSM_RIGHTHANDED{X}\n                    diff{X} = viewFrustumZ{X}[i] + vPositionFromCamera{X}.z;\n                #else\n                    diff{X} = viewFrustumZ{X}[i] - vPositionFromCamera{X}.z;\n                #endif\n                if (diff{X} >= 0.) {\n                    index{X} = i;\n                    break;\n                }\n            }\n\n            #ifdef SHADOWCSMUSESHADOWMAXZ{X}\n            if (index{X} >= 0)\n            #endif\n            {\n                #if defined(SHADOWPCF{X})\n                    #if defined(SHADOWLOWQUALITY{X})\n                        shadow = computeShadowWithCSMPCF1(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                    #elif defined(SHADOWMEDIUMQUALITY{X})\n                        shadow = computeShadowWithCSMPCF3(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                    #else\n                        shadow = computeShadowWithCSMPCF5(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                    #endif\n                #elif defined(SHADOWPCSS{X})\n                    #if defined(SHADOWLOWQUALITY{X})\n                        shadow = computeShadowWithCSMPCSS16(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                    #elif defined(SHADOWMEDIUMQUALITY{X})\n                        shadow = computeShadowWithCSMPCSS32(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                    #else\n                        shadow = computeShadowWithCSMPCSS64(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                    #endif\n                #else\n                    shadow = computeShadowCSM(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                #endif\n\n                #ifdef SHADOWCSMDEBUG{X}\n                    shadowDebug{X} = vec3(shadow) * vCascadeColorsMultiplier{X}[index{X}];\n                #endif\n\n                #ifndef SHADOWCSMNOBLEND{X}\n                    float frustumLength = frustumLengths{X}[index{X}];\n                    float diffRatio = clamp(diff{X} / frustumLength, 0., 1.) * cascadeBlendFactor{X};\n                    if (index{X} < (SHADOWCSMNUM_CASCADES{X} - 1) && diffRatio < 1.)\n                    {\n                        index{X} += 1;\n                        float nextShadow = 0.;\n                        #if defined(SHADOWPCF{X})\n                            #if defined(SHADOWLOWQUALITY{X})\n                                nextShadow = computeShadowWithCSMPCF1(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                            #elif defined(SHADOWMEDIUMQUALITY{X})\n                                nextShadow = computeShadowWithCSMPCF3(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                            #else\n                                nextShadow = computeShadowWithCSMPCF5(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                            #endif\n                        #elif defined(SHADOWPCSS{X})\n                            #if defined(SHADOWLOWQUALITY{X})\n                                nextShadow = computeShadowWithCSMPCSS16(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                            #elif defined(SHADOWMEDIUMQUALITY{X})\n                                nextShadow = computeShadowWithCSMPCSS32(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                            #else\n                                nextShadow = computeShadowWithCSMPCSS64(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w, lightSizeUVCorrection{X}[index{X}], depthCorrection{X}[index{X}], penumbraDarkness{X});\n                            #endif\n                        #else\n                            nextShadow = computeShadowCSM(float(index{X}), vPositionFromLight{X}[index{X}], vDepthMetric{X}[index{X}], shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n                        #endif\n\n                        shadow = mix(nextShadow, shadow, diffRatio);\n                        #ifdef SHADOWCSMDEBUG{X}\n                            shadowDebug{X} = mix(vec3(nextShadow) * vCascadeColorsMultiplier{X}[index{X}], shadowDebug{X}, diffRatio);\n                        #endif\n                    }\n                #endif\n            }\n        #elif defined(SHADOWCLOSEESM{X})\n            #if defined(SHADOWCUBE{X})\n                shadow = computeShadowWithCloseESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\n            #else\n                shadow = computeShadowWithCloseESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\n            #endif\n        #elif defined(SHADOWESM{X})\n            #if defined(SHADOWCUBE{X})\n                shadow = computeShadowWithESMCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.depthValues);\n            #else\n                shadow = computeShadowWithESM(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.z, light{X}.shadowsInfo.w);\n            #endif\n        #elif defined(SHADOWPOISSON{X})\n            #if defined(SHADOWCUBE{X})\n                shadow = computeShadowWithPoissonSamplingCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.depthValues);\n            #else\n                shadow = computeShadowWithPoissonSampling(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #endif\n        #elif defined(SHADOWPCF{X})\n            #if defined(SHADOWLOWQUALITY{X})\n                shadow = computeShadowWithPCF1(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #elif defined(SHADOWMEDIUMQUALITY{X})\n                shadow = computeShadowWithPCF3(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #else\n                shadow = computeShadowWithPCF5(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.yz, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #endif\n        #elif defined(SHADOWPCSS{X})\n            #if defined(SHADOWLOWQUALITY{X})\n                shadow = computeShadowWithPCSS16(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #elif defined(SHADOWMEDIUMQUALITY{X})\n                shadow = computeShadowWithPCSS32(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #else\n                shadow = computeShadowWithPCSS64(vPositionFromLight{X}, vDepthMetric{X}, depthSampler{X}, shadowSampler{X}, light{X}.shadowsInfo.y, light{X}.shadowsInfo.z, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #endif\n        #else\n            #if defined(SHADOWCUBE{X})\n                shadow = computeShadowCube(light{X}.vLightData.xyz, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.depthValues);\n            #else\n                shadow = computeShadow(vPositionFromLight{X}, vDepthMetric{X}, shadowSampler{X}, light{X}.shadowsInfo.x, light{X}.shadowsInfo.w);\n            #endif\n        #endif\n\n        #ifdef SHADOWONLY\n            #ifndef SHADOWINUSE\n                #define SHADOWINUSE\n            #endif\n            globalShadow += shadow;\n            shadowLightCount += 1.0;\n        #endif\n    #else\n        shadow = 1.;\n    #endif\n\n    #ifndef SHADOWONLY\n        #ifdef CUSTOMUSERLIGHTING\n            // Compute and reflect MToon lighting\n            #ifdef SPOTLIGHT{X}\n                lightDirection = computeSpotLightDirection(light{X}.vLightData);\n            #elif defined(HEMILIGHT{X})\n                lightDirection = computeHemisphericLightDirection(light{X}.vLightData, normalW.xyz);\n            #elif defined(POINTLIGHT{X}) || defined(DIRLIGHT{X})\n                lightDirection = computeLightDirection(light{X}.vLightData);\n            #endif\n            mtoonDiffuse = computeMToonDiffuseLighting(viewDirectionW.xyz, normalW.xyz, mainUv, lightDirection, light{X}.vLightDiffuse.rgba, shadow);\n            diffuseBase += mtoonDiffuse.rgb;\n            alpha = min(alpha, mtoonDiffuse.a);\n            #if defined(ALPHATEST) && ALPHATEST\n                alpha = (alpha - alphaCutOff) / max(fwidth(alpha), EPS_COL) + 0.5; // Alpha to Coverage\n                if (alpha < alphaCutOff) {\n                    discard;\n                }\n                alpha = 1.0; // Discarded, otherwise it should be assumed to have full opacity\n            #else\n                if (alpha - 0.0001 < 0.000) { // Slightly improves rendering with layered transparency\n                    discard;\n                }\n            #endif\n        #elif defined(LIGHTMAP) && defined(LIGHTMAPEXCLUDED{X})\n            diffuseBase += lightmapColor.rgb * shadow;\n            #ifdef SPECULARTERM\n                #ifndef LIGHTMAPNOSPECULAR{X}\n                    specularBase += info.specular * shadow * lightmapColor.rgb;\n                #endif\n            #endif\n            #ifdef CLEARCOAT\n                #ifndef LIGHTMAPNOSPECULAR{X}\n                    clearCoatBase += info.clearCoat.rgb * shadow * lightmapColor.rgb;\n                #endif\n            #endif\n            #ifdef SHEEN\n                #ifndef LIGHTMAPNOSPECULAR{X}\n                    sheenBase += info.sheen.rgb * shadow;\n                #endif\n            #endif\n        #else\n            #ifdef SHADOWCSMDEBUG{X}\n                diffuseBase += info.diffuse * shadowDebug{X};\n            #else\n                diffuseBase += info.diffuse * shadow;\n            #endif\n            #ifdef SPECULARTERM\n                specularBase += info.specular * shadow;\n            #endif\n            #ifdef CLEARCOAT\n                clearCoatBase += info.clearCoat.rgb * shadow;\n            #endif\n            #ifdef SHEEN\n                sheenBase += info.sheen.rgb * shadow;\n            #endif\n        #endif\n    #endif\n#endif\n");
+
+/***/ }),
+
+/***/ "./src/shaders/mtoon-fragment-functions.frag":
+/*!***************************************************!*\
+  !*** ./src/shaders/mtoon-fragment-functions.frag ***!
+  \***************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony default export */ __webpack_exports__["default"] = ("\n/**\n* Compute Directional or Point light direction\n*/\nvec3 computeLightDirection(vec4 lightData) {\n      return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));\n}\n\n/**\n* Compute Spot Light direction\n*/\nvec3 computeSpotLightDirection(vec4 lightData) {\n     return normalize(lightData.xyz - vPositionW);\n}\n\n/**\n* Compute Hemispheric light direction\n*/\nvec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {\n     return normalize(lightData.xyz);\n}\n\n/**\n* Compute MToon diffuse lighting\n*/\nvec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, vec3 lightDirection, vec4 lightDiffuse, float shadowAttenuation) {\n    float _receiveShadow = receiveShadowRate;\n#ifdef RECEIVE_SHADOW\n    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, mainUv).r * vReceiveShadowInfos.y;\n#endif\n\n    float _shadingGrade = 0.0;\n#ifdef SHADING_GRADE\n    _shadingGrade = 1.0 - texture2D(shadingGradeSampler, mainUv).r * vShadingGradeInfos.y;\n#endif\n    _shadingGrade = 1.0 - shadingGradeRate * _shadingGrade;\n\n    // Lighting\n    vec3 _lightColor = lightDiffuse.rgb * step(0.5, length(lightDirection)); // length(lightDir) is zero if directional light is disabled.\n    float _dotNL = dot(lightDirection, worldNormal);\n#ifdef MTOON_FORWARD_ADD\n    float _lightAttenuation = 1.0;\n#else\n    float _lightAttenuation = shadowAttenuation * mix(1.0, shadowAttenuation, _receiveShadow);\n#endif\n\n    // lighting intensity\n    float _lightIntensity = _dotNL;\n    _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]\n    _lightIntensity = _lightIntensity * _lightAttenuation; // receive shadow\n    _lightIntensity = _lightIntensity * _shadingGrade; // darker\n    _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]\n    // tooned. mapping from [minIntensityThreshold, maxIntensityThreshold] to [0, 1]\n    float _maxIntensityThreshold = mix(1.0, shadeShift, shadeToony);\n    float _minIntensityThreshold = shadeShift;\n    _lightIntensity = clamp((_lightIntensity - _minIntensityThreshold) / max(EPS_COL, (_maxIntensityThreshold - _minIntensityThreshold)), 0.0, 1.0);\n\n    // Albedo color\n    vec3 _shade = vShadeColor;\n#ifdef SHADE\n    _shade = _shade * texture2D(shadeSampler, mainUv).rgb * vShadeInfos.y;\n#endif\n\n    vec4 _lit = vDiffuseColor;\n#ifdef DIFFUSE\n    _lit = _lit * texture2D(diffuseSampler, mainUv) * vDiffuseInfos.y;\n#endif\n    vec3 _col = mix(_shade.rgb, _lit.rgb, _lightIntensity);\n\n    // Direct Light\n    vec3 _lighting = _lightColor;\n    _lighting = mix(_lighting, vec3(max(EPS_COL, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation); // color atten\n#ifdef MTOON_FORWARD_ADD\n    _lighting *= 0.5; // darken if additional light\n    _lighting *= min(0, dotNL) + 1.0; // darken dotNL < 0 area by using half lambert\n    _lighting *= shadowAttenuation; // darken if receiving shadow\n#else\n    // base light does not darken.\n#endif\n    _col *= _lighting;\n\n    // Indirect Light\n#ifdef MTOON_FORWARD_ADD\n#else\n    vec3 _toonedGI = vAmbientColor.rgb; // TODO: GI\n    vec3 _indirectLighting = mix(_toonedGI, vAmbientColor.rgb, indirectLightIntensity);\n    _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten\n    _col += _indirectLighting * _lit.rgb;\n\n    _col = min(_col.rgb, _lit.rgb); // comment out if you want to PBR absolutely.\n#endif\n\n    // parametric rim lighting\n#ifdef MTOON_FORWARD_ADD\n    vec3 _staticRimLighting = vec3(0.0);\n    vec3 _mixedRimLighting = _lighting;\n#else\n    vec3 _staticRimLighting = vec3(1.0);\n    vec3 _mixedRimLighting = _lighting + _indirectLighting;\n#endif\n    vec3 _rimLighting = mix(_staticRimLighting, _mixedRimLighting, rimLightingMix);\n    vec3 _rimColor = vRimColor.rgb;\n#ifdef RIM\n    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + mainUv).rgb * vRimInfos.y;\n#endif\n    vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;\n    _col += mix(_rim * _rimLighting, vec3(0.0), isOutline);\n\n    // additive matcap\n#ifdef MTOON_FORWARD_ADD\n#else\n#ifdef MATCAP\n    vec3 _worldViewUp = normalize(vEyeUp - worldView * dot(worldView, vEyeUp));\n    vec3 _worldViewRight = normalize(cross(worldView, _worldViewUp));\n    vec2 _matCapUv = vec2(dot(_worldViewRight, worldNormal), dot(_worldViewUp, worldNormal)) * 0.5 + 0.5;\n    // uv.y is reversed\n    _matCapUv.y = (1.0 - _matCapUv.y);\n    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv).rgb * vMatCapInfos.y;\n    _col += mix(_matCapLighting, vec3(0.0), isOutline);\n#endif\n#endif\n\n    // Emission\n#ifdef MTOON_FORWARD_ADD\n#else\n    vec3 _emission = vEmissiveColor.rgb;\n#ifdef EMISSIVE\n     _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;\n#endif\n     _col += mix(_emission, vec3(0.0), isOutline);\n#endif\n\n    float _alpha = 1.0;\n\n#if defined(ALPHABLEND) || defined(ALPHATEST)\n    _alpha = mix(_lit.a, _lit.a * vOutlineColor.a, isOutline);\n#endif\n\n    // outline\n#ifdef MTOON_OUTLINE_COLOR_FIXED\n    _col = mix(_col, vOutlineColor.rgb, isOutline);\n#elif defined(MTOON_OUTLINE_COLOR_MIXED)\n    _col = mix(_col, vOutlineColor.rgb * mix(vec3(1.0), _col, outlineLightingMix), isOutline);\n#else\n#endif\n\n    // debug\n#ifdef MTOON_DEBUG_NORMAL\n    #ifdef MTOON_FORWARD_ADD\n        return vec4(0.0);\n    #else\n        return vec4(worldNormal * 0.5 + 0.5, _lit.a);\n    #endif\n#elif defined(MTOON_DEBUG_LITSHADERATE)\n    #ifdef MTOON_FORWARD_ADD\n        return vec4(0.0);\n    #else\n        return vec4(_lightIntensity, _lit.a);\n    #endif\n#endif\n\n    return vec4(_col, _alpha);\n}\n");
 
 /***/ }),
 
@@ -2256,7 +2660,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("#include<__decl__mtoonFragment>\r\n\r\n#if defined(BUMP) || !defined(NORMAL) || (defined(ALPHATEST) && ALPHATEST)\r\n#extension GL_OES_standard_derivatives : enable\r\n#endif\r\n\r\n#ifdef LOGARITHMICDEPTH\r\n#extension GL_EXT_frag_depth : enable\r\n#endif\r\n\r\n// Constants\r\n#define RECIPROCAL_PI2 0.15915494\r\n#define PI_2 6.28318530718\r\n#define EPS_COL 0.00001\r\n\r\nuniform vec3 vEyePosition;\r\nuniform vec3 vEyeUp;\r\nuniform vec3 vAmbientColor;\r\nuniform float aspect;\r\nuniform float isOutline;\r\nuniform vec4 time;\r\n\r\n// Input\r\nvarying vec3 vPositionW;\r\n\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    varying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    varying vec2 vMainUV2;\r\n#endif\r\n\r\n// Helper functions\r\n#include<helperFunctions>\r\n\r\n// Lights\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<lightsFragmentFunctions>\r\n#include<shadowsFragmentFunctions>\r\n\r\n// Samplers\r\n#ifdef DIFFUSE\r\n    #if DIFFUSEDIRECTUV == 1\r\n        #define vDiffuseUV vMainUV1\r\n    #elif DIFFUSEDIRECTUV == 2\r\n        #define vDiffuseUV vMainUV2\r\n    #else\r\n        varying vec2 vDiffuseUV;\r\n    #endif\r\n    uniform sampler2D diffuseSampler;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\n    #if EMISSIVEDIRECTUV == 1\r\n        #define vEmissiveUV vMainUV1\r\n    #elif EMISSIVEDIRECTUV == 2\r\n        #define vEmissiveUV vMainUV2\r\n    #else\r\n        varying vec2 vEmissiveUV;\r\n    #endif\r\n    uniform sampler2D emissiveSampler;\r\n#endif\r\n\r\n#ifdef ALPHATEST\r\n     uniform float alphaCutOff;\r\n#endif\r\n\r\n#ifdef SHADE\r\n    uniform sampler2D shadeSampler;\r\n    #if SHADEDIRECTUV == 1\r\n        #define vShadeUV vMainUV1\r\n    #elif SHADEDIRECTUV == 2\r\n        #define vShadeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadeUV;\r\n    #endif\r\n#endif\r\n#ifdef RECEIVE_SHADOW\r\n    uniform sampler2D receiveShadowSampler;\r\n    #if RECEIVE_SHADOWDIRECTUV == 1\r\n        #define vReceiveShadowUV vMainUV1\r\n    #elif RECEIVE_SHADOWDIRECTUV == 2\r\n        #define vReceiveShadowUV vMainUV2\r\n    #else\r\n        varying vec2 vReceiveShadowUV;\r\n    #endif\r\n#endif\r\n#ifdef SHADING_GRADE\r\n    uniform sampler2D shadingGradeSampler;\r\n    #if SHADING_GRADEDIRECTUV == 1\r\n        #define vShadingGradeUV vMainUV1\r\n    #elif SHADING_GRADEDIRECTUV == 2\r\n        #define vShadingGradeUV vMainUV2\r\n    #else\r\n        varying vec2 vShadingGradeUV;\r\n    #endif\r\n#endif\r\n#ifdef RIM\r\n    uniform sampler2D rimSampler;\r\n    #if RIMDIRECTUV == 1\r\n        #define vRimUV vMainUV1\r\n    #elif RIMDIRECTUV == 2\r\n        #define vRimUV vMainUV2\r\n    #else\r\n        varying vec2 vRimUV;\r\n    #endif\r\n#endif\r\n#ifdef MATCAP\r\n    uniform sampler2D matCapSampler;\r\n    #if MATCAPDIRECTUV == 1\r\n        #define vMatCapUV vMainUV1\r\n    #elif MATCAPDIRECTUV == 2\r\n        #define vMatCapUV vMainUV2\r\n    #else\r\n        varying vec2 vMatCapUV;\r\n    #endif\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n    #if OUTLINE_WIDTHDIRECTUV == 1\r\n        #define vOutlineWidthUV vMainUV1\r\n    #elif OUTLINE_WIDTHDIRECTUV == 2\r\n        #define vOutlineWidthUV vMainUV2\r\n    #else\r\n        varying vec2 vOutlineWidthUV;\r\n    #endif\r\n#endif\r\n#ifdef UV_ANIMATION_MASK\r\n    uniform sampler2D uvAnimationMaskSampler;\r\n    #if UV_ANIMATION_MASKDIRECTUV == 1\r\n        #define vUvAnimationMaskUV vMainUV1\r\n    #elif UV_ANIMATION_MASKDIRECTUV == 2\r\n        #define vUvAnimationMaskUV vMainUV2\r\n    #else\r\n        varying vec2 vUvAnimationMaskUV;\r\n    #endif\r\n#endif\r\n\r\n/**\r\n* DirectionalLight, PointLight の角度を計算\r\n*/\r\nvec3 computeLightDirection(vec4 lightData) {\r\n      return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));\r\n}\r\n\r\n/**\r\n* SpotLight の角度を計算\r\n*/\r\nvec3 computeSpotLightDirection(vec4 lightData) {\r\n     return normalize(lightData.xyz - vPositionW);\r\n}\r\n\r\n/**\r\n* HemisphericLight の角度を計算\r\n*/\r\nvec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {\r\n     return normalize(lightData.xyz);\r\n}\r\n\r\n/**\r\n* MToon シェーダーの陰実装\r\n*/\r\nvec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, vec3 lightDirection, vec4 lightDiffuse, float shadowAttenuation) {\r\n    float _receiveShadow = receiveShadowRate;\r\n#ifdef RECEIVE_SHADOW\r\n    _receiveShadow = _receiveShadow * texture2D(receiveShadowSampler, mainUv).r * vReceiveShadowInfos.y;\r\n#endif\r\n\r\n    float _shadingGrade = 0.0;\r\n#ifdef SHADING_GRADE\r\n    _shadingGrade = 1.0 - texture2D(shadingGradeSampler, mainUv).r * vShadingGradeInfos.y;\r\n#endif\r\n    _shadingGrade = 1.0 - shadingGradeRate * _shadingGrade;\r\n\r\n    // Lighting\r\n    vec3 _lightColor = lightDiffuse.rgb * step(0.5, length(lightDirection)); // length(lightDir) is zero if directional light is disabled.\r\n    float _dotNL = dot(lightDirection, worldNormal);\r\n#ifdef MTOON_FORWARD_ADD\r\n    float _lightAttenuation = 1.0;\r\n#else\r\n    float _lightAttenuation = shadowAttenuation * mix(1.0, shadowAttenuation, _receiveShadow);\r\n#endif\r\n\r\n    // lighting intensity\r\n    float _lightIntensity = _dotNL;\r\n    _lightIntensity = _lightIntensity * 0.5 + 0.5; // from [-1, +1] to [0, 1]\r\n    _lightIntensity = _lightIntensity * _lightAttenuation; // receive shadow\r\n    _lightIntensity = _lightIntensity * _shadingGrade; // darker\r\n    _lightIntensity = _lightIntensity * 2.0 - 1.0; // from [0, 1] to [-1, +1]\r\n    // tooned. mapping from [minIntensityThreshold, maxIntensityThreshold] to [0, 1]\r\n    float _maxIntensityThreshold = mix(1.0, shadeShift, shadeToony);\r\n    float _minIntensityThreshold = shadeShift;\r\n    _lightIntensity = clamp((_lightIntensity - _minIntensityThreshold) / max(EPS_COL, (_maxIntensityThreshold - _minIntensityThreshold)), 0.0, 1.0);\r\n\r\n    // Albedo color\r\n    vec3 _shade = vShadeColor;\r\n#ifdef SHADE\r\n    _shade = _shade * texture2D(shadeSampler, mainUv).rgb * vShadeInfos.y;\r\n#endif\r\n\r\n    vec4 _lit = vDiffuseColor;\r\n#ifdef DIFFUSE\r\n    _lit = _lit * texture2D(diffuseSampler, mainUv) * vDiffuseInfos.y;\r\n#endif\r\n    vec3 _col = mix(_shade.rgb, _lit.rgb, _lightIntensity);\r\n\r\n    // Direct Light\r\n    vec3 _lighting = _lightColor;\r\n    _lighting = mix(_lighting, vec3(max(EPS_COL, max(_lighting.x, max(_lighting.y, _lighting.z)))), lightColorAttenuation); // color atten\r\n#ifdef MTOON_FORWARD_ADD\r\n    _lighting *= 0.5; // darken if additional light\r\n    _lighting *= min(0, dotNL) + 1.0; // darken dotNL < 0 area by using half lambert\r\n    _lighting *= shadowAttenuation; // darken if receiving shadow\r\n#else\r\n    // base light does not darken.\r\n#endif\r\n    _col *= _lighting;\r\n\r\n    // Indirect Light\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n    vec3 _toonedGI = vAmbientColor.rgb; // TODO: GI\r\n    vec3 _indirectLighting = mix(_toonedGI, vAmbientColor.rgb, indirectLightIntensity);\r\n    _indirectLighting = mix(_indirectLighting, vec3(max(EPS_COL, max(_indirectLighting.x, max(_indirectLighting.y, _indirectLighting.z)))), lightColorAttenuation); // color atten\r\n    _col += _indirectLighting * _lit.rgb;\r\n\r\n    _col = min(_col.rgb, _lit.rgb); // comment out if you want to PBR absolutely.\r\n#endif\r\n\r\n    // parametric rim lighting\r\n#ifdef MTOON_FORWARD_ADD\r\n    vec3 _staticRimLighting = vec3(0.0);\r\n    vec3 _mixedRimLighting = _lighting;\r\n#else\r\n    vec3 _staticRimLighting = vec3(1.0);\r\n    vec3 _mixedRimLighting = _lighting + _indirectLighting;\r\n#endif\r\n    vec3 _rimLighting = mix(_staticRimLighting, _mixedRimLighting, rimLightingMix);\r\n    vec3 _rimColor = vRimColor.rgb;\r\n#ifdef RIM\r\n    _rimColor = _rimColor * texture2D(rimSampler, vRimUV + mainUv).rgb * vRimInfos.y;\r\n#endif\r\n    vec3 _rim = pow(clamp(1.0 - dot(worldNormal, worldView) + rimLift, 0.0, 1.0), rimFresnelPower) * _rimColor.rgb;\r\n    _col += mix(_rim * _rimLighting, vec3(0.0), isOutline);\r\n\r\n    // additive matcap\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n#ifdef MATCAP\r\n    vec3 _worldViewUp = normalize(vEyeUp - worldView * dot(worldView, vEyeUp));\r\n    vec3 _worldViewRight = normalize(cross(worldView, _worldViewUp));\r\n    vec2 _matCapUv = vec2(dot(_worldViewRight, worldNormal), dot(_worldViewUp, worldNormal)) * 0.5 + 0.5;\r\n    // uv.y is reversed\r\n    _matCapUv.y = (1.0 - _matCapUv.y);\r\n    vec3 _matCapLighting = texture2D(matCapSampler, _matCapUv).rgb * vMatCapInfos.y;\r\n    _col += mix(_matCapLighting, vec3(0.0), isOutline);\r\n#endif\r\n#endif\r\n\r\n    // Emission\r\n#ifdef MTOON_FORWARD_ADD\r\n#else\r\n    vec3 _emission = vEmissiveColor.rgb;\r\n#ifdef EMISSIVE\r\n     _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;\r\n#endif\r\n     _col += mix(_emission, vec3(0.0), isOutline);\r\n#endif\r\n\r\n    float _alpha = 1.0;\r\n\r\n#if defined(ALPHABLEND) || defined(ALPHATEST)\r\n    _alpha = mix(_lit.a, _lit.a * vOutlineColor.a, isOutline);\r\n#endif\r\n\r\n    // outline\r\n#ifdef MTOON_OUTLINE_COLOR_FIXED\r\n    _col = mix(_col, vOutlineColor.rgb, isOutline);\r\n#elif defined(MTOON_OUTLINE_COLOR_MIXED)\r\n    _col = mix(_col, vOutlineColor.rgb * mix(vec3(1.0), _col, outlineLightingMix), isOutline);\r\n#else\r\n#endif\r\n\r\n    // debug\r\n#ifdef MTOON_DEBUG_NORMAL\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(worldNormal * 0.5 + 0.5, _lit.a);\r\n    #endif\r\n#elif defined(MTOON_DEBUG_LITSHADERATE)\r\n    #ifdef MTOON_FORWARD_ADD\r\n        return vec4(0.0);\r\n    #else\r\n        return vec4(_lightIntensity, _lit.a);\r\n    #endif\r\n#endif\r\n\r\n    return vec4(_col, _alpha);\r\n}\r\n\r\n#include<bumpFragmentMainFunctions>\r\n#include<bumpFragmentFunctions>\r\n#include<clipPlaneFragmentDeclaration>\r\n#include<logDepthDeclaration>\r\n#include<fogFragmentDeclaration>\r\n\r\nvoid main(void) {\r\n#ifdef MTOON_CLIP_IF_OUTLINE_IS_NONE\r\n    #ifdef MTOON_OUTLINE_WIDTH_WORLD\r\n    #elif defined(MTOON_OUTLINE_WIDTH_SCREEN)\r\n    #else\r\n        discard;\r\n    #endif\r\n#endif\r\n\r\n#include<clipPlaneFragment>\r\n\r\n    vec3 viewDirectionW = normalize(vEyePosition - vPositionW);\r\n\r\n    // Base color\r\n    vec4 baseColor = vec4(1., 1., 1., 1.);\r\n    vec3 diffuseColor = vec3(1., 1., 1.);\r\n\r\n    // Alpha\r\n    float alpha = 1.0;\r\n\r\n    // Bump\r\n#ifdef NORMAL\r\n     vec3 normalW = normalize(vNormalW);\r\n#else\r\n     vec3 normalW = normalize(-cross(dFdx(vPositionW), dFdy(vPositionW)));\r\n#endif\r\n\r\n#include<depthPrePass>\r\n\r\n    // Ambient color\r\n    vec3 baseAmbientColor = vec3(1., 1., 1.);\r\n    float glossiness = 0.;\r\n\r\n    // Lighting\r\n    vec3 diffuseBase = vec3(0., 0., 0.);\r\n    lightingInfo info;\r\n    float shadow = 1.;\r\n    vec3 lightDirection = vec3(0.0, 1.0, 0.0);\r\n    vec4 mtoonDiffuse = vec4(0.0, 0.0, 0.0, 1.0);\r\n\r\n    // MToon UV\r\n    // 全てのテクスチャは diffuse(_MainTex) の UV 情報を利用する\r\n    vec2 mainUv = vec2(0.0);\r\n#ifdef DIFFUSE\r\n    mainUv += vDiffuseUV;\r\n#elif defined(MAINUV1)\r\n    mainUv += vMainUV1;\r\n#elif defined(MAINUV2)\r\n    mainUv += vMainUV2;\r\n#endif\r\n\r\n    // uv anim\r\n    float uvAnim = time.y;\r\n#ifdef UV_ANIMATION_MASK\r\n    uvAnim *= texture2D(uvAnimationMaskSampler, mainUv).r;\r\n#endif\r\n    // translate uv in bottom-left origin coordinates.\r\n    // uv is reversed\r\n    mainUv += vec2(-uvAnimationScrollX, -uvAnimationScrollY) * uvAnim;\r\n    // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.\r\n    float rotateRad = uvAnimationRotation * PI_2 * uvAnim;\r\n    vec2 rotatePivot = vec2(0.5, 0.5);\r\n    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;\r\n\r\n#include<mtoonBumpFragment>\r\n\r\n#ifdef TWOSIDEDLIGHTING\r\n    normalW = gl_FrontFacing ? normalW : -normalW;\r\n#endif\r\n\r\n// 通常の lightFragment ではなく、自前実装の mtoonLightFragment を読み込む\r\n#include<mtoonLightFragment>[0..maxSimultaneousLights]\r\n\r\n    vec3 finalDiffuse = clamp(diffuseBase, 0.0, 1.0) * baseColor.rgb;\r\n\r\n    // Composition\r\n    vec4 color = vec4(finalDiffuse, clamp(alpha, 0.0, 1.0));\r\n\r\n    color.rgb = max(color.rgb, 0.);\r\n#include<logDepthFragment>\r\n#include<fogFragment>\r\n\r\n#ifdef PREMULTIPLYALPHA\r\n    // Convert to associative (premultiplied) format if needed.\r\n    color.rgb *= color.a;\r\n#endif\r\n\r\n    gl_FragColor = color;\r\n}\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("#include<__decl__mtoonFragment>\n\n#extension GL_OES_standard_derivatives : enable\n\n#include<prePassDeclaration>[SCENE_MRT_COUNT]\n#include<oitDeclaration>\n\n#define CUSTOM_FRAGMENT_BEGIN\n\n#ifdef LOGARITHMICDEPTH\n#extension GL_EXT_frag_depth : enable\n#endif\n\n// Constants\n#define RECIPROCAL_PI2 0.15915494\n#define PI_2 6.28318530718\n#define EPS_COL 0.00001\n\n// Input\nvarying vec3 vPositionW;\n\n#ifdef NORMAL\nvarying vec3 vNormalW;\n#endif\n\n#if defined(VERTEXCOLOR) || defined(INSTANCESCOLOR)\nvarying vec4 vColor;\n#endif\n\n#include<mainUVVaryingDeclaration>[1..7]\n\n// Helper functions\n#include<helperFunctions>\n\n// Lights\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\n\n#include<lightsFragmentFunctions>\n#include<shadowsFragmentFunctions>\n\n// Samplers\n#include<samplerFragmentDeclaration>(_DEFINENAME_,DIFFUSE,_VARYINGNAME_,Diffuse,_SAMPLERNAME_,diffuse)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,EMISSIVE,_VARYINGNAME_,Emissive,_SAMPLERNAME_,emissive)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,SHADE,_VARYINGNAME_,Shade,_SAMPLERNAME_,shade)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,RECEIVE_SHADOW,_VARYINGNAME_,ReceiveShadow,_SAMPLERNAME_,receiveShadow)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,SHADING_GRADE,_VARYINGNAME_,ShadingGrade,_SAMPLERNAME_,shadingGrade)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,RIM,_VARYINGNAME_,Rim,_SAMPLERNAME_,rim)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,MATCAP,_VARYINGNAME_,MatCap,_SAMPLERNAME_,matCap)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,OUTLINE_WIDTH,_VARYINGNAME_,OutlineWidth,_SAMPLERNAME_,outlineWidth)\n#include<samplerFragmentDeclaration>(_DEFINENAME_,UV_ANIMATION_MASK,_VARYINGNAME_,UvAnimationMask,_SAMPLERNAME_,uvAnimationMask)\n\n#include<mtoonFragmentFunctions>\n\n// #ifdef REFRACTION\n\n// #ifdef REFRACTIONMAP_3D\n// uniform samplerCube refractionCubeSampler;\n// #else\n// uniform sampler2D refraction2DSampler;\n// #endif\n\n// #endif\n\n// #if defined(SPECULARTERM)\n//     # include<samplerFragmentDeclaration>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular,_SAMPLERNAME_,specular)\n// #endif\n\n// // Fresnel\n// # include<fresnelFunction>\n\n// // Reflection\n// #ifdef REFLECTION\n// #ifdef REFLECTIONMAP_3D\n// uniform samplerCube reflectionCubeSampler;\n// #else\n// uniform sampler2D reflection2DSampler;\n// #endif\n\n// #ifdef REFLECTIONMAP_SKYBOX\n// varying vec3 vPositionUVW;\n// #else\n// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)\n// varying vec3 vDirectionW;\n// #endif\n\n// #endif\n\n// # include<reflectionFunction>\n\n// #endif\n\n#include<imageProcessingDeclaration>\n\n#include<imageProcessingFunctions>\n\n#include<bumpFragmentMainFunctions>\n#include<bumpFragmentFunctions>\n#include<clipPlaneFragmentDeclaration>\n#include<logDepthDeclaration>\n#include<fogFragmentDeclaration>\n\n#define CUSTOM_FRAGMENT_DEFINITIONS\n\nvoid main(void) {\n#ifdef MTOON_CLIP_IF_OUTLINE_IS_NONE\n    #ifdef MTOON_OUTLINE_WIDTH_WORLD\n    #elif defined(MTOON_OUTLINE_WIDTH_SCREEN)\n    #else\n        discard;\n    #endif\n#endif\n\n#define CUSTOM_FRAGMENT_MAIN_BEGIN\n\n#include<oitFragment>\n\n#include<clipPlaneFragment>\n\n    vec3 viewDirectionW = normalize(vEyePosition.xyz - vPositionW);\n\n    // Base color\n    vec4 baseColor = vec4(1., 1., 1., 1.);\n    vec3 diffuseColor = vec3(1., 1., 1.);\n\n    // Alpha\n    float alpha = 1.0;\n\n    // Bump\n#ifdef NORMAL\n     vec3 normalW = normalize(vNormalW);\n#else\n     vec3 normalW = normalize(-cross(dFdx(vPositionW), dFdy(vPositionW)));\n#endif\n\n#include<depthPrePass>\n\n    // Ambient color\n    vec3 baseAmbientColor = vec3(1., 1., 1.);\n    float glossiness = 0.;\n\n    // Lighting\n    vec3 diffuseBase = vec3(0., 0., 0.);\n    lightingInfo info;\n    float shadow = 1.;\n    vec3 lightDirection = vec3(0.0, 1.0, 0.0);\n    vec4 mtoonDiffuse = vec4(0.0, 0.0, 0.0, 1.0);\n\n    // MToon UV\n    // All textures will use diffuse(_MainTex) UV\n    vec2 mainUv = vec2(0.0);\n#ifdef DIFFUSE\n    mainUv += vDiffuseUV;\n#elif defined(MAINUV1)\n    mainUv += vMainUV1;\n#elif defined(MAINUV2)\n    mainUv += vMainUV2;\n#endif\n\n    // uv anim\n    float uvAnim = time.y;\n#ifdef UV_ANIMATION_MASK\n    uvAnim *= texture2D(uvAnimationMaskSampler, mainUv).r;\n#endif\n    // translate uv in bottom-left origin coordinates.\n    // uv is reversed\n    mainUv += vec2(-uvAnimationScrollX, -uvAnimationScrollY) * uvAnim;\n    // rotate uv counter-clockwise around (0.5, 0.5) in bottom-left origin coordinates.\n    float rotateRad = uvAnimationRotation * PI_2 * uvAnim;\n    vec2 rotatePivot = vec2(0.5, 0.5);\n    mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;\n\n#include<mtoonBumpFragment>\n\n#ifdef TWOSIDEDLIGHTING\n    normalW = gl_FrontFacing ? normalW : -normalW;\n#endif\n\n// include customized lightFragment\n#include<mtoonLightFragment>[0..maxSimultaneousLights]\n\n    vec3 finalDiffuse = clamp(diffuseBase, 0.0, 1.0) * baseColor.rgb;\n\n    // Composition\n    vec4 color = vec4(finalDiffuse, clamp(alpha, 0.0, 1.0));\n\n    color.rgb = max(color.rgb, 0.);\n#include<logDepthFragment>\n#include<fogFragment>\n\n// Apply image processing if relevant. As this applies in linear space,\n// We first move from gamma to linear.\n#ifdef IMAGEPROCESSINGPOSTPROCESS\n    color.rgb = toLinearSpace(color.rgb);\n#else\n    #ifdef IMAGEPROCESSING\n        // FIXME: support image processing\n        // color.rgb = toLinearSpace(color.rgb);\n        // color = applyImageProcessing(color);\n    #endif\n#endif\n\n    color.a *= visibility;\n\n#ifdef PREMULTIPLYALPHA\n    // Convert to associative (premultiplied) format if needed.\n    color.rgb *= color.a;\n#endif\n\n#ifdef PREPASS\n    float writeGeometryInfo = color.a > 0.4 ? 1.0 : 0.0;\n\n    gl_FragData[0] = color; // We can't split irradiance on std material\n\n    #ifdef PREPASS_POSITION\n    gl_FragData[PREPASS_POSITION_INDEX] = vec4(vPositionW, writeGeometryInfo);\n    #endif\n\n    #ifdef PREPASS_VELOCITY\n    vec2 a = (vCurrentPosition.xy / vCurrentPosition.w) * 0.5 + 0.5;\n    vec2 b = (vPreviousPosition.xy / vPreviousPosition.w) * 0.5 + 0.5;\n\n    vec2 velocity = abs(a - b);\n    velocity = vec2(pow(velocity.x, 1.0 / 3.0), pow(velocity.y, 1.0 / 3.0)) * sign(a - b) * 0.5 + 0.5;\n\n    gl_FragData[PREPASS_VELOCITY_INDEX] = vec4(velocity, 0.0, writeGeometryInfo);\n    #endif\n\n    #ifdef PREPASS_IRRADIANCE\n        gl_FragData[PREPASS_IRRADIANCE_INDEX] = vec4(0.0, 0.0, 0.0, writeGeometryInfo); //  We can't split irradiance on std material\n    #endif\n\n    #ifdef PREPASS_DEPTH\n        gl_FragData[PREPASS_DEPTH_INDEX] = vec4(vViewPos.z, 0.0, 0.0, writeGeometryInfo); // Linear depth\n    #endif\n\n    #ifdef PREPASS_NORMAL\n        gl_FragData[PREPASS_NORMAL_INDEX] = vec4((view * vec4(normalW, 0.0)).rgb, writeGeometryInfo); // Normal\n    #endif\n\n    #ifdef PREPASS_ALBEDO_SQRT\n        gl_FragData[PREPASS_ALBEDO_SQRT_INDEX] = vec4(0.0, 0.0, 0.0, writeGeometryInfo); // We can't split albedo on std material\n    #endif\n    #ifdef PREPASS_REFLECTIVITY\n        #if defined(SPECULAR)\n            gl_FragData[PREPASS_REFLECTIVITY_INDEX] = vec4(specularMapColor.rgb, specularMapColor.a * writeGeometryInfo);\n        #else\n            gl_FragData[PREPASS_REFLECTIVITY_INDEX] = vec4(0.0, 0.0, 0.0, writeGeometryInfo);\n        #endif\n    #endif\n#endif\n\n#if !defined(PREPASS) || defined(WEBGL2)\n    gl_FragColor = color;\n#endif\n\n#if ORDER_INDEPENDENT_TRANSPARENCY\n    if (fragDepth == nearestDepth) {\n        frontColor.rgb += color.rgb * color.a * alphaMultiplier;\n        frontColor.a = 1.0 - alphaMultiplier * (1.0 - color.a);\n    } else {\n        backColor += color;\n    }\n#endif\n\n#define CUSTOM_FRAGMENT_MAIN_END\n\n}\n");
 
 /***/ }),
 
@@ -2269,7 +2673,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// この include は特別で、 UboDeclaration または VertexDeclaration のどちらかに置換される\r\n// @see effect.ts\r\n#include<__decl__mtoonVertex>\r\n\r\n// 基本的に default.vertex.fx を踏襲している\r\n\r\n// Attributes\r\n\r\nattribute vec3 position;\r\n#ifdef NORMAL\r\nattribute vec3 normal;\r\n#endif\r\n#ifdef TANGENT\r\nattribute vec4 tangent;\r\n#endif\r\n#ifdef UV1\r\nattribute vec2 uv;\r\n#endif\r\n#ifdef UV2\r\nattribute vec2 uv2;\r\n#endif\r\n\r\n#include<helperFunctions>\r\n\r\n#include<bonesDeclaration>\r\n\r\n// Uniforms\r\n#include<instancesDeclaration>\r\n\r\n#ifdef MAINUV1\r\nvarying vec2 vMainUV1;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\nvarying vec2 vMainUV2;\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\nvarying vec2 vDiffuseUV;\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\nvarying vec2 vEmissiveUV;\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\nvarying vec2 vBumpUV;\r\n#endif\r\n\r\n// Output\r\nvarying vec3 vPositionW;\r\n#ifdef NORMAL\r\nvarying vec3 vNormalW;\r\n#endif\r\n\r\n#include<bumpVertexDeclaration>\r\n\r\n#include<clipPlaneVertexDeclaration>\r\n\r\n#include<fogVertexDeclaration>\r\n#include<__decl__lightFragment>[0..maxSimultaneousLights]\r\n\r\n#include<morphTargetsVertexGlobalDeclaration>\r\n#include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<logDepthDeclaration>\r\n\r\n\r\n// Additional Uniforms\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    varying vec2 vShadeUV;\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    varying vec2 vReceiveShadowUV;\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    varying vec2 vShadingGradeUV;\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    varying vec2 vRimUV;\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    varying vec2 vMatCapUV;\r\n#endif\r\n#if defined(OUTLINE_WIDTH) && OUTLINE_WIDTHDIRECTUV == 0\r\n    varying vec2 vOutlineWidthUV;\r\n#endif\r\n#ifdef OUTLINE_WIDTH\r\n    uniform sampler2D outlineWidthSampler;\r\n#endif\r\n#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0\r\n    varying vec2 vUvAnimationMaskUV;\r\n#endif\r\n\r\nuniform float aspect;\r\nuniform float isOutline;\r\n\r\nvoid main(void) {\r\n\r\n    vec3 positionUpdated = position;\r\n#ifdef NORMAL\r\n    vec3 normalUpdated = normal;\r\n#endif\r\n#ifdef TANGENT\r\n    vec4 tangentUpdated = tangent;\r\n#endif\r\n\r\n#include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]\r\n\r\n#include<instancesVertex>\r\n#include<bonesVertex>\r\n\r\n    // Texture coordinates\r\n#ifndef UV1\r\n    vec2 uv = vec2(0., 0.);\r\n#endif\r\n#ifndef UV2\r\n    vec2 uv2 = vec2(0., 0.);\r\n#endif\r\n\r\n#ifdef MAINUV1\r\n    vMainUV1 = uv;\r\n#endif\r\n\r\n#ifdef MAINUV2\r\n    vMainUV2 = uv2;\r\n#endif\r\n\r\n    float outlineTex = 1.0;\r\n    if (isOutline == 1.0) {\r\n#ifdef OUTLINE_WIDTH\r\n    #if OUTLINE_WIDTHDIRECTUV == 0\r\n        if (vOutlineWidthInfos.x == 0.) {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv, 1.0, 0.0));\r\n        } else {\r\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));\r\n        }\r\n    #elif defined(MAINUV1)\r\n        vec2 vOutlineWidthUV = vMainUV1;\r\n    #elif defined(MAINUV2)\r\n        vec2 vOutlineWidthUV = vMainUV2;\r\n    #else\r\n        vec2 vOutlineWidthUV = vec2(0., 0.);\r\n    #endif\r\n    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;\r\n#endif\r\n\r\n#if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)\r\n        // ワールド座標の normal 分だけ移動する\r\n        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;\r\n        positionUpdated.xyz += outlineOffset;\r\n#endif\r\n    } // End isOutline == 1.0\r\n\r\n    vec4 vertex = vec4(1.0);\r\n#ifdef MULTIVIEW\r\n    if (gl_ViewID_OVR == 0u) {\r\n        vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n    } else {\r\n        vertex = viewProjectionR * finalWorld * vec4(positionUpdated, 1.0);\r\n    }\r\n#else\r\n    vertex = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\r\n#endif\r\n\r\n#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)\r\n    if (isOutline == 1.0) {\r\n        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));\r\n        projectedNormal *= min(vertex.w, outlineScaledMaxDistance);\r\n        projectedNormal.x *= aspect;\r\n        vertex.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera\r\n    }\r\n#endif\r\n\r\n    if (isOutline == 1.0) {\r\n        vertex.z += 1E-2 * vertex.w; // anti-artifact magic from three-vrm\r\n    }\r\n\r\n    gl_Position = vertex;\r\n\r\n    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);\r\n    vPositionW = vec3(worldPos);\r\n\r\n#ifdef NORMAL\r\n    mat3 normalWorld = mat3(finalWorld);\r\n\r\n    #ifdef NONUNIFORMSCALING\r\n        normalWorld = transposeMat3(inverseMat3(normalWorld));\r\n    #endif\r\n\r\n    vNormalW = normalize(normalWorld * normalUpdated);\r\n#endif\r\n\r\n#if defined(DIFFUSE) && DIFFUSEDIRECTUV == 0\r\n    if (vDiffuseInfos.x == 0.)\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vDiffuseUV = vec2(diffuseMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(EMISSIVE) && EMISSIVEDIRECTUV == 0\r\n    if (vEmissiveInfos.x == 0.)\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vEmissiveUV = vec2(emissiveMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(BUMP) && BUMPDIRECTUV == 0\r\n    if (vBumpInfos.x == 0.)\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv, 1.0, 0.0));\r\n    }\r\n    else\r\n    {\r\n        vBumpUV = vec2(bumpMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#if defined(SHADE) && SHADEDIRECTUV == 0\r\n    if (vShadeInfos.x == 0.) {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadeUV = vec2(shadeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RECEIVE_SHADOW) && RECEIVE_SHADOWDIRECTUV == 0\r\n    if (vReceiveShadowInfos.x == 0.) {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vReceiveShadowUV = vec2(receiveShadowMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(SHADING_GRADE) && SHADING_GRADEDIRECTUV == 0\r\n    if (vShadingGradeInfos.x == 0.) {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vShadingGradeUV = vec2(shadingGradeMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(RIM) && RIMDIRECTUV == 0\r\n    if (vRimInfos.x == 0.) {\r\n        vRimUV = vec2(rimMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vRimUV = vec2(rimMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(MATCAP) && MATCAPDIRECTUV == 0\r\n    if (vMatCapInfos.x == 0.) {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vMatCapUV = vec2(matCapMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n#if defined(UV_ANIMATION_MASK) && UV_ANIMATION_MASKDIRECTUV == 0\r\n    if (vUvAnimationMaskInfos.x == 0.) {\r\n        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv, 1.0, 0.0));\r\n    } else {\r\n        vUvAnimationMaskUV = vec2(uvAnimationMaskMatrix * vec4(uv2, 1.0, 0.0));\r\n    }\r\n#endif\r\n\r\n#include<bumpVertex>\r\n#include<clipPlaneVertex>\r\n#include<fogVertex>\r\n#include<shadowsVertex>[0..maxSimultaneousLights]\r\n\r\n#include<pointCloudVertex>\r\n#include<logDepthVertex>\r\n\r\n}\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// it is based on default.vertex.fx\n// This include is special, it will be replaced to UboDeclaration(WebGL2) or VertexDeclaration(WebGL1).\n// @see effect.ts\n#include<__decl__mtoonVertex>\n\n// Attributes\n\n#define CUSTOM_VERTEX_BEGIN\n\nattribute vec3 position;\n#ifdef NORMAL\nattribute vec3 normal;\n#endif\n#ifdef TANGENT\nattribute vec4 tangent;\n#endif\n#ifdef UV1\nattribute vec2 uv;\n#endif\n#include<uvAttributeDeclaration>[2..7]\n#ifdef VERTEXCOLOR\nattribute vec4 color;\n#endif\n\n#include<helperFunctions>\n\n#include<bonesDeclaration>\n#include<bakedVertexAnimationDeclaration>\n\n// Uniforms\n#include<instancesDeclaration>\n#include<prePassVertexDeclaration>\n\n#include<mainUVVaryingDeclaration>[1..7]\n\n#include<samplerVertexDeclaration>(_DEFINENAME_,DIFFUSE,_VARYINGNAME_,Diffuse)\n// # include<samplerVertexDeclaration>(_DEFINENAME_,DETAIL,_VARYINGNAME_,Detail)\n// # include<samplerVertexDeclaration>(_DEFINENAME_,AMBIENT,_VARYINGNAME_,Ambient)\n// # include<samplerVertexDeclaration>(_DEFINENAME_,OPACITY,_VARYINGNAME_,Opacity)\n#include<samplerVertexDeclaration>(_DEFINENAME_,EMISSIVE,_VARYINGNAME_,Emissive)\n// # include<samplerVertexDeclaration>(_DEFINENAME_,LIGHTMAP,_VARYINGNAME_,Lightmap)\n// #if defined(SPECULARTERM)\n// # include<samplerVertexDeclaration>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular)\n// #endif\n#include<samplerVertexDeclaration>(_DEFINENAME_,BUMP,_VARYINGNAME_,Bump)\n#include<samplerVertexDeclaration>(_DEFINENAME_,SHADE,_VARYINGNAME_,Shade)\n#include<samplerVertexDeclaration>(_DEFINENAME_,RECEIVE_SHADOW,_VARYINGNAME_,ReceiveShadow)\n#include<samplerVertexDeclaration>(_DEFINENAME_,SHADING_GRADE,_VARYINGNAME_,ShadingGrade)\n#include<samplerVertexDeclaration>(_DEFINENAME_,RIM,_VARYINGNAME_,Rim)\n#include<samplerVertexDeclaration>(_DEFINENAME_,MATCAP,_VARYINGNAME_,MatCap)\n#include<samplerVertexDeclaration>(_DEFINENAME_,OUTLINE_WIDTH,_VARYINGNAME_,OutlineWidth)\n#include<samplerVertexDeclaration>(_DEFINENAME_,UV_ANIMATION_MASK,_VARYINGNAME_,UvAnimationMask)\n\n// Additional Uniforms\n#ifdef OUTLINE_WIDTH\n    uniform sampler2D outlineWidthSampler;\n#endif\n\n// Output\nvarying vec3 vPositionW;\n#ifdef NORMAL\nvarying vec3 vNormalW;\n#endif\n\n#if defined(VERTEXCOLOR) || defined(INSTANCESCOLOR)\nvarying vec4 vColor;\n#endif\n\n#include<bumpVertexDeclaration>\n\n#include<clipPlaneVertexDeclaration>\n\n#include<fogVertexDeclaration>\n#include<__decl__lightVxFragment>[0..maxSimultaneousLights]\n\n#include<morphTargetsVertexGlobalDeclaration>\n#include<morphTargetsVertexDeclaration>[0..maxSimultaneousMorphTargets]\n\n// #ifdef REFLECTIONMAP_SKYBOX\n// varying vec3 vPositionUVW;\n// #endif\n\n// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)\n// varying vec3 vDirectionW;\n// #endif\n\n#include<logDepthDeclaration>\n#define CUSTOM_VERTEX_DEFINITIONS\n\nvoid main(void) {\n\n    #define CUSTOM_VERTEX_MAIN_BEGIN\n\n    vec3 positionUpdated = position;\n#ifdef NORMAL\n    vec3 normalUpdated = normal;\n#endif\n#ifdef TANGENT\n    vec4 tangentUpdated = tangent;\n#endif\n#ifdef UV1\n    vec2 uvUpdated = uv;\n#endif\n\n#include<morphTargetsVertexGlobal>\n#include<morphTargetsVertex>[0..maxSimultaneousMorphTargets]\n\n// #ifdef REFLECTIONMAP_SKYBOX\n//     vPositionUVW = positionUpdated;\n// #endif\n\n#define CUSTOM_VERTEX_UPDATE_POSITION\n\n#define CUSTOM_VERTEX_UPDATE_NORMAL\n\n#include<instancesVertex>\n\n#if defined(PREPASS) && defined(PREPASS_VELOCITY) && !defined(BONES_VELOCITY_ENABLED)\n    // Compute velocity before bones computation\n    vCurrentPosition = viewProjection * finalWorld * vec4(positionUpdated, 1.0);\n    vPreviousPosition = previousViewProjection * finalPreviousWorld * vec4(positionUpdated, 1.0);\n#endif\n\n#include<bonesVertex>\n#include<bakedVertexAnimation>\n\n    // Texture coordinates\n#ifndef UV1\n    vec2 uvUpdated = vec2(0., 0.);\n#endif\n#ifdef MAINUV1\n    vMainUV1 = uvUpdated;\n#endif\n#include<uvVariableDeclaration>[2..7]\n\n    float outlineTex = 1.0;\n    if (isOutline == 1.0) {\n#ifdef OUTLINE_WIDTH\n    #if OUTLINE_WIDTHDIRECTUV == 0\n        if (vOutlineWidthInfos.x == 0.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uvUpdated, 1.0, 0.0));\n        }\n        #ifdef UV2\n        else if (vOutlineWidthInfos.x == 1.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv2, 1.0, 0.0));\n        }\n        #endif\n        #ifdef UV3\n        else if (vOutlineWidthInfos.x == 2.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv3, 1.0, 0.0));\n        }\n        #endif\n        #ifdef UV4\n        else if (vOutlineWidthInfos.x == 3.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv4, 1.0, 0.0));\n        }\n        #endif\n        #ifdef UV5\n        else if (vOutlineWidthInfos.x == 4.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv5, 1.0, 0.0));\n        }\n        #endif\n        #ifdef UV6\n        else if (vOutlineWidthInfos.x == 5.)\n        {\n            vOutlineWidthUV = vec2(outlineWidthMatrix * vec4(uv6, 1.0, 0.0));\n        }\n        #endif\n    #elif defined(MAINUV1)\n        vec2 vOutlineWidthUV = vMainUV1;\n    #elif defined(MAINUV2)\n        vec2 vOutlineWidthUV = vMainUV2;\n    #else\n        vec2 vOutlineWidthUV = vec2(0., 0.);\n    #endif\n    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;\n#endif\n\n#if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)\n        // move slightly world normal\n        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;\n        positionUpdated.xyz += outlineOffset;\n#endif\n    } // End isOutline == 1.0\n\n    vec4 worldPos = finalWorld * vec4(positionUpdated, 1.0);\n\n#ifdef NORMAL\n    mat3 normalWorld = mat3(finalWorld);\n\n    #if defined(INSTANCES) && defined(THIN_INSTANCES)\n        vNormalW = normalUpdated / vec3(dot(normalWorld[0], normalWorld[0]), dot(normalWorld[1], normalWorld[1]), dot(normalWorld[2], normalWorld[2]));\n        vNormalW = normalize(normalWorld * vNormalW);\n    #else\n        #ifdef NONUNIFORMSCALING\n            normalWorld = transposeMat3(inverseMat3(normalWorld));\n        #endif\n\n        vNormalW = normalize(normalWorld * normalUpdated);\n    #endif\n#endif\n\n#define CUSTOM_VERTEX_UPDATE_WORLDPOS\n\n#ifdef MULTIVIEW\n    if (gl_ViewID_OVR == 0u) {\n        gl_Position = viewProjection * worldPos;\n    } else {\n        gl_Position = viewProjectionR * worldPos;\n    }\n#else\n    gl_Position = viewProjection * worldPos;\n#endif\n\n    vPositionW = vec3(worldPos);\n\n#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)\n    if (isOutline == 1.0) {\n        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));\n        projectedNormal *= min(worldPos.w, outlineScaledMaxDistance);\n        projectedNormal.x *= aspect;\n        worldPos.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera\n    }\n#endif\n\n    if (isOutline == 1.0) {\n        worldPos.z += 1E-2 * worldPos.w; // anti-artifact magic from three-vrm\n    }\n\n    gl_Position = viewProjection * worldPos;\n\n    worldPos = finalWorld * vec4(positionUpdated, 1.0);\n    vPositionW = vec3(worldPos);\n\n#include<prePassVertex>\n\n// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)\n//     vDirectionW = normalize(vec3(finalWorld * vec4(positionUpdated, 0.0)));\n// #endif\n\n    #include<samplerVertexImplementation>(_DEFINENAME_,DIFFUSE,_VARYINGNAME_,Diffuse,_MATRIXNAME_,diffuse,_INFONAME_,DiffuseInfos.x)\n    // # include<samplerVertexImplementation>(_DEFINENAME_,DETAIL,_VARYINGNAME_,Detail,_MATRIXNAME_,detail,_INFONAME_,DetailInfos.x)\n    // # include<samplerVertexImplementation>(_DEFINENAME_,AMBIENT,_VARYINGNAME_,Ambient,_MATRIXNAME_,ambient,_INFONAME_,AmbientInfos.x)\n    // # include<samplerVertexImplementation>(_DEFINENAME_,OPACITY,_VARYINGNAME_,Opacity,_MATRIXNAME_,opacity,_INFONAME_,OpacityInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,EMISSIVE,_VARYINGNAME_,Emissive,_MATRIXNAME_,emissive,_INFONAME_,EmissiveInfos.x)\n    // # include<samplerVertexImplementation>(_DEFINENAME_,LIGHTMAP,_VARYINGNAME_,Lightmap,_MATRIXNAME_,lightmap,_INFONAME_,LightmapInfos.x)\n    // #if defined(SPECULARTERM)\n    // # include<samplerVertexImplementation>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular,_MATRIXNAME_,specular,_INFONAME_,SpecularInfos.x)\n    // #endif\n    #include<samplerVertexImplementation>(_DEFINENAME_,BUMP,_VARYINGNAME_,Bump,_MATRIXNAME_,bump,_INFONAME_,BumpInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,SHADE,_VARYINGNAME_,Shade,_MATRIXNAME_,shade,_INFONAME_,ShadeInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,RECEIVE_SHADOW,_VARYINGNAME_,ReceiveShadow,_MATRIXNAME_,receiveShadow,_INFONAME_,ReceiveShadowInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,SHADING_GRADE,_VARYINGNAME_,ShadingGrade,_MATRIXNAME_,shadingGrade,_INFONAME_,ShadingGradeInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,RIM,_VARYINGNAME_,Rim,_MATRIXNAME_,rim,_INFONAME_,RimInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,MATCAP,_VARYINGNAME_,MatCap,_MATRIXNAME_,matCap,_INFONAME_,MatCapInfos.x)\n    #include<samplerVertexImplementation>(_DEFINENAME_,UV_ANIMATION_MASK,_VARYINGNAME_,UvAnimationMask,_MATRIXNAME_,uvAnimationMask,_INFONAME_,uvAnimationMaskInfos.x)\n\n#include<bumpVertex>\n#include<clipPlaneVertex>\n#include<fogVertex>\n#include<shadowsVertex>[0..maxSimultaneousLights]\n\n#ifdef VERTEXCOLOR\n    vColor = color;\n#elif defined(INSTANCESCOLOR) && INSTANCESCOLOR\n    vColor = instanceColor;\n#endif\n\n#include<pointCloudVertex>\n#include<logDepthVertex>\n\n#define CUSTOM_VERTEX_MAIN_END\n\n}\n");
 
 /***/ }),
 
@@ -2282,7 +2686,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// include<__decl__mtoonVertex> または include<__decl__mtoonFragment> と書いた時に WebGL2 の場合展開される\r\n// @see effect.ts\r\n\r\nlayout(std140, column_major) uniform;\r\n\r\nuniform Material\r\n{\r\n    // Color & Texture\r\n    vec4 vDiffuseColor;\r\n    vec2 vDiffuseInfos;\r\n    mat4 diffuseMatrix;\r\n    vec4 vEmissiveColor;\r\n    vec2 vEmissiveInfos;\r\n    mat4 emissiveMatrix;\r\n    vec3 vBumpInfos;\r\n    mat4 bumpMatrix;\r\n    vec3 vShadeColor;\r\n    vec2 vShadeInfos;\r\n    mat4 shadeMatrix;\r\n    vec2 vReceiveShadowInfos;\r\n    mat4 receiveShadowMatrix;\r\n    vec2 vShadingGradeInfos;\r\n    mat4 shadingGradeMatrix;\r\n    vec3 vRimColor;\r\n    vec2 vRimInfos;\r\n    mat4 rimMatrix;\r\n    vec2 vMatCapInfos;\r\n    mat4 matCapMatrix;\r\n    vec4 vOutlineColor;\r\n    vec2 vOutlineWidthInfos;\r\n    mat4 outlineWidthMatrix;\r\n    vec2 vUvAnimationMaskInfos;\r\n    mat4 uvAnimationMaskMatrix;\r\n\r\n    // babylon specific\r\n    vec2 vTangentSpaceParams;\r\n    float pointSize;\r\n\r\n    // MToon params\r\n    float shadingGradeRate;\r\n    float receiveShadowRate;\r\n    float shadeShift;\r\n    float shadeToony;\r\n    float lightColorAttenuation;\r\n    float indirectLightIntensity;\r\n    float rimLightingMix;\r\n    float rimFresnelPower;\r\n    float rimLift;\r\n    float outlineWidth;\r\n    float outlineScaledMaxDistance;\r\n    float outlineLightingMix;\r\n    float uvAnimationScrollX;\r\n    float uvAnimationScrollY;\r\n    float uvAnimationRotation;\r\n};\r\n\r\n// babylon specific\r\nuniform Scene {\r\n    mat4 viewProjection;\r\n#ifdef MULTIVIEW\r\n    mat4 viewProjectionR;\r\n#endif\r\n    mat4 view;\r\n};\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// it will be replaced to UboDeclaration(WebGL2) or VertexDeclaration(WebGL1).\n\nlayout(std140, column_major) uniform;\n\nuniform Material\n{\n    // Color & Texture\n    vec4 vDiffuseColor;\n    vec2 vDiffuseInfos;\n    mat4 diffuseMatrix;\n    vec4 vEmissiveColor;\n    vec2 vEmissiveInfos;\n    mat4 emissiveMatrix;\n    vec3 vBumpInfos;\n    mat4 bumpMatrix;\n    vec3 vShadeColor;\n    vec2 vShadeInfos;\n    mat4 shadeMatrix;\n    vec2 vReceiveShadowInfos;\n    mat4 receiveShadowMatrix;\n    vec2 vShadingGradeInfos;\n    mat4 shadingGradeMatrix;\n    vec3 vRimColor;\n    vec2 vRimInfos;\n    mat4 rimMatrix;\n    vec2 vMatCapInfos;\n    mat4 matCapMatrix;\n    vec4 vOutlineColor;\n    vec2 vOutlineWidthInfos;\n    mat4 outlineWidthMatrix;\n    vec2 vUvAnimationMaskInfos;\n    mat4 uvAnimationMaskMatrix;\n\n    // babylon specific\n    vec2 vTangentSpaceParams;\n    float pointSize;\n\n    // MToon params\n    float shadingGradeRate;\n    float receiveShadowRate;\n    float shadeShift;\n    float shadeToony;\n    float lightColorAttenuation;\n    float indirectLightIntensity;\n    float rimLightingMix;\n    float rimFresnelPower;\n    float rimLift;\n    float outlineWidth;\n    float outlineScaledMaxDistance;\n    float outlineLightingMix;\n    float uvAnimationScrollX;\n    float uvAnimationScrollY;\n    float uvAnimationRotation;\n\n    vec3 vEyeUp;\n    float alphaCutOff;\n    vec3 vAmbientColor;\n    float aspect;\n    float isOutline;\n    vec4 time;\n};\n\n// babylon specific\n#include<sceneUboDeclaration>\n#include<meshUboDeclaration>\n");
 
 /***/ }),
 
@@ -2295,7 +2699,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ("// Uniforms\r\nuniform mat4 viewProjection;\r\nuniform mat4 view;\r\nuniform float outlineWidth;\r\nuniform float outlineScaledMaxDistance;\r\nuniform float outlineLightingMix;\r\n\r\n#ifdef DIFFUSE\r\nuniform mat4 diffuseMatrix;\r\nuniform vec2 vDiffuseInfos;\r\n#endif\r\n\r\n#ifdef EMISSIVE\r\nuniform vec2 vEmissiveInfos;\r\nuniform mat4 emissiveMatrix;\r\n#endif\r\n\r\n#ifdef BUMP\r\nuniform vec3 vBumpInfos;\r\nuniform mat4 bumpMatrix;\r\n#endif\r\n\r\n#ifdef SHADE\r\nuniform vec2 vShadeInfos;\r\nuniform mat4 shadeMatrix;\r\n#endif\r\n\r\n#ifdef RECEIVE_SHADOW\r\nuniform vec2 vReceiveShadowInfos;\r\nuniform mat4 receiveShadowMatrix;\r\n#endif\r\n\r\n#ifdef SHADING_GRADE\r\nuniform vec2 vShadingGradeInfos;\r\nuniform mat4 shadingGradeMatrix;\r\n#endif\r\n\r\n#ifdef RIM\r\nuniform vec2 vRimInfos;\r\nuniform mat4 rimMatrix;\r\n#endif\r\n\r\n#ifdef MATCAP\r\nuniform vec2 vMatCapInfos;\r\nuniform mat4 matCapMatrix;\r\n#endif\r\n\r\n#ifdef OUTLINE_WIDTH\r\nuniform vec2 vOutlineWidthInfos;\r\nuniform mat4 outlineWidthMatrix;\r\n#endif\r\n\r\n#ifdef UV_ANIMATION_MASK\r\nuniform vec2 vUvAnimationMaskInfos;\r\nuniform mat4 uvAnimationMaskMatrix;\r\n#endif\r\n\r\n#ifdef POINTSIZE\r\nuniform float pointSize;\r\n#endif\r\n");
+/* harmony default export */ __webpack_exports__["default"] = ("// Uniforms\nuniform mat4 viewProjection;\nuniform mat4 view;\nuniform float outlineWidth;\nuniform float outlineScaledMaxDistance;\nuniform float outlineLightingMix;\nuniform float isOutline;\nuniform float aspect;\n\n#ifdef DIFFUSE\nuniform mat4 diffuseMatrix;\nuniform vec2 vDiffuseInfos;\n#endif\n\n#ifdef EMISSIVE\nuniform vec2 vEmissiveInfos;\nuniform mat4 emissiveMatrix;\n#endif\n\n#ifdef BUMP\nuniform vec3 vBumpInfos;\nuniform mat4 bumpMatrix;\n#endif\n\n#ifdef SHADE\nuniform vec2 vShadeInfos;\nuniform mat4 shadeMatrix;\n#endif\n\n#ifdef RECEIVE_SHADOW\nuniform vec2 vReceiveShadowInfos;\nuniform mat4 receiveShadowMatrix;\n#endif\n\n#ifdef SHADING_GRADE\nuniform vec2 vShadingGradeInfos;\nuniform mat4 shadingGradeMatrix;\n#endif\n\n#ifdef RIM\nuniform vec2 vRimInfos;\nuniform mat4 rimMatrix;\n#endif\n\n#ifdef MATCAP\nuniform vec2 vMatCapInfos;\nuniform mat4 matCapMatrix;\n#endif\n\n#ifdef OUTLINE_WIDTH\nuniform vec2 vOutlineWidthInfos;\nuniform mat4 outlineWidthMatrix;\n#endif\n\n#ifdef UV_ANIMATION_MASK\nuniform vec2 vUvAnimationMaskInfos;\nuniform mat4 uvAnimationMaskMatrix;\n#endif\n\n#ifdef POINTSIZE\nuniform float pointSize;\n#endif\n");
 
 /***/ }),
 
@@ -2320,7 +2724,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
 /* harmony import */ var _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/sphereBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/sphereBuilder.js");
 /* harmony import */ var _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/torusKnotBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/torusKnotBuilder.js");
-/* harmony import */ var _babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Meshes/buffer */ "./node_modules/@babylonjs/core/Meshes/buffer.js");
+/* harmony import */ var _babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Buffers/buffer */ "./node_modules/@babylonjs/core/Buffers/buffer.js");
 /* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
 /* harmony import */ var _mtoon_material__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! ../mtoon-material */ "./src/mtoon-material.ts");
 /* harmony import */ var _babylonjs_core_Helpers_sceneHelpers__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/core/Helpers/sceneHelpers */ "./node_modules/@babylonjs/core/Helpers/sceneHelpers.js");
@@ -2376,10 +2780,10 @@ function main() {
                     hemisphericLight.setEnabled(false);
                     pointLight = new _babylonjs_core_Lights_pointLight__WEBPACK_IMPORTED_MODULE_5__["PointLight"]('PointLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__["Vector3"](0, 0, 1), scene);
                     pointLight.setEnabled(false);
-                    standardMaterialSphere = _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["SphereBuilder"].CreateSphere('StandardMaterialSphere1', {}, scene);
+                    standardMaterialSphere = Object(_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["CreateSphere"])('StandardMaterialSphere1', {}, scene);
                     standardMaterialSphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__["Vector3"](1.2, 1.2, 0);
                     standardMaterialSphere.receiveShadows = true;
-                    shadowCaster = _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_11__["TorusKnotBuilder"].CreateTorusKnot('ShadowCaster', {}, scene);
+                    shadowCaster = Object(_babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_11__["CreateTorusKnot"])('ShadowCaster', {}, scene);
                     shadowCaster.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__["Vector3"](-10.0, 5.0, 0.0);
                     shadowCaster.setEnabled(debugProperties.shadow);
                     if (debugProperties.shadow) {
@@ -2394,7 +2798,7 @@ function main() {
                     }
                     {
                         mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_14__["MToonMaterial"]('MtoonMaterialNormal', scene);
-                        mat.outlineWidthMode = 1;
+                        mat.outlineWidthMode = 2;
                         diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_8__["Texture"]('http://i.imgur.com/Wk1cGEq.png', scene);
                         diffuse.uScale = 4;
                         diffuse.vScale = 4;
@@ -2497,7 +2901,7 @@ function main() {
                         mat.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__["Material"].CounterClockWiseSideOrientation;
                         mat.cullMode = 1;
                         mat.outlineCullMode = 2;
-                        var sphere = _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["SphereBuilder"].CreateSphere(mat.name + "_Sphere", {}, scene);
+                        var sphere = Object(_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["CreateSphere"])("".concat(mat.name, "_Sphere"), {}, scene);
                         sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__["Vector3"](-1.2 * index, 1.2, 0);
                         sphere.receiveShadows = true;
                         sphere.material = mat;
@@ -2507,12 +2911,12 @@ function main() {
                         mat.cullMode = 1;
                         mat.outlineCullMode = 2;
                         mat.outlineWidthMode = 1;
-                        sphere = _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["SphereBuilder"].CreateSphere('MToonMaterialNoNormal_Sphere', {}, scene);
+                        sphere = Object(_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_10__["CreateSphere"])('MToonMaterialNoNormal_Sphere', {}, scene);
                         sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_9__["Vector3"](2.4, 1.2, 0);
                         sphere.receiveShadows = true;
                         sphere.material = mat;
                         if (sphere.geometry) {
-                            sphere.geometry.removeVerticesData(_babylonjs_core_Meshes_buffer__WEBPACK_IMPORTED_MODULE_12__["VertexBuffer"].NormalKind);
+                            sphere.geometry.removeVerticesData(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_12__["VertexBuffer"].NormalKind);
                         }
                     }
                     if (!debugProperties.inspector) return [3 /*break*/, 2];
