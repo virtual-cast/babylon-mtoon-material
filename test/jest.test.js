@@ -7,7 +7,7 @@
 describe('Test', () => {
     beforeAll(async () => {
         await page.goto('http://localhost:10080/index.html');
-        await page.waitFor(() => !!window.currentScene);
+        await page.waitForFunction(() => !!window.currentScene);
     })
 
     it('should have opened', async () => {
