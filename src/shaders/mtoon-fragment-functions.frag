@@ -3,21 +3,21 @@
 * Compute Directional or Point light direction
 */
 vec3 computeLightDirection(vec4 lightData) {
-      return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));
+    return normalize(mix(lightData.xyz - vPositionW, -lightData.xyz, lightData.w));
 }
 
 /**
 * Compute Spot Light direction
 */
 vec3 computeSpotLightDirection(vec4 lightData) {
-     return normalize(lightData.xyz - vPositionW);
+    return normalize(lightData.xyz - vPositionW);
 }
 
 /**
 * Compute Hemispheric light direction
 */
 vec3 computeHemisphericLightDirection(vec4 lightData, vec3 vNormal) {
-     return normalize(lightData.xyz);
+    return normalize(lightData.xyz);
 }
 
 /**
@@ -125,9 +125,9 @@ vec4 computeMToonDiffuseLighting(vec3 worldView, vec3 worldNormal, vec2 mainUv, 
 #else
     vec3 _emission = vEmissiveColor.rgb;
 #ifdef EMISSIVE
-     _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;
+    _emission *= texture2D(emissiveSampler, mainUv).rgb * vEmissiveInfos.y;
 #endif
-     _col += mix(_emission, vec3(0.0), isOutline);
+    _col += mix(_emission, vec3(0.0), isOutline);
 #endif
 
     float _alpha = 1.0;

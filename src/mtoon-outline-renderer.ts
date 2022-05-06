@@ -33,7 +33,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
      */
     public zOffset = 1;
 
-     /**
+    /**
       * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
       */
     public zOffsetUnits = 4; // 4 to account for projection a bit by default
@@ -229,7 +229,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
         return subMesh.getRenderingMesh().hasThinInstances;
     }
 
-     /**
+    /**
      * このメッシュでアウトラインを描画するかどうか
      */
     private willRender(subMesh: SubMesh): boolean {
