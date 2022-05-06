@@ -210,33 +210,33 @@ export class MToonMaterial extends PushMaterial {
     /**
      * Multiplier of diffuseTexture
      */
-     @serializeAsColor3('diffuse')
-     public diffuseColor = new Color3(1.0, 1.0, 1.0);
-     /**
+    @serializeAsColor3('diffuse')
+    public diffuseColor = new Color3(1.0, 1.0, 1.0);
+    /**
       * babylon.js Ambient light
       */
-     @serialize('ambient')
-     public ambientColor = new Color3(0.0, 0.0, 0.0);
-     /**
+    @serialize('ambient')
+    public ambientColor = new Color3(0.0, 0.0, 0.0);
+    /**
       * Emissive color
       */
-     @serialize('emissive')
-     public emissiveColor = new Color3(0.0, 0.0, 0.0);
-     /**
+    @serialize('emissive')
+    public emissiveColor = new Color3(0.0, 0.0, 0.0);
+    /**
       * Multiplier of shadeTexture
       */
-     @serialize('shade')
-     public shadeColor = new Color3(0.97, 0.81, 0.86);
-     /**
+    @serialize('shade')
+    public shadeColor = new Color3(0.97, 0.81, 0.86);
+    /**
       * Rim color
       */
-     @serialize('rim')
-     public rimColor = new Color3(0.0, 0.0, 0.0);
-     /**
+    @serialize('rim')
+    public rimColor = new Color3(0.0, 0.0, 0.0);
+    /**
       * Outline color
       */
-     @serialize('outline')
-     public outlineColor = new Color3(0.0, 0.0, 0.0);
+    @serialize('outline')
+    public outlineColor = new Color3(0.0, 0.0, 0.0);
  //#endregion
 //#region StandardMaterial parameters
     /**
@@ -755,7 +755,7 @@ export class MToonMaterial extends PushMaterial {
     private _cullMode: CullMode = CullMode.Back;
     @serialize()
     public get cullMode() {
-      return this._cullMode;
+        return this._cullMode;
     }
     public set cullMode(value: CullMode) {
         this._cullMode = value;
