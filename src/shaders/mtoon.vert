@@ -178,13 +178,13 @@ void main(void) {
     #else
         vec2 vOutlineWidthUV = vec2(0., 0.);
     #endif
-    outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
+        outlineTex = texture2D(outlineWidthSampler, vOutlineWidthUV).r * vOutlineWidthInfos.y;
 #endif
 
 #if defined(MTOON_OUTLINE_WIDTH_WORLD) && defined(NORMAL)
         // move slightly world normal
-        vec3 outlineOffset = normalize(finalWorld * vec4(normalUpdated, 1.0)).xyz * 0.01 * outlineWidth * outlineTex;
-        positionUpdated.xyz += outlineOffset;
+        vec3 outlineOffset = 0.01 * outlineWidth * outlineTex * length(transposeMat3(inverseMat3(mat3(finalWorld))) * normalUpdated) * normalUpdated;
+        positionUpdated += outlineOffset;
 #endif
     } // End isOutline == 1.0
 
@@ -217,22 +217,18 @@ void main(void) {
     gl_Position = viewProjection * worldPos;
 #endif
 
-    vPositionW = vec3(worldPos);
-
-#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)
     if (isOutline == 1.0) {
-        vec4 projectedNormal = normalize(viewProjection * finalWorld * vec4(normalUpdated, 1.0));
-        projectedNormal *= min(worldPos.w, outlineScaledMaxDistance);
-        projectedNormal.x *= aspect;
-        worldPos.xy += 0.01 * outlineWidth * outlineTex * projectedNormal.xy * clamp(1.0 - abs(normalize(view * vec4(normalUpdated, 1.0)).z), 0.0, 1.0); // ignore offset when normal toward camera
-    }
+#if defined(MTOON_OUTLINE_WIDTH_SCREEN) && defined(NORMAL)
+        vec3 viewNormal = transposeMat3(inverseMat3(mat3(view) * mat3(finalWorld))) * normalUpdated;
+        vec3 clipNormal = mat3(projection) * viewNormal;
+        vec2 projectedNormal = normalize(clipNormal.xy);
+        projectedNormal *= min(gl_Position.w, outlineScaledMaxDistance);
+        projectedNormal.x /= aspect; // aspect in original mtoon is y/x. aspect in babylon is x/y.
+        gl_Position.xy += 0.01 * outlineWidth * outlineTex * projectedNormal * clamp(1.0 - abs(normalize(viewNormal).z), 0.0, 1.0); // ignore offset when normal toward camera
 #endif
 
-    if (isOutline == 1.0) {
-        worldPos.z += 1E-2 * worldPos.w; // anti-artifact magic from three-vrm
+        gl_Position.z += 1E-6 * gl_Position.w; // anti-artifact magic from three-vrm
     }
-
-    gl_Position = viewProjection * worldPos;
 
     worldPos = finalWorld * vec4(positionUpdated, 1.0);
     vPositionW = vec3(worldPos);

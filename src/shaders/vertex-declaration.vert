@@ -1,6 +1,7 @@
 // Uniforms
 uniform mat4 viewProjection;
 uniform mat4 view;
+uniform mat4 projection;
 uniform float outlineWidth;
 uniform float outlineScaledMaxDistance;
 uniform float outlineLightingMix;
