@@ -1220,6 +1220,9 @@ export class MToonMaterial extends PushMaterial {
                 'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
                 'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
                 'vEyeUp', 'time',
+
+                // Material#bindViewProjection
+                'projection',
             ];
 
             const samplers = [
