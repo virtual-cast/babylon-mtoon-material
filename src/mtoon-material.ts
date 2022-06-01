@@ -750,6 +750,13 @@ export class MToonMaterial extends PushMaterial {
         }
         this._markAllSubMeshesAsMiscDirty();
     }
+    private isOutline: number = 0.0;
+    public enableOutlineRender(): void {
+        this.isOutline = 1.0;
+    }
+    public disaableOutlineRender(): void {
+        this.isOutline = 0.0;
+    }
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineColorMode: OutlineColorMode = OutlineColorMode.MixedLighting;
     private _cullMode: CullMode = CullMode.Back;
@@ -1553,7 +1560,7 @@ export class MToonMaterial extends PushMaterial {
 
             // MToon bindings
             ubo.updateFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera!));
-            ubo.updateFloat('isOutline', 0.0);
+            ubo.updateFloat('isOutline', this.isOutline);
 
             // this variable is compatible with [Unity's _Time](https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html)
             const t = window.performance.now() / 1000;

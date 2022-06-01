@@ -143,10 +143,11 @@ export class MToonOutlineRenderer implements ISceneComponent {
             this.isHardwareInstancedRendering(subMesh, batch),
             (isInstance: boolean, world: Matrix, effectiveMaterial?: Material) => {
                 if (effectiveMaterial) {
-                    effectiveMaterial.bindForSubMesh(world, effectiveMesh as Mesh, subMesh);
+                    const m = effectiveMaterial as MToonMaterial;
+                    m.enableOutlineRender();
+                    m.bindForSubMesh(world, effectiveMesh as Mesh, subMesh);
+                    m.disaableOutlineRender();
                 }
-                effect.setMatrix('world', world);
-                effect.setFloat('isOutline', 1.0);
             },
             this.material,
         );
