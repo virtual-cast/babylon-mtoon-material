@@ -902,7 +902,6 @@ var MToonMaterial = /** @class */ (function (_super) {
         /** @hidden */
         _this.debugMode = DebugMode.None;
         _this._outlineWidthMode = OutlineWidthMode.None;
-        _this.isOutline = 0.0;
         _this.outlineColorMode = OutlineColorMode.MixedLighting;
         _this._cullMode = CullMode.Back;
         _this._outlineCullMode = CullMode.Front;
@@ -1401,12 +1400,6 @@ var MToonMaterial = /** @class */ (function (_super) {
         enumerable: false,
         configurable: true
     });
-    MToonMaterial.prototype.enableOutlineRender = function () {
-        this.isOutline = 1.0;
-    };
-    MToonMaterial.prototype.disaableOutlineRender = function () {
-        this.isOutline = 0.0;
-    };
     Object.defineProperty(MToonMaterial.prototype, "cullMode", {
         get: function () {
             return this._cullMode;
@@ -2015,7 +2008,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
             // MToon bindings
             ubo.updateFloat('aspect', scene.getEngine().getAspectRatio(scene.activeCamera));
-            ubo.updateFloat('isOutline', this.isOutline);
+            ubo.updateFloat('isOutline', 0.0);
             // this variable is compatible with [Unity's _Time](https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html)
             var t = window.performance.now() / 1000;
             ubo.updateVector4('time', new _babylonjs_core_Maths_math_vector__WEBPACK_IMPORTED_MODULE_4__["Vector4"](t / 20, t, t * 2, t * 3));
@@ -2513,11 +2506,10 @@ var MToonOutlineRenderer = /** @class */ (function () {
         this._engine.setZOffsetUnits(-this.zOffsetUnits);
         renderingMesh._processRendering(effectiveMesh, subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh, batch), function (isInstance, world, effectiveMaterial) {
             if (effectiveMaterial) {
-                var m = effectiveMaterial;
-                m.enableOutlineRender();
-                m.bindForSubMesh(world, effectiveMesh, subMesh);
-                m.disaableOutlineRender();
+                effectiveMaterial.bindForSubMesh(world, effectiveMesh, subMesh);
             }
+            effect.setMatrix('world', world);
+            effect.setFloat('isOutline', 1.0);
         }, this.material);
         this._engine.setZOffset(0);
         this._engine.setZOffsetUnits(0);
