@@ -5,8 +5,10 @@ module.exports = {
     devtool: 'source-map',
     entry: resolve(__dirname, 'src', 'test', 'index'),
     output: {
-        library: 'babylon-mtoon-material',
-        libraryTarget: 'umd',
+        library: {
+            name: 'babylon-mtoon-material',
+            type: 'umd',
+        },
         filename: '[name].js',
         path: resolve(__dirname, 'test'),
     },
@@ -14,11 +16,11 @@ module.exports = {
         rules: [
             {
                 test: /\.(vert|frag)$/,
-                use: 'raw-loader',
+                type: 'asset/source',
             },
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
+                loader: "ts-loader",
             },
         ],
     },
@@ -35,6 +37,14 @@ module.exports = {
     optimization: {
         splitChunks: {
             chunks: 'all',
+            cacheGroups: {
+                defaultVendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name(_module, chunks, _cacheGroupKey) {
+                        return `vendors~${chunks[0].name}`;
+                    },
+                },
+            },
         },
     },
     target: 'web',
