@@ -12,7 +12,7 @@ const baseConfig = {
             },
             {
                 test: /\.ts$/,
-                loader: "ts-loader",
+                loader: 'ts-loader',
             },
         ],
     },
