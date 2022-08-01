@@ -28,7 +28,7 @@ You can always add to an API, you cannot ever remove anything from one. If the d
 
 ## Issues
 
-Please raise **only babylon-mtoon-material specific** issues.
+Please raise **babylon-mtoon-material specific** issues only.
 
 Issues about babylon.js-specific or MToon original-specific will be ignored.
 
