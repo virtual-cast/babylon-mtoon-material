@@ -461,52 +461,52 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
-"@babylonjs/core@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/core/-/core-5.16.0.tgz#18bcd112be9e183c3bd7a8068a8cd601ddda50ac"
-  integrity sha512-6sHhLCxemO9jXpUqzssJOSAlzXk0QW2YW+lSP7wRS4nCK55bw+xasSGe+toQjy4SzpmW/gaeJ2c8yxo4kUyH4Q==
+"@babylonjs/core@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/core/-/core-5.17.1.tgz#138916a8d749d8d15f4bd0b1429c13e827fd1be5"
+  integrity sha512-FAIwtKXyEM2YthYLAj0FXQVu2m/fauWaBOXvRjaCiGgCfAQ3a6aDNMpz6kGurs0fy4AbLE7dLwaIVNsnjnmitg==
   dependencies:
     tslib "^2.4.0"
 
-"@babylonjs/gui-editor@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/gui-editor/-/gui-editor-5.16.0.tgz#ca826e1b31f72c4ce5a3eeecb24ac38c4d5aabac"
-  integrity sha512-uxcY/rgDWcu4bnSFg8+UjoGkMp/ubyVuHY5zb2CHQA5nbZCVnUHfdGU9udmXE8LSmwWYTWt4EonCnCGTCOgF/g==
+"@babylonjs/gui-editor@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui-editor/-/gui-editor-5.17.1.tgz#d71a58e6764d160eaba0e0cf7907e7c0a65afccc"
+  integrity sha512-seLgifxJSZAzBWCmtUlyS4rBx6rIZRa4PFcfK+72nZw7Cf/pCKWokq1UieIDNCNfDecfWRZL/FYAbki9D7a3SQ==
 
-"@babylonjs/gui@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-5.16.0.tgz#5ac2e72aa5c2730ae53cb1bd116b39c0277d5291"
-  integrity sha512-q1DzMyKmojrq0zFigRD+Z93dkjgn/03qRj9ESMkv9aaJZMllG+VaO17gCf5/qpffS+PhQQ7KuxcvgnpKvKzGhQ==
+"@babylonjs/gui@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/gui/-/gui-5.17.1.tgz#b6426e41fd40a4c37b6d52fd79141ae81971a935"
+  integrity sha512-h+HiFYDibtDAaVx65z6n4EBMV4MdCS3Eyw8mva462YKFKDeUCpuuUtYA3AcMhuHy9nr7HaZF5YTMGr/2HqdSZQ==
   dependencies:
     tslib "^2.4.0"
 
-"@babylonjs/inspector@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/inspector/-/inspector-5.16.0.tgz#7db9ff1ce289b3f5afb8b38384c957422bbfe367"
-  integrity sha512-gM7s4drp9MEQHL35uoHmUBBLySX2cV5RwmYVJnSfOEk/WE8SIIMkRg12KQQNepZsTZGGMQz7A26ci+9lfkG/9g==
+"@babylonjs/inspector@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/inspector/-/inspector-5.17.1.tgz#60fc33b79e44d81ac83fc64d9460656c59ff4e86"
+  integrity sha512-EhhEcfNriz4njJW11BO8U8nZkqNV9PWL8hhCNMom+mqwwdK4rxt780NeebF5qYnB4VjY5K+i+Ti1s3PNBCroig==
   dependencies:
     "@fortawesome/fontawesome-svg-core" "^6.1.0"
     "@fortawesome/free-regular-svg-icons" "^6.0.0"
     "@fortawesome/free-solid-svg-icons" "^6.0.0"
 
-"@babylonjs/loaders@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/loaders/-/loaders-5.16.0.tgz#6100897e55a4dd2cc9768c66a7db41f49af9ddf0"
-  integrity sha512-tHRZHCxjpzX4ZYbuv8oZ5IqBMP3JKRDKnT4DRN3JTrX7lA1HKVuj1HDeqweUgXmDpQhkNLaioN8zKVyjYtf9mg==
+"@babylonjs/loaders@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/loaders/-/loaders-5.17.1.tgz#a75ebd3b38b80fc825b450e41ce31eb923398627"
+  integrity sha512-hdCu0rePwyCezCFoPBBeYga4wDw5XbbxPSh/5tBbLlRPGwZU2TpbZwVhBDmp1Ewo1nhtuLPpgXxfR6OFmGO87A==
   dependencies:
     tslib "^2.4.0"
 
-"@babylonjs/materials@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/materials/-/materials-5.16.0.tgz#fa1859798d0b8ff0fe677edcc72353ab79c04490"
-  integrity sha512-iyUJqzdJRdMfGHZb0aBmMTNYsaQ9XqgEhxHSBKoLGLNFPmtinupVX4vY3BzXLQKrpMBygVOwlJuEISlbIxmgiA==
+"@babylonjs/materials@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/materials/-/materials-5.17.1.tgz#a72b2839dd3e1be2898f6ba73edd4211834f1275"
+  integrity sha512-dF/01wOasQ9DdfpTYT5hzHIQYMxwQzZblGVk0H735Dy+9Kt82XicBzKlsPX+30lv0NCpUODePa6pTvrQsZwaeg==
   dependencies:
     tslib "^2.4.0"
 
-"@babylonjs/serializers@~5.16.0":
-  version "5.16.0"
-  resolved "https://registry.yarnpkg.com/@babylonjs/serializers/-/serializers-5.16.0.tgz#7c5fa39682cacb62b9b69b33acf53efe018b3cc7"
-  integrity sha512-aYjSxWrJ0Dwkv6SsICeFO8yfYR46pFbfONeRVw4tIZOx53MI0i5RdN7HQkpf1wi0MujDopIklCOJSMofPKDTtA==
+"@babylonjs/serializers@^5.16.0":
+  version "5.17.1"
+  resolved "https://registry.yarnpkg.com/@babylonjs/serializers/-/serializers-5.17.1.tgz#1b8cfb7407f823c4e050cb0f790f9b4e8ac3d684"
+  integrity sha512-vXQ/SvWKzy51uI+H+Hbjj8kIDaGBWaW6FtKEGhjjXvO2MJlak43aTPWHDG1i3u3wHL8gOB2t7ZDvDjmQM4CFbQ==
   dependencies:
     tslib "^2.4.0"
 

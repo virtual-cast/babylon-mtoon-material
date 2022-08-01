@@ -26,13 +26,13 @@
     "typings": "dist/index.d.ts",
     "main": "dist/index.module.js",
     "devDependencies": {
-        "@babylonjs/core": "~5.16.0",
-        "@babylonjs/gui": "~5.16.0",
-        "@babylonjs/gui-editor": "~5.16.0",
-        "@babylonjs/inspector": "~5.16.0",
-        "@babylonjs/loaders": "~5.16.0",
-        "@babylonjs/materials": "~5.16.0",
-        "@babylonjs/serializers": "~5.16.0",
+        "@babylonjs/core": "^5.16.0",
+        "@babylonjs/gui": "^5.16.0",
+        "@babylonjs/gui-editor": "^5.16.0",
+        "@babylonjs/inspector": "^5.16.0",
+        "@babylonjs/loaders": "^5.16.0",
+        "@babylonjs/materials": "^5.16.0",
+        "@babylonjs/serializers": "^5.16.0",
         "@types/react": ">=16.7.3",
         "@types/react-dom": ">=16.0.9",
         "babylonjs-gltf2interface": "^5.0.0",
@@ -55,7 +55,7 @@
         "webpack-merge": "^5.8.0"
     },
     "peerDependencies": {
-        "@babylonjs/core": "~5.16.0"
+        "@babylonjs/core": "^5.16.0"
     },
     "scripts": {
         "build": "webpack",
