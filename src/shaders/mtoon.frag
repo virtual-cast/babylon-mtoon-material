@@ -51,43 +51,43 @@ varying vec4 vColor;
 
 #include<mtoonFragmentFunctions>
 
-// #ifdef REFRACTION
+// # ifdef REFRACTION
 
-// #ifdef REFRACTIONMAP_3D
+// # ifdef REFRACTIONMAP_3D
 // uniform samplerCube refractionCubeSampler;
-// #else
+// # else
 // uniform sampler2D refraction2DSampler;
-// #endif
+// # endif
 
-// #endif
+// # endif
 
-// #if defined(SPECULARTERM)
+// # if defined(SPECULARTERM)
 //     # include<samplerFragmentDeclaration>(_DEFINENAME_,SPECULAR,_VARYINGNAME_,Specular,_SAMPLERNAME_,specular)
-// #endif
+// # endif
 
 // // Fresnel
 // # include<fresnelFunction>
 
 // // Reflection
-// #ifdef REFLECTION
-// #ifdef REFLECTIONMAP_3D
+// # ifdef REFLECTION
+// # ifdef REFLECTIONMAP_3D
 // uniform samplerCube reflectionCubeSampler;
-// #else
+// # else
 // uniform sampler2D reflection2DSampler;
-// #endif
+// # endif
 
-// #ifdef REFLECTIONMAP_SKYBOX
+// # ifdef REFLECTIONMAP_SKYBOX
 // varying vec3 vPositionUVW;
-// #else
-// #if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)
+// # else
+// # if defined(REFLECTIONMAP_EQUIRECTANGULAR_FIXED) || defined(REFLECTIONMAP_MIRROREDEQUIRECTANGULAR_FIXED)
 // varying vec3 vDirectionW;
-// #endif
+// # endif
 
-// #endif
+// # endif
 
 // # include<reflectionFunction>
 
-// #endif
+// # endif
 
 #include<imageProcessingDeclaration>
 
