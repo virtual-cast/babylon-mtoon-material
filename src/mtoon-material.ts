@@ -11,7 +11,6 @@ import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
 import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
 import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
 import { Mesh } from '@babylonjs/core/Meshes/mesh';
-import { PrePassConfiguration } from '@babylonjs/core/Materials/prePassConfiguration';
 
 import { ImageProcessingConfiguration } from '@babylonjs/core/Materials/imageProcessingConfiguration';
 import { ColorCurves } from '@babylonjs/core/Materials/colorCurves';
@@ -413,11 +412,6 @@ export class MToonMaterial extends PushMaterial {
             });
         }
     }
-
-    /**
-     * Defines additional PrePass parameters for the material.
-     */
-    public readonly prePassConfiguration: PrePassConfiguration;
 
     /**
      * Can this material render to prepass
@@ -830,7 +824,6 @@ export class MToonMaterial extends PushMaterial {
 
         // Setup the default processing configuration to the scene.
         this._attachImageProcessingConfiguration(null);
-        this.prePassConfiguration = new PrePassConfiguration();
 
         this.getRenderTargetTextures = (): SmartArray<RenderTargetTexture> => {
             this._renderTargets.reset();
@@ -1253,9 +1246,6 @@ export class MToonMaterial extends PushMaterial {
             this._eventInfo.customCode = undefined;
             this._callbackPluginEventGeneric(MaterialPluginEvent.PrepareEffect, this._eventInfo);
 
-            PrePassConfiguration.AddUniforms(uniforms);
-            PrePassConfiguration.AddSamplers(samplers);
-
             if (ImageProcessingConfiguration) {
                 ImageProcessingConfiguration.PrepareUniforms(uniforms, defines);
                 ImageProcessingConfiguration.PrepareSamplers(samplers, defines);
@@ -1421,8 +1411,6 @@ export class MToonMaterial extends PushMaterial {
 
         // Binding unconditionally
         this._uniformBuffer.bindToEffect(effect, "Material");
-
-        this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
 
         this._eventInfo.subMesh = subMesh;
         this._callbackPluginEventHardBindForSubMesh(this._eventInfo);

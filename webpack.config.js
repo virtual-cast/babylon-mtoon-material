@@ -51,6 +51,10 @@ module.exports = [
         },
         externals: [
             function (context, request, callback) {
+                // materialPluginEvent is not assigned at window.BABYLON
+                if (request.includes('@babylonjs/core/Materials/materialPluginEvent')) {
+                    return callback();
+                }
                 if (/^@babylonjs\/core.*$/.test(request)) {
                     return callback(null, `window BABYLON`);
                 }
