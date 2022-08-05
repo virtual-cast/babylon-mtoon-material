@@ -616,20 +616,18 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Maths_math_vector__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Maths/math.vector */ "./node_modules/@babylonjs/core/Maths/math.vector.js");
 /* harmony import */ var _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Maths/math.color */ "./node_modules/@babylonjs/core/Maths/math.color.js");
 /* harmony import */ var _babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Buffers/buffer */ "./node_modules/@babylonjs/core/Buffers/buffer.js");
-/* harmony import */ var _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Materials/prePassConfiguration */ "./node_modules/@babylonjs/core/Materials/prePassConfiguration.js");
-/* harmony import */ var _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Materials/imageProcessingConfiguration */ "./node_modules/@babylonjs/core/Materials/imageProcessingConfiguration.js");
-/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
-/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
-/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
-/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
-/* harmony import */ var _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Materials/effectFallbacks */ "./node_modules/@babylonjs/core/Materials/effectFallbacks.js");
-/* harmony import */ var _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Materials/effect */ "./node_modules/@babylonjs/core/Materials/effect.js");
-/* harmony import */ var _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/core/Materials/material.detailMapConfiguration */ "./node_modules/@babylonjs/core/Materials/material.detailMapConfiguration.js");
-/* harmony import */ var _babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! @babylonjs/core/Materials/materialPluginEvent */ "./node_modules/@babylonjs/core/Materials/materialPluginEvent.js");
-/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
-/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
-/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_19__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
-
+/* harmony import */ var _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Materials/imageProcessingConfiguration */ "./node_modules/@babylonjs/core/Materials/imageProcessingConfiguration.js");
+/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
+/* harmony import */ var _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Materials/pushMaterial */ "./node_modules/@babylonjs/core/Materials/pushMaterial.js");
+/* harmony import */ var _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Materials/materialHelper */ "./node_modules/@babylonjs/core/Materials/materialHelper.js");
+/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
+/* harmony import */ var _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/Materials/effectFallbacks */ "./node_modules/@babylonjs/core/Materials/effectFallbacks.js");
+/* harmony import */ var _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Materials/effect */ "./node_modules/@babylonjs/core/Materials/effect.js");
+/* harmony import */ var _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Materials/material.detailMapConfiguration */ "./node_modules/@babylonjs/core/Materials/material.detailMapConfiguration.js");
+/* harmony import */ var _babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/core/Materials/materialPluginEvent */ "./node_modules/@babylonjs/core/Materials/materialPluginEvent.js");
+/* harmony import */ var _inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_16__ = __webpack_require__(/*! ./inspectable-custom-properties */ "./src/inspectable-custom-properties.ts");
+/* harmony import */ var _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_17__ = __webpack_require__(/*! ./mtoon-outline-renderer */ "./src/mtoon-outline-renderer.ts");
+/* harmony import */ var _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_18__ = __webpack_require__(/*! ./mtoon-material-defines */ "./src/mtoon-material-defines.ts");
 
 
 
@@ -908,10 +906,9 @@ var MToonMaterial = /** @class */ (function (_super) {
         _this._outlineCullMode = CullMode.Front;
         _this.outlineCullMode = CullMode.Front;
         _this.storedCullMode = CullMode.Back;
-        _this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_15__["DetailMapConfiguration"](_this);
+        _this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_14__["DetailMapConfiguration"](_this);
         // Setup the default processing configuration to the scene.
         _this._attachImageProcessingConfiguration(null);
-        _this.prePassConfiguration = new _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"]();
         _this.getRenderTargetTextures = function () {
             _this._renderTargets.reset();
             // if (StandardMaterial.ReflectionTextureEnabled && this._reflectionTexture && this._reflectionTexture.isRenderTarget) {
@@ -925,19 +922,19 @@ var MToonMaterial = /** @class */ (function (_super) {
             return _this._renderTargets;
         };
         // Register shaders to ShadersStore
-        if (!_babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonUboDeclaration) {
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonFragmentFunctions = FragmentFunctions;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonLightFragment = LightFragment;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].IncludesShadersStore.mtoonBumpFragment = BumpFragment;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
-            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_14__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
+        if (!_babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonUboDeclaration) {
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonUboDeclaration = UboDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonVertexDeclaration = VertexDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonFragmentDeclaration = FragmentDeclaration;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonFragmentFunctions = FragmentFunctions;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonLightFragment = LightFragment;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].IncludesShadersStore.mtoonBumpFragment = BumpFragment;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].ShadersStore.mtoonVertexShader = VertexShader;
+            _babylonjs_core_Materials_effect__WEBPACK_IMPORTED_MODULE_13__["Effect"].ShadersStore.mtoonFragmentShader = FragmentShader;
         }
         // Add properties to Inspactor
         _this.inspectableCustomProperties = _this.inspectableCustomProperties || [];
-        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_17__["getInspectableCustomProperties"])());
+        (_a = _this.inspectableCustomProperties).push.apply(_a, Object(_inspectable_custom_properties__WEBPACK_IMPORTED_MODULE_16__["getInspectableCustomProperties"])());
         return _this;
     }
     Object.defineProperty(MToonMaterial.prototype, "appendedTextures", {
@@ -1347,14 +1344,14 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._alphaTest = value;
             if (value) {
                 if (this.alphaBlend) {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATESTANDBLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_ALPHATESTANDBLEND;
                 }
                 else {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATEST;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_ALPHATEST;
                 }
             }
             else {
-                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_OPAQUE;
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1370,14 +1367,14 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (value) {
                 this.backFaceCulling = true;
                 if (this.alphaTest) {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATESTANDBLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_ALPHATESTANDBLEND;
                 }
                 else {
-                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHABLEND;
+                    this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_ALPHABLEND;
                 }
             }
             else {
-                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_OPAQUE;
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1394,7 +1391,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                 /**
                  * このマテリアル用のアウトラインレンダラーを生成する
                  */
-                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_18__["MToonOutlineRenderer"](this.getScene(), this);
+                this.outlineRenderer = new _mtoon_outline_renderer__WEBPACK_IMPORTED_MODULE_17__["MToonOutlineRenderer"](this.getScene(), this);
             }
             this._markAllSubMeshesAsMiscDirty();
         },
@@ -1417,19 +1414,19 @@ var MToonMaterial = /** @class */ (function (_super) {
                 case CullMode.Off:
                     // 両面を描画する
                     this.backFaceCulling = false;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
                 case CullMode.Front:
                     // 表面を描画しない(=裏面だけ描画する)
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].CounterClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].CounterClockWiseSideOrientation;
                     this.twoSidedLighting = true;
                     break;
                 case CullMode.Back:
                     // 裏面を描画しない(=表面だけ描画する) デフォルト
                     this.backFaceCulling = true;
-                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].ClockWiseSideOrientation;
+                    this.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].ClockWiseSideOrientation;
                     this.twoSidedLighting = false;
                     break;
             }
@@ -1523,7 +1520,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         if (this._alphaTest) {
             return true;
         }
-        return this._hasAlphaChannel() && (this._transparencyMode == null || this._transparencyMode === _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_ALPHATEST);
+        return this._hasAlphaChannel() && (this._transparencyMode == null || this._transparencyMode === _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_ALPHATEST);
     };
     /**
      * {@inheritdoc}
@@ -1532,7 +1529,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         return this._diffuseTexture != null
             && this._diffuseTexture.hasAlpha
             && this._useAlphaFromDiffuseTexture
-            && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_9__["Material"].MATERIAL_OPAQUE;
+            && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_8__["Material"].MATERIAL_OPAQUE;
     };
     /**
      * {@inheritdoc}
@@ -1560,8 +1557,8 @@ var MToonMaterial = /** @class */ (function (_super) {
             }
         }
         if (!subMesh.materialDefines) {
-            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__["MaterialPluginEvent"].GetDefineNames, this._eventInfo);
-            subMesh.materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_19__["MToonMaterialDefines"]();
+            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_15__["MaterialPluginEvent"].GetDefineNames, this._eventInfo);
+            subMesh.materialDefines = new _mtoon_material_defines__WEBPACK_IMPORTED_MODULE_18__["MToonMaterialDefines"]();
         }
         var scene = this.getScene();
         var defines = subMesh.materialDefines;
@@ -1570,26 +1567,26 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         var engine = scene.getEngine();
         // Lights
-        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this._maxSimultaneousLights, this._disableLighting);
+        defines._needNormals = _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this._maxSimultaneousLights, this._disableLighting);
         if (this.outlineWidthMode !== OutlineWidthMode.None) {
             // Normals is needed when rendering outline
             defines._needNormals = true;
         }
         this.applyDefines(defines);
         // Multiview
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
         // PrePass
         var oit = this.needAlphaBlendingForMesh(mesh) && scene.useOrderIndependentTransparency;
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
         // Order independant transparency
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForOIT(scene, defines, oit);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForOIT(scene, defines, oit);
         // Textures
         if (defines._areTexturesDirty) {
             this._eventInfo.hasRenderTargetTextures = false;
             this._callbackPluginEventHasRenderTargetTextures(this._eventInfo);
             this._cacheHasRenderTargetTextures = this._eventInfo.hasRenderTargetTextures;
             defines._needUVs = false;
-            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
+            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_11__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
                 defines["MAINUV" + i] = false;
             }
             if (scene.texturesEnabled) {
@@ -1610,7 +1607,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                     if (!this._bumpTexture.isReady()) {
                         return false;
                     }
-                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
+                    _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForMergedUV(this._bumpTexture, defines, 'BUMP');
                     defines.PARALLAX = this.useParallax;
                     defines.PARALLAXOCCLUSION = this.useParallaxOcclusion;
                     defines.OBJECTSPACE_NORMALMAP = this.useObjectSpaceNormalMap;
@@ -1636,7 +1633,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             // defines.EMISSIVEASILLUMINATION = this._useEmissiveAsIllumination;
             // defines.LINKEMISSIVEWITHDIFFUSE = this._linkEmissiveWithDiffuse;
             // defines.SPECULAROVERALPHA = this._useSpecularOverAlpha;
-            defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
+            defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_11__["Constants"].ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_11__["Constants"].ALPHA_PREMULTIPLIED_PORTERDUFF);
             defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = this.transparencyMode !== null;
             defines.ALPHABLEND = this.transparencyMode === null || this.needAlphaBlendingForMesh(mesh); // check on null for backward compatibility
         }
@@ -1655,11 +1652,11 @@ var MToonMaterial = /** @class */ (function (_super) {
             // defines.IS_REFRACTION_LINEAR = (this.refractionTexture != null && !this.refractionTexture.gammaSpace);
         }
         // Misc.
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest, defines);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForMisc(mesh, scene, this._useLogarithmicDepth, this.pointsCloud, this.fogEnabled, this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest, defines);
         // Attribs
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha);
         // Values that need to be evaluated on every frame
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances, null, subMesh.getRenderingMesh().hasThinInstances);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances, null, subMesh.getRenderingMesh().hasThinInstances);
         // External config
         this._eventInfo.defines = defines;
         this._eventInfo.mesh = mesh;
@@ -1669,7 +1666,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             var lightDisposed = defines._areLightsDisposed;
             defines.markAsProcessed();
             // Fallbacks
-            var fallbacks = new _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_13__["EffectFallbacks"]();
+            var fallbacks = new _babylonjs_core_Materials_effectFallbacks__WEBPACK_IMPORTED_MODULE_12__["EffectFallbacks"]();
             if (defines.BUMP) {
                 fallbacks.addFallback(0, 'BUMP');
             }
@@ -1688,7 +1685,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (defines.LOGARITHMICDEPTH) {
                 fallbacks.addFallback(0, 'LOGARITHMICDEPTH');
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this._maxSimultaneousLights);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].HandleFallbacksForShadows(defines, fallbacks, this._maxSimultaneousLights);
             if (defines.MULTIVIEW) {
                 fallbacks.addFallback(0, 'MULTIVIEW');
             }
@@ -1700,7 +1697,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (defines.TANGENT) {
                 attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].TangentKind);
             }
-            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_12__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
+            for (var i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_11__["Constants"].MAX_SUPPORTED_UV_SETS; ++i) {
                 if (defines["UV" + i]) {
                     attribs.push("uv".concat(i === 1 ? "" : i));
                 }
@@ -1708,9 +1705,9 @@ var MToonMaterial = /** @class */ (function (_super) {
             if (defines.INSTANCESCOLOR) {
                 attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_6__["VertexBuffer"].ColorInstanceKind);
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareAttributesForInstances(attribs, defines);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareAttributesForMorphTargets(attribs, mesh, defines);
             var shaderName = 'mtoon';
             var uniforms = [
                 // StandardMaterial uniforms
@@ -1759,14 +1756,12 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._eventInfo.samplers = samplers;
             this._eventInfo.uniformBuffersNames = uniformBuffers;
             this._eventInfo.customCode = undefined;
-            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_16__["MaterialPluginEvent"].PrepareEffect, this._eventInfo);
-            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"].AddUniforms(uniforms);
-            _babylonjs_core_Materials_prePassConfiguration__WEBPACK_IMPORTED_MODULE_7__["PrePassConfiguration"].AddSamplers(samplers);
-            if (_babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"]) {
-                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"].PrepareUniforms(uniforms, defines);
-                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_8__["ImageProcessingConfiguration"].PrepareSamplers(samplers, defines);
+            this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_15__["MaterialPluginEvent"].PrepareEffect, this._eventInfo);
+            if (_babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"]) {
+                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"].PrepareUniforms(uniforms, defines);
+                _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"].PrepareSamplers(samplers, defines);
             }
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareUniformsAndSamplersList({
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareUniformsAndSamplersList({
                 uniformsNames: uniforms,
                 uniformBuffersNames: uniformBuffers,
                 samplers: samplers,
@@ -1901,7 +1896,6 @@ var MToonMaterial = /** @class */ (function (_super) {
         mesh.transferToEffect(world);
         // Binding unconditionally
         this._uniformBuffer.bindToEffect(effect, "Material");
-        this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
         this._eventInfo.subMesh = subMesh;
         this._callbackPluginEventHardBindForSubMesh(this._eventInfo);
         // Normal Matrix
@@ -1911,7 +1905,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
         var mustRebind = this._mustRebind(scene, effect, mesh.visibility);
         // Bones
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindBonesParameters(mesh, effect);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindBonesParameters(mesh, effect);
         var ubo = this._uniformBuffer;
         if (mustRebind) {
             this.bindViewProjection(effect);
@@ -1921,7 +1915,7 @@ var MToonMaterial = /** @class */ (function (_super) {
                     this.bindTexture(this._emissiveTexture, ubo, effect, 'emissive', 'vEmissiveInfos');
                     if (this._bumpTexture && scene.getEngine().getCaps().standardDerivatives) {
                         ubo.updateFloat3('vBumpInfos', this._bumpTexture.coordinatesIndex, 1.0 / this._bumpTexture.level, this._bumpScale);
-                        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindTextureMatrix(this._bumpTexture, ubo, "bump");
+                        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindTextureMatrix(this._bumpTexture, ubo, "bump");
                         effect.setTexture("bumpSampler", this._bumpTexture);
                         // bumpTexture は babylon.js のデフォルトと反対の状態である
                         if (scene._mirroredCameraPosition) {
@@ -1980,7 +1974,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._eventInfo.subMesh = subMesh;
             this._callbackPluginEventBindForSubMesh(this._eventInfo);
             // Clip plane
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindClipPlane(effect, scene);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindClipPlane(effect, scene);
             // Colors
             this.bindEyePosition(effect);
         }
@@ -1990,24 +1984,24 @@ var MToonMaterial = /** @class */ (function (_super) {
         if (mustRebind || !this.isFrozen) {
             // Lights
             if (scene.lightsEnabled && !this._disableLighting) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this._maxSimultaneousLights);
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindLights(scene, mesh, effect, defines, this._maxSimultaneousLights);
             }
             // View
             if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_3__["Scene"].FOGMODE_NONE || mesh.receiveShadows) {
                 this.bindView(effect);
             }
             // Fog
-            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
+            _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindFogParameters(scene, mesh, effect);
             // Morph targets
             if (defines.NUM_MORPH_INFLUENCERS) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindMorphTargetParameters(mesh, effect);
             }
             if (defines.BAKED_VERTEX_ANIMATION_TEXTURE) {
                 (_a = mesh.bakedVertexAnimationManager) === null || _a === void 0 ? void 0 : _a.bind(effect, defines.INSTANCES);
             }
             // Log. depth
             if (this.useLogarithmicDepth) {
-                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindLogDepth(defines, effect, scene);
+                _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindLogDepth(defines, effect, scene);
             }
             // image processing
             if (this._imageProcessingConfiguration && !this._imageProcessingConfiguration.applyByPostProcess) {
@@ -2107,7 +2101,7 @@ var MToonMaterial = /** @class */ (function (_super) {
             return;
         }
         this._uniformBuffer.updateFloat2(infoName, texture.coordinatesIndex, texture.level);
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].BindTextureMatrix(texture, ubo, name);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].BindTextureMatrix(texture, ubo, name);
         effect.setTexture("".concat(name, "Sampler"), texture);
     };
     /**
@@ -2124,7 +2118,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         if (!texture.isReadyOrNotBlocking()) {
             return false;
         }
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_11__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
+        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForMergedUV(texture, defines, key);
         return true;
     };
     /**
@@ -2402,7 +2396,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         Object(_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_1__["serialize"])()
     ], MToonMaterial.prototype, "useLogarithmicDepth", null);
     return MToonMaterial;
-}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_10__["PushMaterial"]));
+}(_babylonjs_core_Materials_pushMaterial__WEBPACK_IMPORTED_MODULE_9__["PushMaterial"]));
 
 
 
