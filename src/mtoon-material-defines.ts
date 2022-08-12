@@ -41,7 +41,7 @@ export class MToonMaterialDefines extends MaterialDefines implements IImageProce
     public MAINUV6 = false;
     public DIFFUSE = false;
     public DIFFUSEDIRECTUV = 0;
-    public BAKED_VERTYEX_ANIMATION_TEXTURE = false;
+    public BAKED_VERTEX_ANIMATION_TEXTURE = false;
     // public AMBIENT = false;
     // public AMBIENTDIRECTUV = 0;
     // public OPACITY = false;
