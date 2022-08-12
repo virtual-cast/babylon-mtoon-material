@@ -635,6 +635,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+// import { PrePassConfiguration } from "./prePassConfiguration";
 
 
 
@@ -909,6 +910,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         _this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_14__["DetailMapConfiguration"](_this);
         // Setup the default processing configuration to the scene.
         _this._attachImageProcessingConfiguration(null);
+        // this.prePassConfiguration = new PrePassConfiguration();
         _this.getRenderTargetTextures = function () {
             _this._renderTargets.reset();
             // if (StandardMaterial.ReflectionTextureEnabled && this._reflectionTexture && this._reflectionTexture.isRenderTarget) {
@@ -1020,11 +1022,17 @@ var MToonMaterial = /** @class */ (function (_super) {
         }
     };
     Object.defineProperty(MToonMaterial.prototype, "isPrePassCapable", {
+        // /**
+        //  * Defines additional PrePass parameters for the material.
+        //  */
+        // public readonly prePassConfiguration: PrePassConfiguration;
         /**
          * Can this material render to prepass
+         * No support for PrePass
          */
         get: function () {
-            return !this.disableDepthWrite;
+            // return !this.disableDepthWrite;
+            return false;
         },
         enumerable: false,
         configurable: true
@@ -1577,7 +1585,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForMultiview(scene, defines);
         // PrePass
         var oit = this.needAlphaBlendingForMesh(mesh) && scene.useOrderIndependentTransparency;
-        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
+        // MaterialHelper.PrepareDefinesForPrePass(scene, defines, this.canRenderToMRT && !oit);
         // Order independant transparency
         _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_10__["MaterialHelper"].PrepareDefinesForOIT(scene, defines, oit);
         // Textures
@@ -1757,6 +1765,8 @@ var MToonMaterial = /** @class */ (function (_super) {
             this._eventInfo.uniformBuffersNames = uniformBuffers;
             this._eventInfo.customCode = undefined;
             this._callbackPluginEventGeneric(_babylonjs_core_Materials_materialPluginEvent__WEBPACK_IMPORTED_MODULE_15__["MaterialPluginEvent"].PrepareEffect, this._eventInfo);
+            // PrePassConfiguration.AddUniforms(uniforms);
+            // PrePassConfiguration.AddSamplers(samplers);
             if (_babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"]) {
                 _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"].PrepareUniforms(uniforms, defines);
                 _babylonjs_core_Materials_imageProcessingConfiguration__WEBPACK_IMPORTED_MODULE_7__["ImageProcessingConfiguration"].PrepareSamplers(samplers, defines);
@@ -1896,6 +1906,7 @@ var MToonMaterial = /** @class */ (function (_super) {
         mesh.transferToEffect(world);
         // Binding unconditionally
         this._uniformBuffer.bindToEffect(effect, "Material");
+        // this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
         this._eventInfo.subMesh = subMesh;
         this._callbackPluginEventHardBindForSubMesh(this._eventInfo);
         // Normal Matrix
