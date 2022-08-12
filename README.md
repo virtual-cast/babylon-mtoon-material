@@ -51,6 +51,7 @@ These are not covered.
 
 - Specular
 - Vertex Color
+- PrePass
 
 ## Usage
 
