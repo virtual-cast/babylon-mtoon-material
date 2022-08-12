@@ -36,15 +36,14 @@ import { MToonMaterialDefines } from './mtoon-material-defines';
 
 const onCreatedEffectParameters = { effect: null as unknown as Effect, subMesh: null as unknown as Nullable<SubMesh> };
 
-// get shader string
-const UboDeclaration = require('./shaders/ubo-declaration.vert').default;
-const VertexDeclaration = require('./shaders/vertex-declaration.vert').default;
-const FragmentDeclaration = require('./shaders/fragment-declaration.frag').default;
-const FragmentFunctions = require('./shaders/mtoon-fragment-functions.frag').default;
-const BumpFragment = require('./shaders/bump-fragment.frag').default;
-const LightFragment = require('./shaders/light-fragment.frag').default;
-const VertexShader = require('./shaders/mtoon.vert').default;
-const FragmentShader = require('./shaders/mtoon.frag').default;
+import UboDeclaration from './shaders/ubo-declaration.vert';
+import VertexDeclaration from './shaders/vertex-declaration.vert';
+import FragmentDeclaration from './shaders/fragment-declaration.frag';
+import FragmentFunctions from './shaders/mtoon-fragment-functions.frag';
+import BumpFragment from './shaders/bump-fragment.frag';
+import LightFragment from './shaders/light-fragment.frag';
+import VertexShader from './shaders/mtoon.vert';
+import FragmentShader from './shaders/mtoon.frag';
 
 /**
  * Debug shading mode
@@ -307,6 +306,10 @@ export class MToonMaterial extends PushMaterial {
      * No support for vertex alpha
      */
     public readonly useVertexAlpha: boolean = false;
+    /**
+     * No support for baked vertex animation
+     */
+    public readonly useBakedVertexAnimation: boolean = false;
 
     /**
      * Defines the alpha limits in alpha test mode.
@@ -401,8 +404,7 @@ export class MToonMaterial extends PushMaterial {
         // Pick the scene configuration if needed
         if (!configuration) {
             this._imageProcessingConfiguration = this.getScene().imageProcessingConfiguration;
-        }
-        else {
+        } else {
             this._imageProcessingConfiguration = configuration;
         }
 
@@ -966,7 +968,7 @@ export class MToonMaterial extends PushMaterial {
         }
 
         if (subMesh.effect && this.isFrozen) {
-            if (subMesh.effect._wasPreviouslyReady) {
+            if (subMesh.effect._wasPreviouslyReady && subMesh.effect._wasPreviouslyUsingInstances === useInstances) {
                 return true;
             }
         }
@@ -1048,6 +1050,8 @@ export class MToonMaterial extends PushMaterial {
                     defines.OBJECTSPACE_NORMALMAP = this.useObjectSpaceNormalMap;
                 } else {
                     defines.BUMP = false;
+                    defines.PARALLAX = false;
+                    defines.PARALLAXOCCLUSION = false;
                 }
 
                 defines.TWOSIDEDLIGHTING = !this._backFaceCulling && this._twoSidedLighting;
@@ -1109,16 +1113,6 @@ export class MToonMaterial extends PushMaterial {
             defines,
         );
 
-        // Attribs
-        MaterialHelper.PrepareDefinesForAttributes(
-            mesh,
-            defines,
-            this.useVertexColor,
-            this.useBones,
-            this.useMorphTargets,
-            this.useVertexAlpha,
-        );
-
         // Values that need to be evaluated on every frame
         MaterialHelper.PrepareDefinesForFrameBoundValues(
             scene,
@@ -1132,6 +1126,20 @@ export class MToonMaterial extends PushMaterial {
         // External config
         this._eventInfo.defines = defines;
         this._eventInfo.mesh = mesh;
+        this._callbackPluginEventPrepareDefinesBeforeAttributes(this._eventInfo);
+
+        // Attribs
+        MaterialHelper.PrepareDefinesForAttributes(
+            mesh,
+            defines,
+            this.useVertexColor,
+            this.useBones,
+            this.useMorphTargets,
+            this.useVertexAlpha,
+            this.useBakedVertexAnimation,
+        );
+
+        // External config
         this._callbackPluginEventPrepareDefines(this._eventInfo);
 
         // Get correct effect
@@ -1147,11 +1155,11 @@ export class MToonMaterial extends PushMaterial {
             }
 
             if (defines.PARALLAX) {
-                fallbacks.addFallback(1, "PARALLAX");
+                fallbacks.addFallback(1, 'PARALLAX');
             }
 
             if (defines.PARALLAXOCCLUSION) {
-                fallbacks.addFallback(0, "PARALLAXOCCLUSION");
+                fallbacks.addFallback(0, 'PARALLAXOCCLUSION');
             }
 
             if (defines.FOG) {
@@ -1196,6 +1204,7 @@ export class MToonMaterial extends PushMaterial {
             MaterialHelper.PrepareAttributesForBones(attribs, mesh, defines, fallbacks);
             MaterialHelper.PrepareAttributesForInstances(attribs, defines);
             MaterialHelper.PrepareAttributesForMorphTargets(attribs, mesh, defines);
+            MaterialHelper.PrepareAttributesForBakedVertexAnimation(attribs, mesh, defines);
 
             const shaderName = 'mtoon';
 
@@ -1250,9 +1259,11 @@ export class MToonMaterial extends PushMaterial {
             this._eventInfo.fallbackRank = 0;
             this._eventInfo.defines = defines;
             this._eventInfo.uniforms = uniforms;
+            this._eventInfo.attributes = attribs;
             this._eventInfo.samplers = samplers;
             this._eventInfo.uniformBuffersNames = uniformBuffers;
             this._eventInfo.customCode = undefined;
+            this._eventInfo.mesh = mesh;
             this._callbackPluginEventGeneric(MaterialPluginEvent.PrepareEffect, this._eventInfo);
 
             // PrePassConfiguration.AddUniforms(uniforms);
@@ -1324,6 +1335,7 @@ export class MToonMaterial extends PushMaterial {
 
         defines._renderId = scene.getRenderId();
         subMesh.effect._wasPreviouslyReady = true;
+        subMesh.effect._wasPreviouslyUsingInstances = useInstances;
 
         return true;
     }
@@ -1442,7 +1454,6 @@ export class MToonMaterial extends PushMaterial {
         const ubo = this._uniformBuffer;
         if (mustRebind) {
             this.bindViewProjection(effect);
-
             if (!ubo.useUbo || !this.isFrozen || !ubo.isSync) {
                 if (scene.texturesEnabled) {
                     this.bindTexture(this._diffuseTexture, ubo, effect, 'diffuse', 'vDiffuseInfos');

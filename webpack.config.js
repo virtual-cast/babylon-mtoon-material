@@ -8,11 +8,11 @@ const baseConfig = {
         rules: [
             {
                 test: /\.(vert|frag)$/,
-                use: 'raw-loader',
+                type: 'asset/source',
             },
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
+                loader: 'ts-loader',
             },
         ],
     },
@@ -29,10 +29,11 @@ module.exports = [
      */
     merge(baseConfig, {
         output: {
-            library: 'babylon-mtoon-material',
-            libraryTarget: 'umd',
+            library: {
+                name: 'babylon-mtoon-material',
+                type: 'umd',
+            },
             filename: 'index.module.js',
-            path: resolve(__dirname, 'dist'),
         },
         externals: [
             /^@babylonjs\/core.*$/,
@@ -43,18 +44,15 @@ module.exports = [
      */
     merge(baseConfig, {
         output: {
-            library: 'MToonMaterial',
-            libraryTarget: 'window',
-            libraryExport: 'MToonMaterial',
+            library: {
+                name: 'MToonMaterial',
+                type: 'window',
+                export: 'MToonMaterial',
+            },
             filename: 'index.js',
-            path: resolve(__dirname, 'dist'),
         },
         externals: [
-            function (context, request, callback) {
-                // materialPluginEvent is not assigned at window.BABYLON
-                if (request.includes('@babylonjs/core/Materials/materialPluginEvent')) {
-                    return callback();
-                }
+            ({context, request}, callback) => {
                 if (/^@babylonjs\/core.*$/.test(request)) {
                     return callback(null, `window BABYLON`);
                 }
