@@ -8,7 +8,7 @@
 
 Some settings will be ignored or generates inconsistent lighting.
 
-[About MToon](https://vrm.dev/en/univrm/shaders/mtoon/)([ja](https://vrm.dev/univrm/shaders/mtoon/))
+[About MToon](https://vrm.dev/en/univrm/shaders/shader_mtoon)([ja](https://vrm.dev/univrm/shaders/shader_mtoon)
 
 ## Supported version table
 
@@ -22,7 +22,7 @@ Some settings will be ignored or generates inconsistent lighting.
 
 ## Features
 
-- Some [StandardMaterial](https://doc.babylonjs.com/api/classes/babylon.standardmaterial) abilities
+- Some [StandardMaterial](https://doc.babylonjs.com/typedoc/classes/BABYLON.StandardMaterial) abilities
     - Lighting
     - Multiview
     - LogarithmicDepth
@@ -155,8 +155,8 @@ $ yarn test
 - [BabylonJS/Babylon.js: Babylon.js: a complete JavaScript framework for building 3D games with HTML 5 and WebGL](https://github.com/BabylonJS/Babylon.js)
 - [Santarh/MToon: Toon Shader with Unity Global Illumination](https://github.com/Santarh/MToon/)
 - [vrm-c/UniVRM: Unity package that can import and export VRM format](https://github.com/vrm-c/UniVRM)
-- [Create a Material for the Material Library](https://doc.babylonjs.com/how_to/how_to_create_a_material_for_materialslibrary)
-- [Materials - Babylon.js Documentation](https://doc.babylonjs.com/babylon101/materials)
+- [Create a Material For The Material Library | Babylon.js Documentation](https://doc.babylonjs.com/divingDeeper/developWithBjs/matForMatLibrary)
+- [Introduction To Materials | Babylon.js Documentation](https://doc.babylonjs.com/divingDeeper/materials/using/materials_introduction)
 
 ## Licenses
 
