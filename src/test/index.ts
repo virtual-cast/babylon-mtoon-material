@@ -19,14 +19,10 @@ import '@babylonjs/inspector';
 async function main() {
     const debugProperties = getDebugProperties();
     const canvas = document.getElementById('main-canvas') as HTMLCanvasElement;
-    const engine = new Engine(
-        canvas,
-        true,
-        {
-            alpha: false,
-            disableWebGL2Support: debugProperties.webgl1,
-        },
-    );
+    const engine = new Engine(canvas, true, {
+        alpha: false,
+        disableWebGL2Support: debugProperties.webgl1,
+    });
 
     const scene = new Scene(engine);
     const camera = new ArcRotateCamera('MainCamera1', 0, 0, 3, new Vector3(0, 1.5, 0), scene, true);
@@ -106,7 +102,7 @@ async function main() {
         mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaTest = true;
-        mat.alphaCutOff = 0.500;
+        mat.alphaCutOff = 0.5;
         mtoonMaterials.push(mat);
     }
     {

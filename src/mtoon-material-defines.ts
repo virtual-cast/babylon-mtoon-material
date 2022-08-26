@@ -187,7 +187,7 @@ export class MToonMaterialDefines extends MaterialDefines implements IImageProce
     /**
      * @inheritdoc
      */
-    constructor(externalProperties?: { [name: string]: { type: string, default: any } }) {
+    constructor(externalProperties?: { [name: string]: { type: string; default: any } }) {
         super(externalProperties);
         this.rebuild();
     }

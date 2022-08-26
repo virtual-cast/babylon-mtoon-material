@@ -2,7 +2,7 @@ import type { Engine } from '@babylonjs/core/Engines/engine';
 import type { Mesh, _InstancesBatch } from '@babylonjs/core/Meshes/mesh';
 import type { SubMesh } from '@babylonjs/core/Meshes/subMesh';
 import type { Scene } from '@babylonjs/core/scene';
-import type { ISceneComponent} from '@babylonjs/core/sceneComponent';
+import type { ISceneComponent } from '@babylonjs/core/sceneComponent';
 import { SceneComponentConstants } from '@babylonjs/core/sceneComponent';
 import type { Nullable } from '@babylonjs/core/types';
 import type { Matrix } from '@babylonjs/core/Maths/math';
@@ -37,8 +37,8 @@ export class MToonOutlineRenderer implements ISceneComponent {
     public zOffset = 1;
 
     /**
-      * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
-      */
+     * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
+     */
     public zOffsetUnits = 4; // 4 to account for projection a bit by default
 
     private _engine: Engine;
@@ -49,10 +49,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
      * @inheritdoc
      * MToonMaterial ごとにインスタンスを生成する
      */
-    public constructor(
-        public readonly scene: Scene,
-        public readonly material: MToonMaterial,
-    ) {
+    public constructor(public readonly scene: Scene, public readonly material: MToonMaterial) {
         this.name = `${BASE_NAME}_${material.name}_${MToonOutlineRenderer.rendererId++}`;
         this.scene._addComponent(this);
         this._engine = this.scene.getEngine();
@@ -67,16 +64,8 @@ export class MToonOutlineRenderer implements ISceneComponent {
      * シーン描画前後にレンダリング処理を登録する
      */
     public register(): void {
-        this.scene._beforeRenderingMeshStage.registerStep(
-            SceneComponentConstants.STEP_BEFORERENDERINGMESH_OUTLINE,
-            this,
-            this._beforeRenderingMesh,
-        );
-        this.scene._afterRenderingMeshStage.registerStep(
-            SceneComponentConstants.STEP_AFTERRENDERINGMESH_OUTLINE,
-            this,
-            this._afterRenderingMesh,
-        );
+        this.scene._beforeRenderingMeshStage.registerStep(SceneComponentConstants.STEP_BEFORERENDERINGMESH_OUTLINE, this, this._beforeRenderingMesh);
+        this.scene._afterRenderingMeshStage.registerStep(SceneComponentConstants.STEP_AFTERRENDERINGMESH_OUTLINE, this, this._afterRenderingMesh);
     }
 
     /**
@@ -153,7 +142,7 @@ export class MToonOutlineRenderer implements ISceneComponent {
                     m.disaableOutlineRender();
                 }
             },
-            this.material,
+            this.material
         );
 
         this._engine.setZOffset(0);
