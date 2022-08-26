@@ -1,34 +1,36 @@
 import { serialize, SerializationHelper, serializeAsColor3, expandToProperty, serializeAsTexture } from '@babylonjs/core/Misc/decorators';
-import { Observer } from '@babylonjs/core/Misc/observable';
+import type { Observer } from '@babylonjs/core/Misc/observable';
 import { SmartArray } from '@babylonjs/core/Misc/smartArray';
-import { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
+import type { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
 
-import { Nullable } from '@babylonjs/core/types';
+import type { Nullable } from '@babylonjs/core/types';
 import { Scene } from '@babylonjs/core/scene';
 import { Matrix, Vector4 } from '@babylonjs/core/Maths/math.vector';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
-import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import type { SubMesh } from '@babylonjs/core/Meshes/subMesh';
+import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 // import { PrePassConfiguration } from "./prePassConfiguration";
 
 import { ImageProcessingConfiguration } from '@babylonjs/core/Materials/imageProcessingConfiguration';
-import { ColorCurves } from '@babylonjs/core/Materials/colorCurves';
-import { Material, ICustomShaderNameResolveOptions } from '@babylonjs/core/Materials/material';
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import type { ColorCurves } from '@babylonjs/core/Materials/colorCurves';
+import type { ICustomShaderNameResolveOptions } from '@babylonjs/core/Materials/material';
+import { Material } from '@babylonjs/core/Materials/material';
+import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { PushMaterial } from '@babylonjs/core/Materials/pushMaterial';
 import { MaterialHelper } from '@babylonjs/core/Materials/materialHelper';
 
-import { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
-import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
+import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
+import type { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
 
 import { Constants } from '@babylonjs/core/Engines/constants';
 import { EffectFallbacks } from '@babylonjs/core/Materials/effectFallbacks';
-import { Effect, IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
+import type { IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
+import { Effect } from '@babylonjs/core/Materials/effect';
 import { DetailMapConfiguration } from '@babylonjs/core/Materials/material.detailMapConfiguration';
 import { MaterialPluginEvent } from '@babylonjs/core/Materials/materialPluginEvent';
-import { UniformBuffer } from '@babylonjs/core/Materials/uniformBuffer';
+import type { UniformBuffer } from '@babylonjs/core/Materials/uniformBuffer';
 
 import { getInspectableCustomProperties } from './inspectable-custom-properties';
 import { MToonOutlineRenderer } from './mtoon-outline-renderer';
@@ -182,6 +184,7 @@ export class MToonMaterial extends PushMaterial {
      *
      * @returns {Array<Nullable<BaseTexture>>}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private get appendedTextures(): Array<Nullable<BaseTexture>> {
         return [
             this._diffuseTexture,
@@ -201,11 +204,12 @@ export class MToonMaterial extends PushMaterial {
      *
      * @returns {BaseTexture[]}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private get appendedActiveTextures(): BaseTexture[] {
         return this.appendedTextures.filter((t) => t !== null) as BaseTexture[];
     }
-//#endregion
-//#region Colors
+    //#endregion
+    //#region Colors
     /**
      * Multiplier of diffuseTexture
      */
@@ -236,8 +240,8 @@ export class MToonMaterial extends PushMaterial {
       */
     @serialize('outline')
     public outlineColor = new Color3(0.0, 0.0, 0.0);
- //#endregion
-//#region StandardMaterial parameters
+    //#endregion
+    //#region StandardMaterial parameters
     /**
      * If true, the emissive value is added into the end result, otherwise it is multiplied in.
      */
@@ -549,8 +553,8 @@ export class MToonMaterial extends PushMaterial {
     protected _globalAmbientColor = new Color3(0, 0, 0);
     protected _useLogarithmicDepth: boolean;
     protected _cacheHasRenderTargetTextures = false;
-//#endregion
-//#region MToon parameters
+    //#endregion
+    //#region MToon parameters
     private _bumpScale = 1.0;
     @serialize()
     public get bumpScale() {
@@ -739,6 +743,7 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public debugMode: DebugMode = DebugMode.None;
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private outlineRenderer?: MToonOutlineRenderer;
     private _outlineWidthMode: OutlineWidthMode = OutlineWidthMode.None;
     public get outlineWidthMode() {
@@ -754,6 +759,7 @@ export class MToonMaterial extends PushMaterial {
         }
         this._markAllSubMeshesAsMiscDirty();
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private isOutline: number = 0.0;
     public enableOutlineRender(): void {
         this.isOutline = 1.0;
@@ -796,6 +802,7 @@ export class MToonMaterial extends PushMaterial {
     private _outlineCullMode = CullMode.Front;
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineCullMode: CullMode = CullMode.Front;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private storedCullMode = CullMode.Back;
     /**
      * アウトライン用 CullMode を設定
@@ -821,8 +828,8 @@ export class MToonMaterial extends PushMaterial {
         }
         return this.outlineRenderer.name;
     }
-//#endregion
-//#endregion
+    //#endregion
+    //#endregion
 
     /**
      * {@inheritdoc}
@@ -1682,6 +1689,7 @@ export class MToonMaterial extends PushMaterial {
      * @param name
      * @param infoName
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private bindTexture(texture: Nullable<BaseTexture>, ubo: UniformBuffer, effect: Effect, name: string, infoName: string) {
         if (!texture) {
             return;
@@ -1697,6 +1705,7 @@ export class MToonMaterial extends PushMaterial {
      * @param defines
      * @param key
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private isReadyForTexture(texture: Nullable<BaseTexture>, defines: any, key: string): boolean {
         if (!texture) {
             defines[key] = false;
@@ -1712,6 +1721,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * 独自メソッド: 定数を設定する
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private applyDefines(defines: any): void {
         switch (this._debugMode) {
             case DebugMode.Normal:
