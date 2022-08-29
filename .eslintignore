@@ -1,0 +1,6 @@
+dist/*
+node_modules/*
+src/shaders/*
+test/*
+webpack*.js
+jest*.js

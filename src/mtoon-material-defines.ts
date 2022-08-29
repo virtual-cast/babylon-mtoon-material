@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import { MaterialDefines } from '@babylonjs/core/Materials/materialDefines';
-import { IImageProcessingConfigurationDefines } from '@babylonjs/core/Materials/imageProcessingConfiguration';
+import type { IImageProcessingConfigurationDefines } from '@babylonjs/core/Materials/imageProcessingConfiguration';
 
 /**
  * Material Defines
@@ -186,11 +187,12 @@ export class MToonMaterialDefines extends MaterialDefines implements IImageProce
     /**
      * @inheritdoc
      */
-    constructor(externalProperties?: { [name: string]: { type: string, default: any } }) {
+    constructor(externalProperties?: { [name: string]: { type: string; default: any } }) {
         super(externalProperties);
         this.rebuild();
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public setReflectionMode(modeToEnable: string) {
         throw new Error('This material cannot use `setReflectionMode`');
     }

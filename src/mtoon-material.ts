@@ -1,34 +1,36 @@
 import { serialize, SerializationHelper, serializeAsColor3, expandToProperty, serializeAsTexture } from '@babylonjs/core/Misc/decorators';
-import { Observer } from '@babylonjs/core/Misc/observable';
+import type { Observer } from '@babylonjs/core/Misc/observable';
 import { SmartArray } from '@babylonjs/core/Misc/smartArray';
-import { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
+import type { IAnimatable } from '@babylonjs/core/Animations/animatable.interface';
 
-import { Nullable } from '@babylonjs/core/types';
+import type { Nullable } from '@babylonjs/core/types';
 import { Scene } from '@babylonjs/core/scene';
 import { Matrix, Vector4 } from '@babylonjs/core/Maths/math.vector';
 import { Color3 } from '@babylonjs/core/Maths/math.color';
 import { VertexBuffer } from '@babylonjs/core/Buffers/buffer';
-import { SubMesh } from '@babylonjs/core/Meshes/subMesh';
-import { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
-import { Mesh } from '@babylonjs/core/Meshes/mesh';
+import type { SubMesh } from '@babylonjs/core/Meshes/subMesh';
+import type { AbstractMesh } from '@babylonjs/core/Meshes/abstractMesh';
+import type { Mesh } from '@babylonjs/core/Meshes/mesh';
 // import { PrePassConfiguration } from "./prePassConfiguration";
 
 import { ImageProcessingConfiguration } from '@babylonjs/core/Materials/imageProcessingConfiguration';
-import { ColorCurves } from '@babylonjs/core/Materials/colorCurves';
-import { Material, ICustomShaderNameResolveOptions } from '@babylonjs/core/Materials/material';
-import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
+import type { ColorCurves } from '@babylonjs/core/Materials/colorCurves';
+import type { ICustomShaderNameResolveOptions } from '@babylonjs/core/Materials/material';
+import { Material } from '@babylonjs/core/Materials/material';
+import type { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial';
 import { PushMaterial } from '@babylonjs/core/Materials/pushMaterial';
 import { MaterialHelper } from '@babylonjs/core/Materials/materialHelper';
 
-import { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
-import { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
+import type { BaseTexture } from '@babylonjs/core/Materials/Textures/baseTexture';
+import type { RenderTargetTexture } from '@babylonjs/core/Materials/Textures/renderTargetTexture';
 
 import { Constants } from '@babylonjs/core/Engines/constants';
 import { EffectFallbacks } from '@babylonjs/core/Materials/effectFallbacks';
-import { Effect, IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
+import type { IEffectCreationOptions } from '@babylonjs/core/Materials/effect';
+import { Effect } from '@babylonjs/core/Materials/effect';
 import { DetailMapConfiguration } from '@babylonjs/core/Materials/material.detailMapConfiguration';
 import { MaterialPluginEvent } from '@babylonjs/core/Materials/materialPluginEvent';
-import { UniformBuffer } from '@babylonjs/core/Materials/uniformBuffer';
+import type { UniformBuffer } from '@babylonjs/core/Materials/uniformBuffer';
 
 import { getInspectableCustomProperties } from './inspectable-custom-properties';
 import { MToonOutlineRenderer } from './mtoon-outline-renderer';
@@ -90,8 +92,8 @@ export enum CullMode {
  * @see https://doc.babylonjs.com/babylon101/materials
  */
 export class MToonMaterial extends PushMaterial {
-//#region Properties
-//#region Textures
+    //#region Properties
+    //#region Textures
     @serializeAsTexture('diffuseTexture')
     private _diffuseTexture: Nullable<BaseTexture> = null;
     /**
@@ -182,6 +184,7 @@ export class MToonMaterial extends PushMaterial {
      *
      * @returns {Array<Nullable<BaseTexture>>}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private get appendedTextures(): Array<Nullable<BaseTexture>> {
         return [
             this._diffuseTexture,
@@ -201,59 +204,60 @@ export class MToonMaterial extends PushMaterial {
      *
      * @returns {BaseTexture[]}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private get appendedActiveTextures(): BaseTexture[] {
         return this.appendedTextures.filter((t) => t !== null) as BaseTexture[];
     }
-//#endregion
-//#region Colors
+    //#endregion
+    //#region Colors
     /**
      * Multiplier of diffuseTexture
      */
     @serializeAsColor3('diffuse')
     public diffuseColor = new Color3(1.0, 1.0, 1.0);
     /**
-      * babylon.js Ambient light
-      */
+     * babylon.js Ambient light
+     */
     @serialize('ambient')
     public ambientColor = new Color3(0.0, 0.0, 0.0);
     /**
-      * Emissive color
-      */
+     * Emissive color
+     */
     @serialize('emissive')
     public emissiveColor = new Color3(0.0, 0.0, 0.0);
     /**
-      * Multiplier of shadeTexture
-      */
+     * Multiplier of shadeTexture
+     */
     @serialize('shade')
     public shadeColor = new Color3(0.97, 0.81, 0.86);
     /**
-      * Rim color
-      */
+     * Rim color
+     */
     @serialize('rim')
     public rimColor = new Color3(0.0, 0.0, 0.0);
     /**
-      * Outline color
-      */
+     * Outline color
+     */
     @serialize('outline')
     public outlineColor = new Color3(0.0, 0.0, 0.0);
- //#endregion
-//#region StandardMaterial parameters
+    //#endregion
+    //#region StandardMaterial parameters
     /**
      * If true, the emissive value is added into the end result, otherwise it is multiplied in.
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public readonly useEmissiveAsIllumination = false;
     /**
      * If true, some kind of energy conservation will prevent the end result to be more than 1 by reducing
      * the emissive level when the final color is close to one.
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public readonly linkEmissiveWithDiffuse = false;
     /**
      * Specifies that the material will keeps the reflection highlights over a transparent surface (only the most luminous ones).
      * A car glass is a good exemple of that. When the street lights reflects on it you can not see what is behind.
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public readonly useReflectionOverAlpha = false;
     @serialize('disableLighting')
     private _disableLighting = false;
@@ -321,34 +325,34 @@ export class MToonMaterial extends PushMaterial {
     /**
      * Does the transparency come from the diffuse texture alpha channel.
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesAndMiscDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesAndMiscDirty')
     public useAlphaFromDiffuseTexture: boolean;
-    @serialize("maxSimultaneousLights")
+    @serialize('maxSimultaneousLights')
     private _maxSimultaneousLights = 4;
     /**
      * Defines the maximum number of lights that can be used in the material
      */
-    @expandToProperty("_markAllSubMeshesAsLightsDirty")
+    @expandToProperty('_markAllSubMeshesAsLightsDirty')
     public maxSimultaneousLights: number;
     /**
      * inverted state equals with Unity
      */
-    @serialize("invertNormalMapX")
+    @serialize('invertNormalMapX')
     private _invertNormalMapX = true;
     /**
      * If sets to true, x component of normal map value will invert (x = 1.0 - x).
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public invertNormalMapX: boolean;
     /**
      * inverted state equals with Unity
      */
-    @serialize("invertNormalMapY")
+    @serialize('invertNormalMapY')
     private _invertNormalMapY = true;
     /**
      * If sets to true, y component of normal map value will invert (y = 1.0 - y).
      */
-    @expandToProperty("_markAllSubMeshesAsTexturesDirty")
+    @expandToProperty('_markAllSubMeshesAsTexturesDirty')
     public invertNormalMapY: boolean;
     @serialize('twoSidedLighting')
     private _twoSidedLighting = false;
@@ -549,8 +553,8 @@ export class MToonMaterial extends PushMaterial {
     protected _globalAmbientColor = new Color3(0, 0, 0);
     protected _useLogarithmicDepth: boolean;
     protected _cacheHasRenderTargetTextures = false;
-//#endregion
-//#region MToon parameters
+    //#endregion
+    //#region MToon parameters
     private _bumpScale = 1.0;
     @serialize()
     public get bumpScale() {
@@ -739,6 +743,7 @@ export class MToonMaterial extends PushMaterial {
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public debugMode: DebugMode = DebugMode.None;
 
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private outlineRenderer?: MToonOutlineRenderer;
     private _outlineWidthMode: OutlineWidthMode = OutlineWidthMode.None;
     public get outlineWidthMode() {
@@ -754,6 +759,7 @@ export class MToonMaterial extends PushMaterial {
         }
         this._markAllSubMeshesAsMiscDirty();
     }
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private isOutline: number = 0.0;
     public enableOutlineRender(): void {
         this.isOutline = 1.0;
@@ -796,6 +802,7 @@ export class MToonMaterial extends PushMaterial {
     private _outlineCullMode = CullMode.Front;
     @expandToProperty('_markAllSubMeshesAsMiscDirty')
     public outlineCullMode: CullMode = CullMode.Front;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private storedCullMode = CullMode.Back;
     /**
      * アウトライン用 CullMode を設定
@@ -821,8 +828,8 @@ export class MToonMaterial extends PushMaterial {
         }
         return this.outlineRenderer.name;
     }
-//#endregion
-//#endregion
+    //#endregion
+    //#endregion
 
     /**
      * {@inheritdoc}
@@ -918,7 +925,7 @@ export class MToonMaterial extends PushMaterial {
         }
 
         // return (this.alpha < 1.0) || (this._opacityTexture != null) || this._shouldUseAlphaFromDiffuseTexture() || this._opacityFresnelParameters && this._opacityFresnelParameters.isEnabled;
-        return (this.alpha < 1.0) || this._shouldUseAlphaFromDiffuseTexture();
+        return this.alpha < 1.0 || this._shouldUseAlphaFromDiffuseTexture();
     }
 
     /**
@@ -939,17 +946,14 @@ export class MToonMaterial extends PushMaterial {
      * {@inheritdoc}
      */
     protected _shouldUseAlphaFromDiffuseTexture(): boolean {
-        return this._diffuseTexture != null
-            && this._diffuseTexture.hasAlpha
-            && this._useAlphaFromDiffuseTexture
-            && this._transparencyMode !== Material.MATERIAL_OPAQUE;
+        return this._diffuseTexture != null && this._diffuseTexture.hasAlpha && this._useAlphaFromDiffuseTexture && this._transparencyMode !== Material.MATERIAL_OPAQUE;
     }
 
     /**
      * {@inheritdoc}
      */
     protected _hasAlphaChannel(): boolean {
-        return (this._diffuseTexture !== null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
+        return this._diffuseTexture !== null && this._diffuseTexture.hasAlpha; // || this._opacityTexture != null;
     }
 
     /**
@@ -987,14 +991,7 @@ export class MToonMaterial extends PushMaterial {
         const engine = scene.getEngine();
 
         // Lights
-        defines._needNormals = MaterialHelper.PrepareDefinesForLights(
-            scene,
-            mesh,
-            defines,
-            this.specularSupported,
-            this._maxSimultaneousLights,
-            this._disableLighting,
-        );
+        defines._needNormals = MaterialHelper.PrepareDefinesForLights(scene, mesh, defines, this.specularSupported, this._maxSimultaneousLights, this._disableLighting);
 
         if (this.outlineWidthMode !== OutlineWidthMode.None) {
             // Normals is needed when rendering outline
@@ -1020,20 +1017,21 @@ export class MToonMaterial extends PushMaterial {
             this._cacheHasRenderTargetTextures = this._eventInfo.hasRenderTargetTextures;
             defines._needUVs = false;
             for (let i = 1; i <= Constants.MAX_SUPPORTED_UV_SETS; ++i) {
-                defines["MAINUV" + i] = false;
+                defines['MAINUV' + i] = false;
             }
 
             if (scene.texturesEnabled) {
                 // Check texture is ready
-                if (!this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE')
-                    || !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE')
-                    || !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE')
-                    || !this.isReadyForTexture(this._receiveShadowTexture, defines, 'RECEIVE_SHADOW')
-                    || !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE')
-                    || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
-                    || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
-                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')
-                    || !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')
+                if (
+                    !this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE') ||
+                    !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE') ||
+                    !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE') ||
+                    !this.isReadyForTexture(this._receiveShadowTexture, defines, 'RECEIVE_SHADOW') ||
+                    !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE') ||
+                    !this.isReadyForTexture(this._rimTexture, defines, 'RIM') ||
+                    !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP') ||
+                    !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH') ||
+                    !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')
                 ) {
                     return false;
                 }
@@ -1076,7 +1074,7 @@ export class MToonMaterial extends PushMaterial {
 
             // defines.SPECULAROVERALPHA = this._useSpecularOverAlpha;
 
-            defines.PREMULTIPLYALPHA = (this.alphaMode === Constants.ALPHA_PREMULTIPLIED || this.alphaMode === Constants.ALPHA_PREMULTIPLIED_PORTERDUFF);
+            defines.PREMULTIPLYALPHA = this.alphaMode === Constants.ALPHA_PREMULTIPLIED || this.alphaMode === Constants.ALPHA_PREMULTIPLIED_PORTERDUFF;
 
             defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = this.transparencyMode !== null;
 
@@ -1110,18 +1108,11 @@ export class MToonMaterial extends PushMaterial {
             this.pointsCloud,
             this.fogEnabled,
             this._shouldTurnAlphaTestOn(mesh) || this._forceAlphaTest,
-            defines,
+            defines
         );
 
         // Values that need to be evaluated on every frame
-        MaterialHelper.PrepareDefinesForFrameBoundValues(
-            scene,
-            engine,
-            defines,
-            useInstances,
-            null,
-            subMesh.getRenderingMesh().hasThinInstances,
-        );
+        MaterialHelper.PrepareDefinesForFrameBoundValues(scene, engine, defines, useInstances, null, subMesh.getRenderingMesh().hasThinInstances);
 
         // External config
         this._eventInfo.defines = defines;
@@ -1129,15 +1120,7 @@ export class MToonMaterial extends PushMaterial {
         this._callbackPluginEventPrepareDefinesBeforeAttributes(this._eventInfo);
 
         // Attribs
-        MaterialHelper.PrepareDefinesForAttributes(
-            mesh,
-            defines,
-            this.useVertexColor,
-            this.useBones,
-            this.useMorphTargets,
-            this.useVertexAlpha,
-            this.useBakedVertexAnimation,
-        );
+        MaterialHelper.PrepareDefinesForAttributes(mesh, defines, this.useVertexColor, this.useBones, this.useMorphTargets, this.useVertexAlpha, this.useBakedVertexAnimation);
 
         // External config
         this._callbackPluginEventPrepareDefines(this._eventInfo);
@@ -1192,8 +1175,8 @@ export class MToonMaterial extends PushMaterial {
             }
 
             for (let i = 1; i <= Constants.MAX_SUPPORTED_UV_SETS; ++i) {
-                if (defines["UV" + i]) {
-                    attribs.push(`uv${i === 1 ? "" : i}`);
+                if (defines['UV' + i]) {
+                    attribs.push(`uv${i === 1 ? '' : i}`);
                 }
             }
 
@@ -1210,34 +1193,77 @@ export class MToonMaterial extends PushMaterial {
 
             const uniforms = [
                 // StandardMaterial uniforms
-                'world', 'view', 'viewProjection', 'vEyePosition', 'vLightsType', 'vAmbientColor', 'visibility',
-                'vFogInfos', 'vFogColor', 'pointSize',
+                'world',
+                'view',
+                'viewProjection',
+                'vEyePosition',
+                'vLightsType',
+                'vAmbientColor',
+                'visibility',
+                'vFogInfos',
+                'vFogColor',
+                'pointSize',
                 'mBones',
-                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
+                'vClipPlane',
+                'vClipPlane2',
+                'vClipPlane3',
+                'vClipPlane4',
+                'vClipPlane5',
+                'vClipPlane6',
                 // "diffuseLeftColor", "diffuseRightColor", "opacityParts", "reflectionLeftColor", "reflectionRightColor", "emissiveLeftColor", "emissiveRightColor", "refractionLeftColor", "refractionRightColor",
                 // "vReflectionPosition", "vReflectionSize", "vRefractionPosition", "vRefractionSize",
-                'logarithmicDepthConstant', 'vTangentSpaceParams', 'alphaCutOff', 'boneTextureWidth',
-                'morphTargetTextureInfo', 'morphTargetTextureIndices',
+                'logarithmicDepthConstant',
+                'vTangentSpaceParams',
+                'alphaCutOff',
+                'boneTextureWidth',
+                'morphTargetTextureInfo',
+                'morphTargetTextureIndices',
 
                 // Texture uniforms
-                'vDiffuseColor', 'vDiffuseInfos', 'diffuseMatrix',
-                'vEmissiveColor', 'vEmissiveInfos', 'emissiveMatrix',
-                'vBumpInfos', 'bumpMatrix',
-                'vShadeColor', 'vShadeInfos', 'shadeMatrix',
-                'vReceiveShadowInfos', 'receiveShadowMatrix',
-                'vShadingGradeInfos', 'shadingGradeMatrix',
-                'vRimColor', 'vRimInfos', 'RimMatrix',
-                'vMatCapInfos', 'MatCapMatrix',
-                'vOutlineColor', 'vOutlineWidthInfos', 'outlineWidthMatrix',
+                'vDiffuseColor',
+                'vDiffuseInfos',
+                'diffuseMatrix',
+                'vEmissiveColor',
+                'vEmissiveInfos',
+                'emissiveMatrix',
+                'vBumpInfos',
+                'bumpMatrix',
+                'vShadeColor',
+                'vShadeInfos',
+                'shadeMatrix',
+                'vReceiveShadowInfos',
+                'receiveShadowMatrix',
+                'vShadingGradeInfos',
+                'shadingGradeMatrix',
+                'vRimColor',
+                'vRimInfos',
+                'RimMatrix',
+                'vMatCapInfos',
+                'MatCapMatrix',
+                'vOutlineColor',
+                'vOutlineWidthInfos',
+                'outlineWidthMatrix',
 
                 // MToon uniforms
-                'aspect', 'isOutline',
-                'shadingGradeRate', 'receiveShadowRate', 'shadeShift', 'shadeToony',
-                'rimLightingMix', 'rimFresnelPower', 'rimLift',
-                'lightColorAttenuation', 'indirectLightIntensity',
-                'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
-                'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
-                'vEyeUp', 'time',
+                'aspect',
+                'isOutline',
+                'shadingGradeRate',
+                'receiveShadowRate',
+                'shadeShift',
+                'shadeToony',
+                'rimLightingMix',
+                'rimFresnelPower',
+                'rimLift',
+                'lightColorAttenuation',
+                'indirectLightIntensity',
+                'outlineWidth',
+                'outlineScaledMaxDistance',
+                'outlineLightingMix',
+                'uvAnimationScrollX',
+                'uvAnimationScrollY',
+                'uvAnimationRotation',
+                'vEyeUp',
+                'time',
 
                 // Material#bindViewProjection
                 'projection',
@@ -1245,11 +1271,22 @@ export class MToonMaterial extends PushMaterial {
 
             const samplers = [
                 // StandardMaterial samplers
-                'diffuseSampler', 'ambientSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler', 'morphTargets', 'oitDepthSampler', 'oitFrontColorSampler',
+                'diffuseSampler',
+                'ambientSampler',
+                'emissiveSampler',
+                'bumpSampler',
+                'boneSampler',
+                'morphTargets',
+                'oitDepthSampler',
+                'oitFrontColorSampler',
 
                 // MToon samplers
-                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
-                'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'shadeSampler',
+                'receiveShadowSampler',
+                'shadingGradeSampler',
+                'rimSampler',
+                'matCapSampler',
+                'outlineWidthSampler',
                 'uvAnimationMaskSampler',
             ];
 
@@ -1287,23 +1324,27 @@ export class MToonMaterial extends PushMaterial {
             const join = defines.toString();
 
             const previousEffect = subMesh.effect;
-            let effect = scene.getEngine().createEffect(shaderName, {
-                attributes: attribs,
-                uniformsNames: uniforms,
-                uniformBuffersNames: uniformBuffers,
-                samplers,
-                defines: join,
-                fallbacks,
-                onCompiled: this.onCompiled,
-                onError: this.onError,
-                indexParameters: {
-                    maxSimultaneousLights: this._maxSimultaneousLights,
-                    maxSimultaneousMorphTargets: defines.NUM_MORPH_INFLUENCERS,
-                },
-                processFinalCode: csnrOptions.processFinalCode,
-                processCodeAfterIncludes: this._eventInfo.customCode,
-                multiTarget: defines.PREPASS,
-            } as IEffectCreationOptions, engine);
+            let effect = scene.getEngine().createEffect(
+                shaderName,
+                {
+                    attributes: attribs,
+                    uniformsNames: uniforms,
+                    uniformBuffersNames: uniformBuffers,
+                    samplers,
+                    defines: join,
+                    fallbacks,
+                    onCompiled: this.onCompiled,
+                    onError: this.onError,
+                    indexParameters: {
+                        maxSimultaneousLights: this._maxSimultaneousLights,
+                        maxSimultaneousMorphTargets: defines.NUM_MORPH_INFLUENCERS,
+                    },
+                    processFinalCode: csnrOptions.processFinalCode,
+                    processCodeAfterIncludes: this._eventInfo.customCode,
+                    multiTarget: defines.PREPASS,
+                } as IEffectCreationOptions,
+                engine
+            );
 
             if (effect) {
                 if (this._onEffectCreatedObservable) {
@@ -1430,11 +1471,11 @@ export class MToonMaterial extends PushMaterial {
         this._activeEffect = effect;
 
         // Matrices Mesh.
-        mesh.getMeshUniformBuffer().bindToEffect(effect, "Mesh");
+        mesh.getMeshUniformBuffer().bindToEffect(effect, 'Mesh');
         mesh.transferToEffect(world);
 
         // Binding unconditionally
-        this._uniformBuffer.bindToEffect(effect, "Material");
+        this._uniformBuffer.bindToEffect(effect, 'Material');
 
         // this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
 
@@ -1459,13 +1500,8 @@ export class MToonMaterial extends PushMaterial {
                     this.bindTexture(this._diffuseTexture, ubo, effect, 'diffuse', 'vDiffuseInfos');
                     this.bindTexture(this._emissiveTexture, ubo, effect, 'emissive', 'vEmissiveInfos');
                     if (this._bumpTexture && scene.getEngine().getCaps().standardDerivatives) {
-                        ubo.updateFloat3(
-                            'vBumpInfos',
-                            this._bumpTexture.coordinatesIndex,
-                            1.0 / this._bumpTexture.level,
-                            this._bumpScale,
-                        );
-                        MaterialHelper.BindTextureMatrix(this._bumpTexture, ubo, "bump");
+                        ubo.updateFloat3('vBumpInfos', this._bumpTexture.coordinatesIndex, 1.0 / this._bumpTexture.level, this._bumpScale);
+                        MaterialHelper.BindTextureMatrix(this._bumpTexture, ubo, 'bump');
                         effect.setTexture(`bumpSampler`, this._bumpTexture);
                         // bumpTexture は babylon.js のデフォルトと反対の状態である
                         if (scene._mirroredCameraPosition) {
@@ -1521,7 +1557,7 @@ export class MToonMaterial extends PushMaterial {
             }
 
             // OIT with depth peeling
-            const anyScene = (scene as any);
+            const anyScene = scene as any;
             if (anyScene.useOrderIndependentTransparency && this.needAlphaBlendingForMesh(mesh) && anyScene.depthPeelingRenderer) {
                 anyScene.depthPeelingRenderer.bind(effect);
             }
@@ -1545,7 +1581,7 @@ export class MToonMaterial extends PushMaterial {
             }
 
             // View
-            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== Scene.FOGMODE_NONE || mesh.receiveShadows) {
+            if ((scene.fogEnabled && mesh.applyFog && scene.fogMode !== Scene.FOGMODE_NONE) || mesh.receiveShadows) {
                 this.bindView(effect);
             }
 
@@ -1577,12 +1613,7 @@ export class MToonMaterial extends PushMaterial {
 
             // this variable is compatible with [Unity's _Time](https://docs.unity3d.com/Manual/SL-UnityShaderVariables.html)
             const t = window.performance.now() / 1000;
-            ubo.updateVector4('time', new Vector4(
-                t / 20,
-                t,
-                t * 2,
-                t * 3,
-            ));
+            ubo.updateVector4('time', new Vector4(t / 20, t, t * 2, t * 3));
         }
 
         this._afterBind(mesh, this._activeEffect);
@@ -1630,10 +1661,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * {@inheritdoc}
      */
-    public dispose(
-        forceDisposeEffect?: boolean,
-        forceDisposeTextures?: boolean,
-    ): void {
+    public dispose(forceDisposeEffect?: boolean, forceDisposeTextures?: boolean): void {
         delete this.outlineRenderer;
         if (forceDisposeTextures) {
             for (const texture of this.appendedActiveTextures) {
@@ -1682,6 +1710,7 @@ export class MToonMaterial extends PushMaterial {
      * @param name
      * @param infoName
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private bindTexture(texture: Nullable<BaseTexture>, ubo: UniformBuffer, effect: Effect, name: string, infoName: string) {
         if (!texture) {
             return;
@@ -1697,6 +1726,7 @@ export class MToonMaterial extends PushMaterial {
      * @param defines
      * @param key
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private isReadyForTexture(texture: Nullable<BaseTexture>, defines: any, key: string): boolean {
         if (!texture) {
             defines[key] = false;
@@ -1712,6 +1742,7 @@ export class MToonMaterial extends PushMaterial {
     /**
      * 独自メソッド: 定数を設定する
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     private applyDefines(defines: any): void {
         switch (this._debugMode) {
             case DebugMode.Normal:
