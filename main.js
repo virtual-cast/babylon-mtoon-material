@@ -26,7 +26,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /**
  * MToonMaterial に Inspector 上で調整可能なパラメータを設定する
- * @param material
  * @link https://doc.babylonjs.com/toolsAndResources/tools/inspector#extensibility
  */
 function getInspectableCustomProperties() {
@@ -246,6 +245,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MToonMaterialDefines": () => (/* binding */ MToonMaterialDefines)
 /* harmony export */ });
 /* harmony import */ var _babylonjs_core_Materials_materialDefines__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/Materials/materialDefines */ "./node_modules/@babylonjs/core/Materials/materialDefines.js");
+/* eslint-disable @typescript-eslint/naming-convention */
 
 /**
  * Material Defines
@@ -428,6 +428,7 @@ class MToonMaterialDefines extends _babylonjs_core_Materials_materialDefines__WE
         this.EXPOSURE = false;
         this.rebuild();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setReflectionMode(modeToEnable) {
         throw new Error('This material cannot use `setReflectionMode`');
     }
@@ -625,24 +626,24 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
          */
         this.diffuseColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(1.0, 1.0, 1.0);
         /**
-          * babylon.js Ambient light
-          */
+         * babylon.js Ambient light
+         */
         this.ambientColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(0.0, 0.0, 0.0);
         /**
-          * Emissive color
-          */
+         * Emissive color
+         */
         this.emissiveColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(0.0, 0.0, 0.0);
         /**
-          * Multiplier of shadeTexture
-          */
+         * Multiplier of shadeTexture
+         */
         this.shadeColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(0.97, 0.81, 0.86);
         /**
-          * Rim color
-          */
+         * Rim color
+         */
         this.rimColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(0.0, 0.0, 0.0);
         /**
-          * Outline color
-          */
+         * Outline color
+         */
         this.outlineColor = new _babylonjs_core_Maths_math_color__WEBPACK_IMPORTED_MODULE_4__.Color3(0.0, 0.0, 0.0);
         //#endregion
         //#region StandardMaterial parameters
@@ -751,11 +752,13 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
         /** @hidden */
         this.debugMode = DebugMode.None;
         this._outlineWidthMode = OutlineWidthMode.None;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         this.isOutline = 0.0;
         this.outlineColorMode = OutlineColorMode.MixedLighting;
         this._cullMode = CullMode.Back;
         this._outlineCullMode = CullMode.Front;
         this.outlineCullMode = CullMode.Front;
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         this.storedCullMode = CullMode.Back;
         this.detailMap = new _babylonjs_core_Materials_material_detailMapConfiguration__WEBPACK_IMPORTED_MODULE_13__.DetailMapConfiguration(this);
         // Setup the default processing configuration to the scene.
@@ -793,6 +796,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
      *
      * @returns {Array<Nullable<BaseTexture>>}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     get appendedTextures() {
         return [
             this._diffuseTexture,
@@ -812,6 +816,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
      *
      * @returns {BaseTexture[]}
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     get appendedActiveTextures() {
         return this.appendedTextures.filter((t) => t !== null);
     }
@@ -1228,7 +1233,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             return false;
         }
         // return (this.alpha < 1.0) || (this._opacityTexture != null) || this._shouldUseAlphaFromDiffuseTexture() || this._opacityFresnelParameters && this._opacityFresnelParameters.isEnabled;
-        return (this.alpha < 1.0) || this._shouldUseAlphaFromDiffuseTexture();
+        return this.alpha < 1.0 || this._shouldUseAlphaFromDiffuseTexture();
     }
     /**
      * {@inheritdoc}
@@ -1246,16 +1251,13 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
      * {@inheritdoc}
      */
     _shouldUseAlphaFromDiffuseTexture() {
-        return this._diffuseTexture != null
-            && this._diffuseTexture.hasAlpha
-            && this._useAlphaFromDiffuseTexture
-            && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
+        return this._diffuseTexture != null && this._diffuseTexture.hasAlpha && this._useAlphaFromDiffuseTexture && this._transparencyMode !== _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
     }
     /**
      * {@inheritdoc}
      */
     _hasAlphaChannel() {
-        return (this._diffuseTexture !== null && this._diffuseTexture.hasAlpha); // || this._opacityTexture != null;
+        return this._diffuseTexture !== null && this._diffuseTexture.hasAlpha; // || this._opacityTexture != null;
     }
     /**
      * {@inheritdoc}
@@ -1306,19 +1308,19 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             this._cacheHasRenderTargetTextures = this._eventInfo.hasRenderTargetTextures;
             defines._needUVs = false;
             for (let i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.MAX_SUPPORTED_UV_SETS; ++i) {
-                defines["MAINUV" + i] = false;
+                defines['MAINUV' + i] = false;
             }
             if (scene.texturesEnabled) {
                 // Check texture is ready
-                if (!this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE')
-                    || !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE')
-                    || !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE')
-                    || !this.isReadyForTexture(this._receiveShadowTexture, defines, 'RECEIVE_SHADOW')
-                    || !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE')
-                    || !this.isReadyForTexture(this._rimTexture, defines, 'RIM')
-                    || !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP')
-                    || !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH')
-                    || !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')) {
+                if (!this.isReadyForTexture(this._diffuseTexture, defines, 'DIFFUSE') ||
+                    !this.isReadyForTexture(this._emissiveTexture, defines, 'EMISSIVE') ||
+                    !this.isReadyForTexture(this._shadeTexture, defines, 'SHADE') ||
+                    !this.isReadyForTexture(this._receiveShadowTexture, defines, 'RECEIVE_SHADOW') ||
+                    !this.isReadyForTexture(this._shadingGradeTexture, defines, 'SHADING_GRADE') ||
+                    !this.isReadyForTexture(this._rimTexture, defines, 'RIM') ||
+                    !this.isReadyForTexture(this._matCapTexture, defines, 'MATCAP') ||
+                    !this.isReadyForTexture(this._outlineWidthTexture, defines, 'OUTLINE_WIDTH') ||
+                    !this.isReadyForTexture(this._uvAnimationMaskTexture, defines, 'UV_ANIMATION_MASK')) {
                     return false;
                 }
                 if (scene.getEngine().getCaps().standardDerivatives && this._bumpTexture) {
@@ -1354,7 +1356,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             // defines.EMISSIVEASILLUMINATION = this._useEmissiveAsIllumination;
             // defines.LINKEMISSIVEWITHDIFFUSE = this._linkEmissiveWithDiffuse;
             // defines.SPECULAROVERALPHA = this._useSpecularOverAlpha;
-            defines.PREMULTIPLYALPHA = (this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.ALPHA_PREMULTIPLIED_PORTERDUFF);
+            defines.PREMULTIPLYALPHA = this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.ALPHA_PREMULTIPLIED || this.alphaMode === _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.ALPHA_PREMULTIPLIED_PORTERDUFF;
             defines.ALPHATEST_AFTERALLALPHACOMPUTATIONS = this.transparencyMode !== null;
             defines.ALPHABLEND = this.transparencyMode === null || this.needAlphaBlendingForMesh(mesh); // check on null for backward compatibility
         }
@@ -1421,8 +1423,8 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
                 attribs.push(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_5__.VertexBuffer.TangentKind);
             }
             for (let i = 1; i <= _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_10__.Constants.MAX_SUPPORTED_UV_SETS; ++i) {
-                if (defines["UV" + i]) {
-                    attribs.push(`uv${i === 1 ? "" : i}`);
+                if (defines['UV' + i]) {
+                    attribs.push(`uv${i === 1 ? '' : i}`);
                 }
             }
             if (defines.INSTANCESCOLOR) {
@@ -1435,41 +1437,95 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             const shaderName = 'mtoon';
             const uniforms = [
                 // StandardMaterial uniforms
-                'world', 'view', 'viewProjection', 'vEyePosition', 'vLightsType', 'vAmbientColor', 'visibility',
-                'vFogInfos', 'vFogColor', 'pointSize',
+                'world',
+                'view',
+                'viewProjection',
+                'vEyePosition',
+                'vLightsType',
+                'vAmbientColor',
+                'visibility',
+                'vFogInfos',
+                'vFogColor',
+                'pointSize',
                 'mBones',
-                'vClipPlane', 'vClipPlane2', 'vClipPlane3', 'vClipPlane4', 'vClipPlane5', 'vClipPlane6',
+                'vClipPlane',
+                'vClipPlane2',
+                'vClipPlane3',
+                'vClipPlane4',
+                'vClipPlane5',
+                'vClipPlane6',
                 // "diffuseLeftColor", "diffuseRightColor", "opacityParts", "reflectionLeftColor", "reflectionRightColor", "emissiveLeftColor", "emissiveRightColor", "refractionLeftColor", "refractionRightColor",
                 // "vReflectionPosition", "vReflectionSize", "vRefractionPosition", "vRefractionSize",
-                'logarithmicDepthConstant', 'vTangentSpaceParams', 'alphaCutOff', 'boneTextureWidth',
-                'morphTargetTextureInfo', 'morphTargetTextureIndices',
+                'logarithmicDepthConstant',
+                'vTangentSpaceParams',
+                'alphaCutOff',
+                'boneTextureWidth',
+                'morphTargetTextureInfo',
+                'morphTargetTextureIndices',
                 // Texture uniforms
-                'vDiffuseColor', 'vDiffuseInfos', 'diffuseMatrix',
-                'vEmissiveColor', 'vEmissiveInfos', 'emissiveMatrix',
-                'vBumpInfos', 'bumpMatrix',
-                'vShadeColor', 'vShadeInfos', 'shadeMatrix',
-                'vReceiveShadowInfos', 'receiveShadowMatrix',
-                'vShadingGradeInfos', 'shadingGradeMatrix',
-                'vRimColor', 'vRimInfos', 'RimMatrix',
-                'vMatCapInfos', 'MatCapMatrix',
-                'vOutlineColor', 'vOutlineWidthInfos', 'outlineWidthMatrix',
+                'vDiffuseColor',
+                'vDiffuseInfos',
+                'diffuseMatrix',
+                'vEmissiveColor',
+                'vEmissiveInfos',
+                'emissiveMatrix',
+                'vBumpInfos',
+                'bumpMatrix',
+                'vShadeColor',
+                'vShadeInfos',
+                'shadeMatrix',
+                'vReceiveShadowInfos',
+                'receiveShadowMatrix',
+                'vShadingGradeInfos',
+                'shadingGradeMatrix',
+                'vRimColor',
+                'vRimInfos',
+                'RimMatrix',
+                'vMatCapInfos',
+                'MatCapMatrix',
+                'vOutlineColor',
+                'vOutlineWidthInfos',
+                'outlineWidthMatrix',
                 // MToon uniforms
-                'aspect', 'isOutline',
-                'shadingGradeRate', 'receiveShadowRate', 'shadeShift', 'shadeToony',
-                'rimLightingMix', 'rimFresnelPower', 'rimLift',
-                'lightColorAttenuation', 'indirectLightIntensity',
-                'outlineWidth', 'outlineScaledMaxDistance', 'outlineLightingMix',
-                'uvAnimationScrollX', 'uvAnimationScrollY', 'uvAnimationRotation',
-                'vEyeUp', 'time',
+                'aspect',
+                'isOutline',
+                'shadingGradeRate',
+                'receiveShadowRate',
+                'shadeShift',
+                'shadeToony',
+                'rimLightingMix',
+                'rimFresnelPower',
+                'rimLift',
+                'lightColorAttenuation',
+                'indirectLightIntensity',
+                'outlineWidth',
+                'outlineScaledMaxDistance',
+                'outlineLightingMix',
+                'uvAnimationScrollX',
+                'uvAnimationScrollY',
+                'uvAnimationRotation',
+                'vEyeUp',
+                'time',
                 // Material#bindViewProjection
                 'projection',
             ];
             const samplers = [
                 // StandardMaterial samplers
-                'diffuseSampler', 'ambientSampler', 'emissiveSampler', 'bumpSampler', 'boneSampler', 'morphTargets', 'oitDepthSampler', 'oitFrontColorSampler',
+                'diffuseSampler',
+                'ambientSampler',
+                'emissiveSampler',
+                'bumpSampler',
+                'boneSampler',
+                'morphTargets',
+                'oitDepthSampler',
+                'oitFrontColorSampler',
                 // MToon samplers
-                'shadeSampler', 'receiveShadowSampler', 'shadingGradeSampler',
-                'rimSampler', 'matCapSampler', 'outlineWidthSampler',
+                'shadeSampler',
+                'receiveShadowSampler',
+                'shadingGradeSampler',
+                'rimSampler',
+                'matCapSampler',
+                'outlineWidthSampler',
                 'uvAnimationMaskSampler',
             ];
             const uniformBuffers = ['Material', 'Scene', 'Mesh'];
@@ -1621,10 +1677,10 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
         }
         this._activeEffect = effect;
         // Matrices Mesh.
-        mesh.getMeshUniformBuffer().bindToEffect(effect, "Mesh");
+        mesh.getMeshUniformBuffer().bindToEffect(effect, 'Mesh');
         mesh.transferToEffect(world);
         // Binding unconditionally
-        this._uniformBuffer.bindToEffect(effect, "Material");
+        this._uniformBuffer.bindToEffect(effect, 'Material');
         // this.prePassConfiguration.bindForSubMesh(this._activeEffect, scene, mesh, world, this.isFrozen);
         this._eventInfo.subMesh = subMesh;
         this._callbackPluginEventHardBindForSubMesh(this._eventInfo);
@@ -1645,7 +1701,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
                     this.bindTexture(this._emissiveTexture, ubo, effect, 'emissive', 'vEmissiveInfos');
                     if (this._bumpTexture && scene.getEngine().getCaps().standardDerivatives) {
                         ubo.updateFloat3('vBumpInfos', this._bumpTexture.coordinatesIndex, 1.0 / this._bumpTexture.level, this._bumpScale);
-                        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_9__.MaterialHelper.BindTextureMatrix(this._bumpTexture, ubo, "bump");
+                        _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_9__.MaterialHelper.BindTextureMatrix(this._bumpTexture, ubo, 'bump');
                         effect.setTexture(`bumpSampler`, this._bumpTexture);
                         // bumpTexture は babylon.js のデフォルトと反対の状態である
                         if (scene._mirroredCameraPosition) {
@@ -1717,7 +1773,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
                 _babylonjs_core_Materials_materialHelper__WEBPACK_IMPORTED_MODULE_9__.MaterialHelper.BindLights(scene, mesh, effect, defines, this._maxSimultaneousLights);
             }
             // View
-            if (scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_2__.Scene.FOGMODE_NONE || mesh.receiveShadows) {
+            if ((scene.fogEnabled && mesh.applyFog && scene.fogMode !== _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_2__.Scene.FOGMODE_NONE) || mesh.receiveShadows) {
                 this.bindView(effect);
             }
             // Fog
@@ -1822,6 +1878,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
      * @param name
      * @param infoName
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     bindTexture(texture, ubo, effect, name, infoName) {
         if (!texture) {
             return;
@@ -1836,6 +1893,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
      * @param defines
      * @param key
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isReadyForTexture(texture, defines, key) {
         if (!texture) {
             defines[key] = false;
@@ -1850,6 +1908,7 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
     /**
      * 独自メソッド: 定数を設定する
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     applyDefines(defines) {
         switch (this._debugMode) {
             case DebugMode.Normal:
@@ -1997,13 +2056,13 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
     (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('outline')
 ], MToonMaterial.prototype, "outlineColor", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesDirty')
 ], MToonMaterial.prototype, "useEmissiveAsIllumination", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesDirty')
 ], MToonMaterial.prototype, "linkEmissiveWithDiffuse", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesDirty')
 ], MToonMaterial.prototype, "useReflectionOverAlpha", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
     (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('disableLighting')
@@ -2018,25 +2077,25 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
     (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('useAlphaFromDiffuseTexture')
 ], MToonMaterial.prototype, "_useAlphaFromDiffuseTexture", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesAndMiscDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesAndMiscDirty')
 ], MToonMaterial.prototype, "useAlphaFromDiffuseTexture", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)("maxSimultaneousLights")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('maxSimultaneousLights')
 ], MToonMaterial.prototype, "_maxSimultaneousLights", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsLightsDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsLightsDirty')
 ], MToonMaterial.prototype, "maxSimultaneousLights", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)("invertNormalMapX")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('invertNormalMapX')
 ], MToonMaterial.prototype, "_invertNormalMapX", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesDirty')
 ], MToonMaterial.prototype, "invertNormalMapX", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)("invertNormalMapY")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('invertNormalMapY')
 ], MToonMaterial.prototype, "_invertNormalMapY", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
-    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)("_markAllSubMeshesAsTexturesDirty")
+    (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.expandToProperty)('_markAllSubMeshesAsTexturesDirty')
 ], MToonMaterial.prototype, "invertNormalMapY", void 0);
 (0,tslib__WEBPACK_IMPORTED_MODULE_26__.__decorate)([
     (0,_babylonjs_core_Misc_decorators__WEBPACK_IMPORTED_MODULE_0__.serialize)('twoSidedLighting')
@@ -2140,6 +2199,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
 
 
+// eslint-disable-next-line @typescript-eslint/naming-convention
 const BASE_NAME = 'MToonOutline';
 /**
  * MToon outline renderer
@@ -2158,8 +2218,8 @@ class MToonOutlineRenderer {
          */
         this.zOffset = 1;
         /**
-          * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
-          */
+         * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
+         */
         this.zOffsetUnits = 4; // 4 to account for projection a bit by default
         this._savedDepthWrite = false;
         this.name = `${BASE_NAME}_${material.name}_${MToonOutlineRenderer.rendererId++}`;
@@ -2199,6 +2259,7 @@ class MToonOutlineRenderer {
      * @param useOverlay Defines if the rendering is for the overlay or the outline
      * @param renderPassId Render pass id to use to render the mesh
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
     render(subMesh, batch, useOverlay = false, renderPassId) {
         renderPassId = renderPassId !== null && renderPassId !== void 0 ? renderPassId : this._passIdForDrawWrapper[0];
         const scene = this.scene;
@@ -2292,6 +2353,7 @@ class MToonOutlineRenderer {
     /**
      * インスタンシングを行うかどうか
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     isHardwareInstancedRendering(subMesh, batch) {
         if (!this._engine.getCaps().instancedArrays) {
             return false;
@@ -2307,6 +2369,7 @@ class MToonOutlineRenderer {
     /**
      * このメッシュでアウトラインを描画するかどうか
      */
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     willRender(subMesh) {
         const material = subMesh.getMaterial();
         if (!material || material.getClassName() !== 'MToonMaterial' || material.getOutlineRendererName() !== this.name) {
@@ -2320,6 +2383,7 @@ class MToonOutlineRenderer {
  * Stencil value used to avoid outline being seen within the mesh when the mesh is transparent
  */
 MToonOutlineRenderer._StencilReference = 0x04;
+// eslint-disable-next-line @typescript-eslint/naming-convention
 MToonOutlineRenderer.rendererId = 0;
 
 
@@ -2445,7 +2509,7 @@ async function main() {
         mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaTest = true;
-        mat.alphaCutOff = 0.500;
+        mat.alphaCutOff = 0.5;
         mtoonMaterials.push(mat);
     }
     {
