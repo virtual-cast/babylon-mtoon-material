@@ -4,7 +4,6 @@ import { DirectionalLight } from '@babylonjs/core/Lights/directionalLight';
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight';
 import { PointLight } from '@babylonjs/core/Lights/pointLight';
 import { ShadowGenerator } from '@babylonjs/core/Lights/Shadows/shadowGenerator';
-import { Material } from '@babylonjs/core/Materials/material';
 import { Texture } from '@babylonjs/core/Materials/Textures/texture';
 import { Color3, Vector3 } from '@babylonjs/core/Maths/math';
 import { CreateSphere } from '@babylonjs/core/Meshes/Builders/sphereBuilder';
@@ -178,9 +177,7 @@ async function main() {
 
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
-        mat.sideOrientation = Material.CounterClockWiseSideOrientation;
         mat.cullMode = 1;
-        mat.outlineCullMode = 2;
         const sphere = CreateSphere(`${mat.name}_Sphere`, {}, scene);
         sphere.position = new Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;
