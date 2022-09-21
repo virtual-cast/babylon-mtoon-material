@@ -2196,8 +2196,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "MToonOutlineRenderer": () => (/* binding */ MToonOutlineRenderer)
 /* harmony export */ });
 /* harmony import */ var _babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babylonjs/core/sceneComponent */ "./node_modules/@babylonjs/core/sceneComponent.js");
-/* harmony import */ var _babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babylonjs/core/Engines/constants */ "./node_modules/@babylonjs/core/Engines/constants.js");
-
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const BASE_NAME = 'MToonOutline';
@@ -2213,20 +2211,11 @@ class MToonOutlineRenderer {
     constructor(scene, material) {
         this.scene = scene;
         this.material = material;
-        /**
-         * Defines a zOffset default Factor to prevent zFighting between the overlay and the mesh.
-         */
-        this.zOffset = 1;
-        /**
-         * Defines a zOffset default Unit to prevent zFighting between the overlay and the mesh.
-         */
-        this.zOffsetUnits = 4; // 4 to account for projection a bit by default
-        this._savedDepthWrite = false;
         this.name = `${BASE_NAME}_${material.name}_${MToonOutlineRenderer.rendererId++}`;
         this.scene._addComponent(this);
         this._engine = this.scene.getEngine();
         this._passIdForDrawWrapper = [];
-        for (let i = 0; i < 4; ++i) {
+        for (let i = 0; i < 1; ++i) {
             this._passIdForDrawWrapper[i] = this._engine.createRenderPassId(`Outline Renderer (${i})`);
         }
     }
@@ -2235,7 +2224,6 @@ class MToonOutlineRenderer {
      * シーン描画前後にレンダリング処理を登録する
      */
     register() {
-        this.scene._beforeRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__.SceneComponentConstants.STEP_BEFORERENDERINGMESH_OUTLINE, this, this._beforeRenderingMesh);
         this.scene._afterRenderingMeshStage.registerStep(_babylonjs_core_sceneComponent__WEBPACK_IMPORTED_MODULE_0__.SceneComponentConstants.STEP_AFTERRENDERINGMESH_OUTLINE, this, this._afterRenderingMesh);
     }
     /**
@@ -2256,11 +2244,10 @@ class MToonOutlineRenderer {
      * Renders the outline in the canvas.
      * @param subMesh Defines the sumesh to render
      * @param batch Defines the batch of meshes in case of instances
-     * @param useOverlay Defines if the rendering is for the overlay or the outline
      * @param renderPassId Render pass id to use to render the mesh
      */
     // eslint-disable-next-line @typescript-eslint/naming-convention, @typescript-eslint/no-unused-vars
-    render(subMesh, batch, useOverlay = false, renderPassId) {
+    render(subMesh, batch, renderPassId) {
         renderPassId = renderPassId !== null && renderPassId !== void 0 ? renderPassId : this._passIdForDrawWrapper[0];
         const scene = this.scene;
         const effect = subMesh.effect;
@@ -2283,57 +2270,19 @@ class MToonOutlineRenderer {
             return;
         }
         this.material.applyOutlineCullMode();
+        this.material.enableOutlineRender();
         this._engine.enableEffect(drawWrapper);
         if (!this.isHardwareInstancedRendering(subMesh, batch)) {
             renderingMesh._bind(subMesh, effect, this.material.fillMode);
         }
-        this._engine.setZOffset(-this.zOffset);
-        this._engine.setZOffsetUnits(-this.zOffsetUnits);
+        this.material._preBind(effect);
         renderingMesh._processRendering(effectiveMesh, subMesh, effect, this.material.fillMode, batch, this.isHardwareInstancedRendering(subMesh, batch), (isInstance, world, effectiveMaterial) => {
             if (effectiveMaterial) {
-                const m = effectiveMaterial;
-                m.enableOutlineRender();
-                m.bindForSubMesh(world, effectiveMesh, subMesh);
-                m.disaableOutlineRender();
+                effectiveMaterial.bindForSubMesh(world, effectiveMesh, subMesh);
             }
         }, this.material);
-        this._engine.setZOffset(0);
-        this._engine.setZOffsetUnits(0);
         this.material.restoreOutlineCullMode();
-    }
-    /**
-     * このメッシュを描画する前に実行されるコールバック
-     */
-    _beforeRenderingMesh(mesh, subMesh, batch) {
-        this._savedDepthWrite = this._engine.getDepthWrite();
-        if (!this.willRender(subMesh)) {
-            return;
-        }
-        const material = subMesh.getMaterial();
-        if (material.needAlphaBlendingForMesh(mesh)) {
-            this._engine.cacheStencilState();
-            // Draw only to stencil buffer for the original mesh
-            // The resulting stencil buffer will be used so the outline is not visible inside the mesh when the mesh is transparent
-            this._engine.setDepthWrite(false);
-            this._engine.setColorWrite(false);
-            this._engine.setStencilBuffer(true);
-            this._engine.setStencilOperationPass(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__.Constants.REPLACE);
-            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__.Constants.ALWAYS);
-            this._engine.setStencilMask(MToonOutlineRenderer._StencilReference);
-            this._engine.setStencilFunctionReference(MToonOutlineRenderer._StencilReference);
-            this._engine.stencilStateComposer.useStencilGlobalOnly = true;
-            this.render(subMesh, batch, /* This sets offset to 0 */ true, this._passIdForDrawWrapper[1]);
-            this._engine.setColorWrite(true);
-            this._engine.setStencilFunction(_babylonjs_core_Engines_constants__WEBPACK_IMPORTED_MODULE_1__.Constants.NOTEQUAL);
-        }
-        // Draw the outline using the above stencil if needed to avoid drawing within the mesh
-        this._engine.setDepthWrite(false);
-        this.render(subMesh, batch, false, this._passIdForDrawWrapper[0]);
-        this._engine.setDepthWrite(this._savedDepthWrite);
-        if (material && material.needAlphaBlendingForMesh(mesh)) {
-            this._engine.stencilStateComposer.useStencilGlobalOnly = false;
-            this._engine.restoreStencilState();
-        }
+        this.material.disaableOutlineRender();
     }
     /**
      * このメッシュを描画した後に実行されるコールバック
@@ -2342,13 +2291,10 @@ class MToonOutlineRenderer {
         if (!this.willRender(subMesh)) {
             return;
         }
-        if (this._savedDepthWrite) {
-            // 深度アリで再度書き込む
-            this._engine.setDepthWrite(true);
-            this._engine.setColorWrite(false);
-            this.render(subMesh, batch, false, this._passIdForDrawWrapper[2]);
-            this._engine.setColorWrite(true);
-        }
+        const cullBackFaces = this._engine.cullBackFaces;
+        this._engine.cullBackFaces = false;
+        this.render(subMesh, batch, this._passIdForDrawWrapper[0]);
+        this._engine.cullBackFaces = cullBackFaces;
     }
     /**
      * インスタンシングを行うかどうか
@@ -2379,10 +2325,6 @@ class MToonOutlineRenderer {
         return true;
     }
 }
-/**
- * Stencil value used to avoid outline being seen within the mesh when the mesh is transparent
- */
-MToonOutlineRenderer._StencilReference = 0x04;
 // eslint-disable-next-line @typescript-eslint/naming-convention
 MToonOutlineRenderer.rendererId = 0;
 
@@ -2402,18 +2344,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babylonjs_core_Lights_hemisphericLight__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @babylonjs/core/Lights/hemisphericLight */ "./node_modules/@babylonjs/core/Lights/hemisphericLight.js");
 /* harmony import */ var _babylonjs_core_Lights_pointLight__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @babylonjs/core/Lights/pointLight */ "./node_modules/@babylonjs/core/Lights/pointLight.js");
 /* harmony import */ var _babylonjs_core_Lights_Shadows_shadowGenerator__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @babylonjs/core/Lights/Shadows/shadowGenerator */ "./node_modules/@babylonjs/core/Lights/Shadows/shadowGenerator.js");
-/* harmony import */ var _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Materials/material */ "./node_modules/@babylonjs/core/Materials/material.js");
-/* harmony import */ var _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Materials/Textures/texture */ "./node_modules/@babylonjs/core/Materials/Textures/texture.js");
-/* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
-/* harmony import */ var _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/sphereBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/sphereBuilder.js");
-/* harmony import */ var _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/torusKnotBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/torusKnotBuilder.js");
-/* harmony import */ var _babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/Buffers/buffer */ "./node_modules/@babylonjs/core/Buffers/buffer.js");
-/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
-/* harmony import */ var _mtoon_material__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! ../mtoon-material */ "./src/mtoon-material.ts");
-/* harmony import */ var _babylonjs_core_Helpers_sceneHelpers__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/core/Helpers/sceneHelpers */ "./node_modules/@babylonjs/core/Helpers/sceneHelpers.js");
-/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15__ = __webpack_require__(/*! @babylonjs/inspector */ "./node_modules/@babylonjs/inspector/dist/babylon.inspector.bundle.max.js");
-/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15___default = /*#__PURE__*/__webpack_require__.n(_babylonjs_inspector__WEBPACK_IMPORTED_MODULE_15__);
-
+/* harmony import */ var _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @babylonjs/core/Materials/Textures/texture */ "./node_modules/@babylonjs/core/Materials/Textures/texture.js");
+/* harmony import */ var _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @babylonjs/core/Maths/math */ "./node_modules/@babylonjs/core/Maths/math.js");
+/* harmony import */ var _babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/sphereBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/sphereBuilder.js");
+/* harmony import */ var _babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! @babylonjs/core/Meshes/Builders/torusKnotBuilder */ "./node_modules/@babylonjs/core/Meshes/Builders/torusKnotBuilder.js");
+/* harmony import */ var _babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! @babylonjs/core/Buffers/buffer */ "./node_modules/@babylonjs/core/Buffers/buffer.js");
+/* harmony import */ var _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! @babylonjs/core/scene */ "./node_modules/@babylonjs/core/scene.js");
+/* harmony import */ var _mtoon_material__WEBPACK_IMPORTED_MODULE_12__ = __webpack_require__(/*! ../mtoon-material */ "./src/mtoon-material.ts");
+/* harmony import */ var _babylonjs_core_Helpers_sceneHelpers__WEBPACK_IMPORTED_MODULE_13__ = __webpack_require__(/*! @babylonjs/core/Helpers/sceneHelpers */ "./node_modules/@babylonjs/core/Helpers/sceneHelpers.js");
+/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_14__ = __webpack_require__(/*! @babylonjs/inspector */ "./node_modules/@babylonjs/inspector/dist/babylon.inspector.bundle.max.js");
+/* harmony import */ var _babylonjs_inspector__WEBPACK_IMPORTED_MODULE_14___default = /*#__PURE__*/__webpack_require__.n(_babylonjs_inspector__WEBPACK_IMPORTED_MODULE_14__);
 
 
 
@@ -2436,13 +2376,13 @@ async function main() {
         alpha: false,
         disableWebGL2Support: debugProperties.webgl1,
     });
-    const scene = new _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_12__.Scene(engine);
-    const camera = new _babylonjs_core_Cameras_arcRotateCamera__WEBPACK_IMPORTED_MODULE_0__.ArcRotateCamera('MainCamera1', 0, 0, 3, new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(0, 1.5, 0), scene, true);
+    const scene = new _babylonjs_core_scene__WEBPACK_IMPORTED_MODULE_11__.Scene(engine);
+    const camera = new _babylonjs_core_Cameras_arcRotateCamera__WEBPACK_IMPORTED_MODULE_0__.ArcRotateCamera('MainCamera1', 0, 0, 3, new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(0, 1.5, 0), scene, true);
     camera.lowerRadiusLimit = 0.1;
     camera.upperRadiusLimit = 20;
     camera.wheelDeltaPercentage = 0.01;
-    camera.setPosition(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(0, 1.5, -3));
-    camera.setTarget(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(0, 1.5, 0));
+    camera.setPosition(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(0, 1.5, -3));
+    camera.setTarget(new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(0, 1.5, 0));
     camera.attachControl(canvas);
     scene.createDefaultEnvironment({
         createGround: true,
@@ -2451,19 +2391,19 @@ async function main() {
         enableGroundShadow: false,
     });
     // Lights
-    const directionalLight = new _babylonjs_core_Lights_directionalLight__WEBPACK_IMPORTED_MODULE_2__.DirectionalLight('DirectionalLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(1, -0.5, 0.0), scene);
-    directionalLight.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(-50, 25, 0);
+    const directionalLight = new _babylonjs_core_Lights_directionalLight__WEBPACK_IMPORTED_MODULE_2__.DirectionalLight('DirectionalLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(1, -0.5, 0.0), scene);
+    directionalLight.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(-50, 25, 0);
     directionalLight.setEnabled(true);
-    const hemisphericLight = new _babylonjs_core_Lights_hemisphericLight__WEBPACK_IMPORTED_MODULE_3__.HemisphericLight('HemisphericLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(-0.2, -0.8, -1), scene);
+    const hemisphericLight = new _babylonjs_core_Lights_hemisphericLight__WEBPACK_IMPORTED_MODULE_3__.HemisphericLight('HemisphericLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(-0.2, -0.8, -1), scene);
     hemisphericLight.setEnabled(false);
-    const pointLight = new _babylonjs_core_Lights_pointLight__WEBPACK_IMPORTED_MODULE_4__.PointLight('PointLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(0, 0, 1), scene);
+    const pointLight = new _babylonjs_core_Lights_pointLight__WEBPACK_IMPORTED_MODULE_4__.PointLight('PointLight1', new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(0, 0, 1), scene);
     pointLight.setEnabled(false);
     // Meshes
-    const standardMaterialSphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_9__.CreateSphere)('StandardMaterialSphere1', {}, scene);
-    standardMaterialSphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(1.2, 1.2, 0);
+    const standardMaterialSphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_8__.CreateSphere)('StandardMaterialSphere1', {}, scene);
+    standardMaterialSphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(1.2, 1.2, 0);
     standardMaterialSphere.receiveShadows = true;
-    const shadowCaster = (0,_babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_10__.CreateTorusKnot)('ShadowCaster', {}, scene);
-    shadowCaster.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(-10.0, 5.0, 0.0);
+    const shadowCaster = (0,_babylonjs_core_Meshes_Builders_torusKnotBuilder__WEBPACK_IMPORTED_MODULE_9__.CreateTorusKnot)('ShadowCaster', {}, scene);
+    shadowCaster.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(-10.0, 5.0, 0.0);
     shadowCaster.setEnabled(debugProperties.shadow);
     if (debugProperties.shadow) {
         const shadowGenerator = new _babylonjs_core_Lights_Shadows_shadowGenerator__WEBPACK_IMPORTED_MODULE_5__.ShadowGenerator(1024, directionalLight);
@@ -2471,41 +2411,41 @@ async function main() {
     }
     const mtoonMaterials = [];
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialDefault', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialDefault', scene);
         mat.outlineWidthMode = 1;
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialNormal', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialNormal', scene);
         mat.outlineWidthMode = 2;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
-        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;
         diffuse.vScale = 4;
         mat.diffuseTexture = diffuse;
         mat.shadeTexture = mat.diffuseTexture.clone();
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0.871, 0.196, 0.416);
-        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/wGyk6os.png', scene);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0.871, 0.196, 0.416);
+        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/wGyk6os.png', scene);
         bump.uScale = 4;
         bump.vScale = 4;
         mat.bumpTexture = bump;
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialTransparent', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialTransparent', scene);
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#YDO1F#18
-        mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+        mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
         mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaBlend = true;
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialTransparentCutout', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialTransparentCutout', scene);
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#YDO1F#18
-        mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
+        mat.diffuseTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('https://upload.wikimedia.org/wikipedia/commons/8/87/Alaskan_Malamute%2BBlank.png', scene);
         mat.diffuseTexture.hasAlpha = true;
         mat.shadeTexture = mat.diffuseTexture.clone();
         mat.alphaTest = true;
@@ -2513,32 +2453,32 @@ async function main() {
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialRim', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialRim', scene);
         mat.outlineWidthMode = 1;
-        mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0, 0, 0);
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0, 0, 0);
-        mat.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(1, 1, 1);
+        mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0, 0, 0);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0, 0, 0);
+        mat.rimColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(1, 1, 1);
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialMatCap', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialMatCap', scene);
         // Textures from https://www.outworldz.com/cgi/free-seamless-textures.plx?c=UV%20Checker
-        mat.matCapTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('resources/matcap.png', scene, true, false);
-        mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0, 0, 0);
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0, 0, 0);
+        mat.matCapTexture = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('resources/matcap.png', scene, true, false);
+        mat.diffuseColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0, 0, 0);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0, 0, 0);
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialScroll', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialScroll', scene);
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
-        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;
         diffuse.vScale = 4;
         mat.diffuseTexture = diffuse;
         mat.shadeTexture = mat.diffuseTexture.clone();
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0.5, 0.5, 0.5);
-        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/wGyk6os.png', scene);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0.5, 0.5, 0.5);
+        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/wGyk6os.png', scene);
         bump.uScale = 4;
         bump.vScale = 4;
         mat.bumpTexture = bump;
@@ -2546,16 +2486,16 @@ async function main() {
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialScrollY', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialScrollY', scene);
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
-        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;
         diffuse.vScale = 4;
         mat.diffuseTexture = diffuse;
         mat.shadeTexture = mat.diffuseTexture.clone();
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0.5, 0.5, 0.5);
-        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/wGyk6os.png', scene);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0.5, 0.5, 0.5);
+        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/wGyk6os.png', scene);
         bump.uScale = 4;
         bump.vScale = 4;
         mat.bumpTexture = bump;
@@ -2563,16 +2503,16 @@ async function main() {
         mtoonMaterials.push(mat);
     }
     {
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MtoonMaterialRotation', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MtoonMaterialRotation', scene);
         mat.outlineWidthMode = 1;
         // Textures from https://www.babylonjs-playground.com/#20OAV9#33
-        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
+        const diffuse = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/Wk1cGEq.png', scene);
         diffuse.uScale = 4;
         diffuse.vScale = 4;
         mat.diffuseTexture = diffuse;
         mat.shadeTexture = mat.diffuseTexture.clone();
-        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Color3(0.5, 0.5, 0.5);
-        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_7__.Texture('http://i.imgur.com/wGyk6os.png', scene);
+        mat.shadeColor = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Color3(0.5, 0.5, 0.5);
+        const bump = new _babylonjs_core_Materials_Textures_texture__WEBPACK_IMPORTED_MODULE_6__.Texture('http://i.imgur.com/wGyk6os.png', scene);
         bump.uScale = 4;
         bump.vScale = 4;
         mat.bumpTexture = bump;
@@ -2581,26 +2521,24 @@ async function main() {
     }
     mtoonMaterials.forEach((mat, index) => {
         // MToonMaterial は glTF(右手座標) を考慮しているため、 CullMode をデフォルトから反転させる
-        mat.sideOrientation = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_6__.Material.CounterClockWiseSideOrientation;
         mat.cullMode = 1;
-        mat.outlineCullMode = 2;
-        const sphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_9__.CreateSphere)(`${mat.name}_Sphere`, {}, scene);
-        sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(-1.2 * index, 1.2, 0);
+        const sphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_8__.CreateSphere)(`${mat.name}_Sphere`, {}, scene);
+        sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(-1.2 * index, 1.2, 0);
         sphere.receiveShadows = true;
         sphere.material = mat;
     });
     {
         // No Normal
-        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_13__.MToonMaterial('MToonMaterialNoNormal', scene);
+        const mat = new _mtoon_material__WEBPACK_IMPORTED_MODULE_12__.MToonMaterial('MToonMaterialNoNormal', scene);
         mat.cullMode = 1;
         mat.outlineCullMode = 2;
         mat.outlineWidthMode = 1;
-        const sphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_9__.CreateSphere)('MToonMaterialNoNormal_Sphere', {}, scene);
-        sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3(2.4, 1.2, 0);
+        const sphere = (0,_babylonjs_core_Meshes_Builders_sphereBuilder__WEBPACK_IMPORTED_MODULE_8__.CreateSphere)('MToonMaterialNoNormal_Sphere', {}, scene);
+        sphere.position = new _babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3(2.4, 1.2, 0);
         sphere.receiveShadows = true;
         sphere.material = mat;
         if (sphere.geometry) {
-            sphere.geometry.removeVerticesData(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_11__.VertexBuffer.NormalKind);
+            sphere.geometry.removeVerticesData(_babylonjs_core_Buffers_buffer__WEBPACK_IMPORTED_MODULE_10__.VertexBuffer.NormalKind);
         }
     }
     if (debugProperties.inspector) {
@@ -2611,7 +2549,7 @@ async function main() {
     }
     engine.runRenderLoop(() => {
         scene.render();
-        shadowCaster.rotate(_babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_8__.Vector3.Up(), 0.01);
+        shadowCaster.rotate(_babylonjs_core_Maths_math__WEBPACK_IMPORTED_MODULE_7__.Vector3.Up(), 0.01);
     });
     window.addEventListener('resize', () => {
         engine.resize();
