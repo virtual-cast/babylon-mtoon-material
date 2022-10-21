@@ -829,6 +829,11 @@ export class MToonMaterial extends PushMaterial {
         return this.outlineRenderer.name;
     }
     //#endregion
+    /**
+     * flip mainUv.y if true
+     */
+    @serialize('flipV')
+    public flipV = false;
     //#endregion
 
     /**
@@ -1098,6 +1103,11 @@ export class MToonMaterial extends PushMaterial {
 
             // defines.IS_REFLECTION_LINEAR = (this.reflectionTexture != null && !this.reflectionTexture.gammaSpace);
             // defines.IS_REFRACTION_LINEAR = (this.refractionTexture != null && !this.refractionTexture.gammaSpace);
+        }
+
+        if (this.flipV !== defines.FLIP_V) {
+            defines.FLIP_V = this.flipV;
+            defines.markAsUnprocessed();
         }
 
         // Misc.

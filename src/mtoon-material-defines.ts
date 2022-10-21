@@ -184,6 +184,8 @@ export class MToonMaterialDefines extends MaterialDefines implements IImageProce
     public IS_REFRACTION_LINEAR = false;
     public EXPOSURE = false;
 
+    public FLIP_V = false;
+
     /**
      * @inheritdoc
      */
