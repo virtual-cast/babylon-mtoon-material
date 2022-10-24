@@ -1,6 +1,6 @@
 {
     "name": "babylon-mtoon-material",
-    "version": "5.0.1",
+    "version": "5.1.0",
     "description": "Unity MToon Shader WebGL porting with babylon.js",
     "license": "MIT",
     "author": {
