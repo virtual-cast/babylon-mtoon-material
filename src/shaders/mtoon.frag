@@ -169,6 +169,9 @@ void main(void) {
     vec2 rotatePivot = vec2(0.5, 0.5);
     mainUv = mat2(cos(rotateRad), -sin(rotateRad), sin(rotateRad), cos(rotateRad)) * (mainUv - rotatePivot) + rotatePivot;
 
+#ifdef FLIP_U
+    mainUv.x = 1.0 - mainUv.x;
+#endif
 #ifdef FLIP_V
     mainUv.y = 1.0 - mainUv.y;
 #endif
