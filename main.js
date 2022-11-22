@@ -1109,7 +1109,12 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             }
         }
         else {
-            this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
+            if (this.alphaBlend) {
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_ALPHABLEND;
+            }
+            else {
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
+            }
         }
         this._markAllSubMeshesAsMiscDirty();
     }
@@ -1128,7 +1133,12 @@ class MToonMaterial extends _babylonjs_core_Materials_pushMaterial__WEBPACK_IMPO
             }
         }
         else {
-            this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
+            if (this.alphaTest) {
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_ALPHATEST;
+            }
+            else {
+                this._transparencyMode = _babylonjs_core_Materials_material__WEBPACK_IMPORTED_MODULE_7__.Material.MATERIAL_OPAQUE;
+            }
         }
         this._markAllSubMeshesAsMiscDirty();
     }
