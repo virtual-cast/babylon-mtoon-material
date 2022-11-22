@@ -714,7 +714,11 @@ export class MToonMaterial extends PushMaterial {
                 this._transparencyMode = Material.MATERIAL_ALPHATEST;
             }
         } else {
-            this._transparencyMode = Material.MATERIAL_OPAQUE;
+            if (this.alphaBlend) {
+                this._transparencyMode = Material.MATERIAL_ALPHABLEND;
+            } else {
+                this._transparencyMode = Material.MATERIAL_OPAQUE;
+            }
         }
         this._markAllSubMeshesAsMiscDirty();
     }
@@ -733,7 +737,11 @@ export class MToonMaterial extends PushMaterial {
                 this._transparencyMode = Material.MATERIAL_ALPHABLEND;
             }
         } else {
-            this._transparencyMode = Material.MATERIAL_OPAQUE;
+            if (this.alphaTest) {
+                this._transparencyMode = Material.MATERIAL_ALPHATEST;
+            } else {
+                this._transparencyMode = Material.MATERIAL_OPAQUE;
+            }
         }
         this._markAllSubMeshesAsMiscDirty();
     }
